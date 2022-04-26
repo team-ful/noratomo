@@ -7,6 +7,15 @@ const trailing = 'Semicolon';
 
 const why = 'am I tabbed?';
 
+/**
+ *
+ * do something
+ *
+ * @param {string} withThis - whis this
+ * @param {string} andThat - and that
+ * @param {string[]} andThose - and those
+ * @returns {boolean} - hoge
+ */
 export function doSomeStuff(
   withThis: string,
   andThat: string,
