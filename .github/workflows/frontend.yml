@@ -1,0 +1,39 @@
+# This is a basic workflow to help you get started with Actions
+
+name: frontend
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    name: frontend test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v1
+      
+      - name: yarn install
+        working-directory: ./frontend
+        run: yarn install --dev
+        
+      - name: Run gts
+        working-directory: ./frontend
+        run: yarn lint
+        
+      - name: Build
+        working-directory: ./frontend
+        run: yarn build
