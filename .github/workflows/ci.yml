@@ -25,8 +25,8 @@ jobs:
       - name: yarn install
         run: yarn install --dev
         
-      - name: Run gts
-        run: yarn lint
+      - name: Run test and linter
+        run: yarn test
         
       - name: Build
         run: yarn build
