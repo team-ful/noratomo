@@ -1,12 +1,27 @@
-# ぼっチる！
+# 野良友
 
-大学のプロジェクト
+## 構成
 
-## TL;DR
+- React + Next.js
 
-ぼっちのためのネットワーク
+## 必要なもの
 
-## リンク
+- node
+- yarn
 
-- [フロントエンド](./frontend/README.md)
-- [バックエンド](./backend//README.md)
+```bash
+# パッケージのインストール
+yarn install
+```
+
+## 起動
+
+```bash
+yarn dev
+```
+
+## 静的解析
+
+```bash
+yarn lint
+```
