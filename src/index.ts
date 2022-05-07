@@ -31,3 +31,16 @@ export function doSomeStuff(
   return;
 }
 // TODO: more examples
+
+/**
+ *
+ * @param {number} a - number
+ * @returns {string} - str
+ */
+export function testA(a: number): string {
+  if (a === 0) {
+    return 'hoge';
+  }
+
+  return 'huga';
+}
