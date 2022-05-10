@@ -44,3 +44,9 @@ export function testA(a: number): string {
 
   return 'huga';
 }
+
+/**
+ *
+ * @param {number} i - 数字
+ */
+export const sample = (i: number): number => Math.pow(i, 2);
