@@ -13,6 +13,7 @@
 
 - node
 - yarn
+- docker
 
 ```bash
 # パッケージのインストール
@@ -22,6 +23,11 @@ yarn install
 ## 起動
 
 ```bash
+
+# DB起動
+docker-compose up -d
+
+# アプリケーションの起動
 yarn dev
 ```
 
