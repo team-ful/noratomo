@@ -1,5 +1,5 @@
 import {URL} from 'url';
-import {ConnectionConfig} from 'mysql';
+import {ConnectionOptions} from 'mysql2';
 
 export interface Config {
   environment: string;
@@ -14,5 +14,5 @@ export interface Config {
   googleOauthClientSecrete: string;
 
   // DB
-  db: ConnectionConfig;
+  db: ConnectionOptions;
 }

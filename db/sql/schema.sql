@@ -1,7 +1,4 @@
--- drop
-DROP TABLE IF EXISTS `test_table`;
-
--- create
+-- テスト用
 create table IF not exists `test_table`
 (
  `id`               INT(20) AUTO_INCREMENT,

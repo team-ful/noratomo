@@ -6,6 +6,10 @@ describe('config', () => {
     jest.resetModules();
   });
 
+  afterAll(() => {
+    process.env.ENVIRONMENT = '';
+  });
+
   const expectConfig = (name: string) => {
     const config: Config = require('../../config').default;
 
@@ -33,6 +37,6 @@ describe('config', () => {
   test('other', () => {
     process.env.ENVIRONMENT = 'hoge';
 
-    expectConfig('production');
+    expectConfig('test');
   });
 });

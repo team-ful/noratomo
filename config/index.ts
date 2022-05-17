@@ -10,12 +10,8 @@ const config = () => {
       return localConfig;
     case 'production':
       return productionConfig;
-    case 'test':
-      return testConfig;
     default:
-      // とりあえずproductionにしておく
-      // 根拠はない
-      return productionConfig;
+      return testConfig;
   }
 };
 
