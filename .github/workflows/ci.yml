@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
-    name: frontend test
+    name: test
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -26,7 +26,9 @@ jobs:
         run: yarn install --dev
         
       - name: Run test and linter
-        run: yarn test
+        run: |
+          docker-compose up -d
+          yarn test
         
       - name: Build
         run: yarn build
