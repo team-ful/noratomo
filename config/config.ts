@@ -1,4 +1,5 @@
 import {URL} from 'url';
+import {ConnectionConfig} from 'mysql';
 
 export interface Config {
   environment: string;
@@ -11,4 +12,7 @@ export interface Config {
   twitterOauthClientSecret: string;
   googleOauthClientId: string;
   googleOauthClientSecrete: string;
+
+  // DB
+  db: ConnectionConfig;
 }
