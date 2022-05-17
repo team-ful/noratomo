@@ -10,6 +10,13 @@ const config: Config = {
   twitterOauthClientSecret: 'twitter-client-secret',
   googleOauthClientId: 'google-client-id',
   googleOauthClientSecrete: 'google-client-secret',
+
+  db: {
+    host: '127.0.0.1',
+    user: 'docker',
+    password: 'docker',
+    database: 'noratomo',
+  },
 };
 
 export default config;
