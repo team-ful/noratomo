@@ -22,13 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       
+      - name: docker
+        run: docker-compose up -d
+      
       - name: yarn install
         run: yarn install --dev
         
       - name: Run test and linter
-        run: |
-          docker-compose up -d
-          yarn test
+        run: yarn test
         
       - name: Build
         run: yarn build
