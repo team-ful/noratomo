@@ -1,2 +1,3 @@
-build/
 next.config.js
+db/data/**
+jest.config.js
