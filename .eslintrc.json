@@ -30,6 +30,14 @@
                 }
             }
         ],
-        "react-hooks/exhaustive-deps": "off"
+        "react-hooks/exhaustive-deps": "off",
+        "node/no-unpublished-import": [
+            "error",
+            {
+                "allowModules": [
+                    "next-test-api-route-handler"
+                ]
+            }
+        ]
     }
 }
