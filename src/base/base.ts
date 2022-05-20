@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 
-class Base<T = any> {
+class Base<T> {
   private req: NextApiRequest;
   private res: NextApiResponse;
 
