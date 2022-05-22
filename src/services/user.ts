@@ -1,5 +1,5 @@
 import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
-import {UserModel} from '../models/user';
+import User, {convertUser} from '../models/user';
 
 /**
  * UserIDからユーザ情報を取得する
@@ -10,7 +10,7 @@ import {UserModel} from '../models/user';
 export async function getUserByUserID(
   db: Connection | Pool,
   id: number
-): Promise<UserModel> {
+): Promise<User> {
   const [rows] = await db.query<RowDataPacket[]>(
     'SELECT * FROM user WHERE id = ?',
     [id]
@@ -18,5 +18,5 @@ export async function getUserByUserID(
 
   const row = rows[0];
 
-  return row as UserModel;
+  return new User(convertUser(row));
 }

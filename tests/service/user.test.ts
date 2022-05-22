@@ -12,9 +12,9 @@ describe('ユーザIDから取得', () => {
 
     const dummy = await createUser(connection, {mail: mail});
 
-    const user = await getUserByUserID(connection, dummy.id);
+    const user = await getUserByUserID(connection, dummy.user.id);
 
-    expect(user.mail).toBe(mail);
+    expect(user.user).toEqual(dummy.user);
 
     await connection.end();
   }, 10000);

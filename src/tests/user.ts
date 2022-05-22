@@ -1,6 +1,6 @@
 import {Connection, ResultSetHeader} from 'mysql2/promise';
 import {v4} from 'uuid';
-import {UserModel} from '../models/user';
+import User, {UserModel} from '../models/user';
 
 /**
  * テスト用のダミーユーザを作成する
@@ -12,7 +12,10 @@ import {UserModel} from '../models/user';
 export async function createUser(
   db: Connection,
   option?: Partial<UserModel>
-): Promise<UserModel> {
+): Promise<User> {
+  const joinDate = new Date(Date.now());
+  joinDate.setMilliseconds(0); // MySQLのDATETIMEはYYYY-MM-DD HH:MM:SSでありmilisecondは含まれない
+
   const newUser: UserModel = {
     id: NaN, // 上書きされる
     display_name: option?.display_name || v4().slice(0, 10),
@@ -24,7 +27,7 @@ export async function createUser(
     is_ban: option?.is_ban || false,
     is_penalty: option?.is_penalty || false,
     is_admin: option?.is_admin || false,
-    join_date: new Date(Date.now()),
+    join_date: joinDate,
     avatar_url: option?.avatar_url || `https://example.com/${v4()}`,
   };
 
@@ -58,5 +61,5 @@ export async function createUser(
 
   newUser.id = rows.insertId;
 
-  return newUser;
+  return new User(newUser);
 }
