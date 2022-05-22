@@ -1,7 +1,6 @@
-import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
 import {Gender} from './common';
 
-export default interface User {
+export interface UserModel {
   // ユーザを識別するID
   // 他のテーブルの`user_id`になる。
   // ユニーク
@@ -45,21 +44,14 @@ export default interface User {
 }
 
 /**
- * UserIDからユーザ情報を取得する
- *
- * @param {Connection | Pool} db - database
- * @param {number} id - User ID
+ * ユーザ関連の操作をするクラス
  */
-export async function getUserByUserID(
-  db: Connection | Pool,
-  id: number
-): Promise<User> {
-  const [rows, fields] = await db.query<RowDataPacket[]>(
-    'SELECT * FROM user WHERE id = ?',
-    [id]
-  );
+class User {
+  public user: UserModel;
 
-  const row = rows[0];
-
-  return row as User;
+  constructor(user: UserModel) {
+    this.user = user;
+  }
 }
+
+export default User;

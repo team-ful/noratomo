@@ -1,14 +1,22 @@
-import UserModel from '../models/user';
+import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
+import {UserModel} from '../models/user';
 
 /**
- * ユーザ関連の操作をするクラス
+ * UserIDからユーザ情報を取得する
+ *
+ * @param {Connection | Pool} db - database
+ * @param {number} id - User ID
  */
-class User {
-  private user: UserModel;
+export async function getUserByUserID(
+  db: Connection | Pool,
+  id: number
+): Promise<UserModel> {
+  const [rows] = await db.query<RowDataPacket[]>(
+    'SELECT * FROM user WHERE id = ?',
+    [id]
+  );
 
-  constructor(user: UserModel) {
-    this.user = user;
-  }
+  const row = rows[0];
+
+  return row as UserModel;
 }
-
-export default User;
