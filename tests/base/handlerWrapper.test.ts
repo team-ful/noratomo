@@ -1,26 +1,43 @@
-import {testApiHandler} from 'next-test-api-route-handler';
+import {NextApiRequest, NextApiResponse} from 'next';
+
+import httpMocks from 'node-mocks-http';
+import AuthedBase from '../../src/base/AuthedBase';
 import Base from '../../src/base/base';
-import handlerWrapper from '../../src/base/handlerWrapper';
+import {
+  handlerWrapper,
+  authHandlerWrapper,
+} from '../../src/base/handlerWrapper';
+
+jest.mock('../../src/base/base');
+jest.mock('../../src/base/AuthedBase');
+
+const BaseMock = Base as jest.Mock;
+const AuthedBaseMock = AuthedBase as jest.Mock;
 
 describe('handlerWrapper', () => {
-  test('ちゃんとラップできている', async () => {
-    const handler = (base: Base<void>) => {
-      const res = base.getRes();
-      res.send('It works!');
-    };
+  test('base', async () => {
+    const handler = jest.fn();
 
     const h = handlerWrapper(handler);
 
-    await testApiHandler({
-      handler: h,
-      test: async ({fetch}) => {
-        // Returns a real ServerResponse instance
-        const res = await fetch();
-        // Hence, res.status == 200 if send(...) was called above
-        expect(res.status).toBe(200);
-        // We can even inspect the data that was returned
-        expect(await res.text()).toBe('It works!');
-      },
-    });
+    const req = httpMocks.createRequest<NextApiRequest>();
+    const res = httpMocks.createResponse<NextApiResponse>();
+
+    h(req, res);
+
+    expect(BaseMock).toHaveBeenCalled();
+  });
+
+  test('authBase', async () => {
+    const handler = jest.fn();
+
+    const h = authHandlerWrapper(handler);
+
+    const req = httpMocks.createRequest<NextApiRequest>();
+    const res = httpMocks.createResponse<NextApiResponse>();
+
+    h(req, res);
+
+    expect(AuthedBaseMock).toHaveBeenCalled();
   });
 });

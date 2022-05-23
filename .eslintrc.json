@@ -35,7 +35,8 @@
             "error",
             {
                 "allowModules": [
-                    "next-test-api-route-handler"
+                    "next-test-api-route-handler",
+                    "node-mocks-http"
                 ]
             }
         ]
