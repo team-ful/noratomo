@@ -141,7 +141,7 @@ class User {
       Date.parse(user.user.join_date.toISOString()) -
       Date.parse(this.user.join_date.toISOString());
 
-    return diff >= 0;
+    return diff > 0;
   }
 }
 
