@@ -44,7 +44,7 @@ export async function createUser(
     is_admin,
     join_date,
     avatar_url
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now(), ?)`,
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       newUser.display_name,
       newUser.mail,
@@ -55,6 +55,7 @@ export async function createUser(
       newUser.is_ban,
       newUser.is_penalty,
       newUser.is_admin,
+      newUser.join_date, // 通常now()を使用して日時を設定するがテスト用で時間を合わせたいためjs側から入れる
       newUser.avatar_url,
     ]
   );

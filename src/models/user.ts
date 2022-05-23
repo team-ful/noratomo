@@ -119,6 +119,30 @@ class User {
   constructor(user: UserModel) {
     this.user = user;
   }
+
+  /**
+   * 同じユーザかどうかを判定する
+   *
+   * @param {User} user - 判定するユーザ
+   * @returns {boolean} 同じユーザの場合trueになる
+   */
+  public is(user: User) {
+    return this.user.id === user.user.id;
+  }
+
+  /**
+   * 比較するユーザより自分が参加日時が早いかどうかを判定する
+   *
+   * @param {User} user - 比較するユーザ
+   * @returns {boolean} - 自分が引数のUserより参加日時が早いor同じ場合はtrue
+   */
+  public isSeniority(user: User) {
+    const diff =
+      Date.parse(user.user.join_date.toISOString()) -
+      Date.parse(this.user.join_date.toISOString());
+
+    return diff >= 0;
+  }
 }
 
 export default User;
