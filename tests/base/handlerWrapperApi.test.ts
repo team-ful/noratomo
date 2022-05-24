@@ -4,7 +4,7 @@ import {handlerWrapper} from '../../src/base/handlerWrapper';
 
 describe('API', () => {
   test('ちゃんとラップできている', async () => {
-    const handler = (base: Base<void>) => {
+    const handler = async (base: Base<void>) => {
       base.res.send('It works!');
     };
 
