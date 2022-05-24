@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "dbaeumer.vscode-eslint",
+        "saikou9901.evilinspector",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "visualstudioexptteam.vscodeintellicode",
+        "eg2.vscode-npm-script",
+        "gamunu.vscode-yarn",
+        "ICS.japanese-proofreading"
+    ]
+}

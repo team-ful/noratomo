@@ -1,0 +1,7 @@
+{
+    "eslint.format.enable": true,
+    "eslint.lintTask.enable": true,
+    "editor.formatOnSave": true,
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true
+}
