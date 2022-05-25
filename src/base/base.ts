@@ -3,6 +3,7 @@ import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import mysql from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
+import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
 
@@ -82,7 +83,7 @@ class Base<T> {
    */
   public getPostForm(): ParsedUrlQuery {
     if (!this.checkContentType('application/x-www-form-urlencoded')) {
-      throw new Error('no application/x-www-form-urlencoded');
+      throw new ApiError(400, 'no application/x-www-form-urlencoded');
     }
 
     return this.req.body;
@@ -99,7 +100,7 @@ class Base<T> {
       !this.checkContentType('application/json') &&
       !this.checkContentType('application/ld+json')
     ) {
-      throw new Error('no application/(id+)?json');
+      throw new ApiError(400, 'no application/(id+)?json');
     }
 
     return this.req.body as T;

@@ -1,5 +1,4 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-
 import httpMocks from 'node-mocks-http';
 import AuthedBase from '../../src/base/AuthedBase';
 import Base from '../../src/base/base';

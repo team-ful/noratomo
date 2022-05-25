@@ -1,4 +1,5 @@
 import {testApiHandler} from 'next-test-api-route-handler';
+import {ApiError} from 'next/dist/server/api-utils';
 import Base, {Device} from '../../src/base/base';
 import {handlerWrapper} from '../../src/base/handlerWrapper';
 
@@ -93,8 +94,8 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(() => base.getPostForm()).toThrowError(
-        'no application/x-www-form-urlencoded'
+      expect(() => base.getPostForm()).toThrow(
+        new ApiError(400, 'no application/x-www-form-urlencoded')
       );
     };
 
@@ -150,8 +151,8 @@ describe('getPostJson', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(() => base.getPostJson()).toThrowError(
-        'no application/(id+)?json'
+      expect(() => base.getPostJson()).toThrow(
+        new ApiError(400, 'no application/(id+)?json')
       );
     };
 
