@@ -8,10 +8,12 @@ import Base from './base';
  * 認証済みのユーザ用
  */
 class AuthedBase<T> extends Base<T> {
-  private userId: number = NaN;
+  private userId: number;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     super(req, res);
+
+    this.userId = NaN;
   }
 
   public async getUser(db: Connection | Pool): Promise<User> {

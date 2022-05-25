@@ -8,6 +8,8 @@ export const handlerWrapper =
     const base = new Base<T>(req, res);
 
     await handler(base);
+
+    res.end();
   };
 
 export const authHandlerWrapper =
@@ -16,4 +18,6 @@ export const authHandlerWrapper =
     const authBase = new AuthedBase<T>(req, res);
 
     await handler(authBase);
+
+    res.end();
   };
