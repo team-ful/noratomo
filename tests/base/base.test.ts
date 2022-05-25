@@ -1,4 +1,3 @@
-import exp from 'constants';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
 import Base, {Device} from '../../src/base/base';
