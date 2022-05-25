@@ -230,7 +230,6 @@ class Base<T> {
    * @param {object} body - json bodt
    */
   public sendJson<T extends Object>(body: T) {
-    // this.res.setHeader('content-type', 'application/json');
     this.res.json(body);
   }
 }
