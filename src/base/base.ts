@@ -223,6 +223,16 @@ class Base<T> {
   public getDevice(): Device {
     return this.userAgent.device;
   }
+
+  /**
+   * Json形式で返す
+   *
+   * @param {object} body - json bodt
+   */
+  public sendJson<T extends Object>(body: T) {
+    // this.res.setHeader('content-type', 'application/json');
+    this.res.json(body);
+  }
 }
 
 export default Base;

@@ -1,3 +1,4 @@
+import exp from 'constants';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
 import Base, {Device} from '../../src/base/base';
@@ -327,6 +328,32 @@ describe('parseUA', () => {
         const res = await fetch();
 
         expect(res.status).toBe(200);
+      },
+    });
+  });
+});
+
+describe('sendJson', () => {
+  const data = {test: 'hoge'};
+
+  test('client hintsでUAを取得できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.sendJson(data);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+
+        console.log(res.headers);
+
+        expect(res.status).toBe(200);
+        expect(await res.json()).toEqual(data);
       },
     });
   });
