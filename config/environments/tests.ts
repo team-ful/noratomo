@@ -6,13 +6,14 @@ const config: Config = {
 
   host: new URL('http://localhost:3000'),
 
-  twitterOauthEndpoint: 'https://twitter.com',
+  twitterOauthEndpoint: new URL('https://twitter.com'),
   twitterOauthClientId: 'twitter-client-id',
   twitterOauthClientSecret: 'twitter-client-secret',
-  googleOauthEndpoint: 'https://google.com',
+  googleOauthEndpoint: new URL('https://google.com'),
   googleOauthClientId: 'google-client-id',
   googleOauthClientSecret: 'google-client-secret',
-  cateiruSSOEndpoint: 'https://sso.cateiru.com',
+  cateiruSSOEndpoint: new URL('https://sso.cateiru.com'),
+  cateiruSSOTokenEndpoint: new URL('https://sso.cateiru.com/oauth/token'),
   cateiruSSOClientSecret: 'cateiru-sso-client-id',
   cateiruSSOClientId: 'cateiru-sso-client-secret',
 

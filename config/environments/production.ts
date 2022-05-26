@@ -6,13 +6,14 @@ const config: Config = {
 
   host: new URL('http://localhost:3000'),
 
-  twitterOauthEndpoint: '',
+  twitterOauthEndpoint: new URL(''),
   twitterOauthClientId: '',
   twitterOauthClientSecret: '',
-  googleOauthEndpoint: '',
+  googleOauthEndpoint: new URL(''),
   googleOauthClientId: '',
   googleOauthClientSecret: '',
-  cateiruSSOEndpoint: '',
+  cateiruSSOEndpoint: new URL(''),
+  cateiruSSOTokenEndpoint: new URL(''),
   cateiruSSOClientSecret: '',
   cateiruSSOClientId: '',
 

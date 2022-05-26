@@ -8,15 +8,16 @@ export interface Config {
   host: URL;
 
   // OAuth関連
-  twitterOauthEndpoint: string;
+  twitterOauthEndpoint: URL;
   twitterOauthClientId: string;
   twitterOauthClientSecret: string;
 
-  googleOauthEndpoint: string;
+  googleOauthEndpoint: URL;
   googleOauthClientId: string;
   googleOauthClientSecret: string;
 
-  cateiruSSOEndpoint: string;
+  cateiruSSOEndpoint: URL;
+  cateiruSSOTokenEndpoint: URL;
   cateiruSSOClientId: string;
   cateiruSSOClientSecret: string;
 
