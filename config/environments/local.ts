@@ -14,7 +14,7 @@ const config: Config = {
   googleOauthClientSecret: '',
   // テスト用であるため公開している
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
-  cateiruSSOTokenEndpoint: new URL('https://sso.cateiru.com/oauth/token'),
+  cateiruSSOTokenEndpoint: new URL('https://api.sso.cateiru.com/oauth/token'),
   cateiruSSOPublicKeyEndpoint: new URL(
     'https://api.sso.cateiru.com/oauth/jwt/key'
   ),

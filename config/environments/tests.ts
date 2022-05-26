@@ -13,7 +13,7 @@ const config: Config = {
   googleOauthClientId: 'google-client-id',
   googleOauthClientSecret: 'google-client-secret',
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com'),
-  cateiruSSOTokenEndpoint: new URL('https://sso.cateiru.com/oauth/token'),
+  cateiruSSOTokenEndpoint: new URL('https://api.sso.cateiru.com/oauth/token'),
   cateiruSSOPublicKeyEndpoint: new URL(
     'https://api.sso.cateiru.com/oauth/jwt/key'
   ),
