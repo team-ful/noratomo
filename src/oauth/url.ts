@@ -9,11 +9,11 @@ import {URL} from 'url';
  * @returns {string} URL
  */
 export function loginURL(
-  endpoint: string,
+  endpoint: URL,
   clientId: string,
   redirect: string
 ): string {
-  const url = new URL(endpoint);
+  const url = endpoint;
 
   url.searchParams.set('scope', 'openid');
   url.searchParams.set('response_type', 'code');
