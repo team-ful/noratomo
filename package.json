@@ -16,8 +16,12 @@
         "test": "jest"
     },
     "dependencies": {
+        "@chakra-ui/react": "^2.1.2",
+        "@emotion/react": "^11",
+        "@emotion/styled": "^11",
         "client-hints": "^0.2.2",
         "content-type": "^1.0.4",
+        "framer-motion": "^6",
         "mysql2": "^2.3.3",
         "next": "12.1.5",
         "react": "18.0.0",
