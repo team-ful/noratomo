@@ -18,6 +18,7 @@ export interface Config {
 
   cateiruSSOEndpoint: URL;
   cateiruSSOTokenEndpoint: URL;
+  cateiruSSOPublicKeyEndpoint: URL;
   cateiruSSOClientId: string;
   cateiruSSOClientSecret: string;
 

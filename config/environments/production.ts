@@ -14,6 +14,7 @@ const config: Config = {
   googleOauthClientSecret: '',
   cateiruSSOEndpoint: new URL(''),
   cateiruSSOTokenEndpoint: new URL(''),
+  cateiruSSOPublicKeyEndpoint: new URL(''),
   cateiruSSOClientSecret: '',
   cateiruSSOClientId: '',
 
