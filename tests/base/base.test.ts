@@ -1,3 +1,4 @@
+import {URL} from 'url';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
 import Base, {Device} from '../../src/base/base';
@@ -353,6 +354,79 @@ describe('sendJson', () => {
 
         expect(res.status).toBe(200);
         expect(await res.json()).toEqual(data);
+      },
+    });
+  });
+});
+
+describe('checkReferer', () => {
+  const url = new URL('https://example.com');
+
+  test('同じrefererのときはtrueが返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      expect(base.checkReferer(url)).toBe(true);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {referer: url.toString()};
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+
+        console.log(res.headers);
+
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('refererがからの場合は400が返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.checkReferer(url);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+
+        console.log(res.headers);
+
+        expect(res.status).toBe(400);
+      },
+    });
+  });
+
+  test('refererがURLでパースできない場合は400が返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.checkReferer(url);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {referer: url.hostname};
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+
+        console.log(res.headers);
+
+        expect(res.status).toBe(400);
       },
     });
   });

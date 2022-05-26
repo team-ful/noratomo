@@ -1,4 +1,5 @@
 import {ParsedUrlQuery} from 'querystring';
+import {URL} from 'url';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import mysql from 'mysql2/promise';
@@ -231,6 +232,28 @@ class Base<T> {
    */
   public sendJson<T extends Object>(body: T) {
     this.res.json(body);
+  }
+
+  /**
+   * 引数のURLとRefererのホストが同じかどうかを判定する
+   *
+   * @param {URL} url - 対象のURL
+   * @returns {boolean} 同じ場合、true。違う場合はfalse
+   */
+  public checkReferer(url: URL): boolean {
+    const referer = this.req.headers['referer'];
+
+    if (typeof referer === 'undefined') {
+      throw new ApiError(400, 'no referer');
+    }
+    let refererURL: URL;
+    try {
+      refererURL = new URL(referer);
+    } catch (e) {
+      throw new ApiError(400, 'no parse referer url');
+    }
+
+    return refererURL.hostname === url.hostname;
   }
 }
 
