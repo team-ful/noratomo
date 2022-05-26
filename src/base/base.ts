@@ -244,8 +244,9 @@ class Base<T> {
     const referer = this.req.headers['referer'];
 
     if (typeof referer === 'undefined') {
-      throw new ApiError(400, 'no referer');
+      return false;
     }
+
     let refererURL: URL;
     try {
       refererURL = new URL(referer);

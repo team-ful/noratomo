@@ -386,11 +386,35 @@ describe('checkReferer', () => {
     });
   });
 
-  test('refererがからの場合は400が返る', async () => {
+  test('違うrefererのときはfalseが返る', async () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      base.checkReferer(url);
+      expect(base.checkReferer(new URL('https://example.test'))).toBe(false);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {referer: url.toString()};
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+
+        console.log(res.headers);
+
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('refererがからの場合はfalse', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      expect(base.checkReferer(url)).toBe(false);
     };
 
     const h = handlerWrapper(handler);
@@ -402,7 +426,7 @@ describe('checkReferer', () => {
 
         console.log(res.headers);
 
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(200);
       },
     });
   });
