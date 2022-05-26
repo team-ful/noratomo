@@ -3,9 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "ENVIRONMENT=local next dev",
         "build": "next build",
-        "start": "next start",
+        "start": "ENVIRONMENT=production next start",
         "lint": "gts lint",
         "clean": "gts clean",
         "compile": "tsc",
