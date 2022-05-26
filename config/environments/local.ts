@@ -6,10 +6,10 @@ const config: Config = {
 
   host: new URL('http://localhost:3000'),
 
-  twitterOauthEndpoint: new URL(''),
+  twitterOauthEndpoint: new URL('http://localhost:3000'),
   twitterOauthClientId: '',
   twitterOauthClientSecret: '',
-  googleOauthEndpoint: new URL(''),
+  googleOauthEndpoint: new URL('http://localhost:3000'),
   googleOauthClientId: '',
   googleOauthClientSecret: '',
   // テスト用であるため公開している
