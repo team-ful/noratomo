@@ -1,5 +1,4 @@
 import {ApiError} from 'next/dist/server/api-utils';
-import config from '../../../../config';
 import Base from '../../../../src/base/base';
 import {handlerWrapper} from '../../../../src/base/handlerWrapper';
 import {JWT} from '../../../../src/oauth/cateirusso/jwt';
@@ -10,9 +9,12 @@ import {JWT} from '../../../../src/oauth/cateirusso/jwt';
  * @param {Base<void>} base base
  */
 async function handler(base: Base<void>) {
-  if (!base.checkReferer(config.cateiruSSOEndpoint)) {
-    throw new ApiError(400, 'Illegal referer');
-  }
+  // refererを見たいが、 https->httpへのrefererは Referrer Policy によりブロックされる
+  // ため、この機能は見送る（もしどうしても実装したい場合、ローカル環境をオレオレ証明書でhttpsにする必要がある）
+  //
+  // if (!base.checkReferer(config.cateiruSSOEndpoint)) {
+  //   throw new ApiError(400, 'Illegal referer');
+  // }
 
   const code = base.getQuery('code');
   if (typeof code === 'undefined') {
