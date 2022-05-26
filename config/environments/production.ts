@@ -6,10 +6,15 @@ const config: Config = {
 
   host: new URL('http://localhost:3000'),
 
+  twitterOauthEndpoint: '',
   twitterOauthClientId: '',
   twitterOauthClientSecret: '',
+  googleOauthEndpoint: '',
   googleOauthClientId: '',
-  googleOauthClientSecrete: '',
+  googleOauthClientSecret: '',
+  cateiruSSOEndpoint: '',
+  cateiruSSOClientSecret: '',
+  cateiruSSOClientId: '',
 
   db: {
     // TODO: 変える

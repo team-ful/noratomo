@@ -6,10 +6,17 @@ const config: Config = {
 
   host: new URL('http://localhost:3000'),
 
+  twitterOauthEndpoint: '',
   twitterOauthClientId: '',
   twitterOauthClientSecret: '',
+  googleOauthEndpoint: '',
   googleOauthClientId: '',
-  googleOauthClientSecrete: '',
+  googleOauthClientSecret: '',
+  // テスト用であるため公開している
+  cateiruSSOEndpoint: 'https://sso.cateiru.com/sso/login',
+  cateiruSSOClientId: '51757e0429fbc3ff1788770ee0d95d',
+  cateiruSSOClientSecret:
+    '0910c801ca06504e3d5d8db5b8adf81c123a40863e6749ac468e8b9f980024b0',
 
   db: {
     host: '127.0.0.1',
