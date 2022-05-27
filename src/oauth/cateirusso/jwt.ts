@@ -1,7 +1,6 @@
 import {URL} from 'url';
 import {JwtPayload, verify, VerifyOptions} from 'jsonwebtoken';
 import {ApiError} from 'next/dist/server/api-utils';
-import fetch from 'node-fetch';
 import config from '../../../config';
 
 export interface TokenResponse {
