@@ -16,12 +16,19 @@
         "test": "jest"
     },
     "dependencies": {
+        "@chakra-ui/react": "^2.1.2",
+        "@emotion/react": "^11",
+        "@emotion/styled": "^11",
         "client-hints": "^0.2.2",
         "content-type": "^1.0.4",
+        "framer-motion": "^6",
         "mysql2": "^2.3.3",
         "next": "12.1.5",
+        "nprogress": "^0.2.0",
         "react": "18.0.0",
         "react-dom": "18.0.0",
+        "react-icons": "^4.3.1",
+        "recoil": "^0.7.3-alpha.2",
         "ua-parser-js": "^1.0.2",
         "uuid": "^8.3.2"
     },
@@ -32,6 +39,7 @@
         "@types/content-type": "^1.1.5",
         "@types/jest": "^27.5.0",
         "@types/node": "^14.11.2",
+        "@types/nprogress": "^0.2.0",
         "@types/react": "18.0.6",
         "@types/react-dom": "18.0.2",
         "@types/ua-parser-js": "^0.7.36",

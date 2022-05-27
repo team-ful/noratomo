@@ -1,8 +1,33 @@
-import '../styles/globals.css';
+import {ChakraProvider} from '@chakra-ui/react';
 import type {AppProps} from 'next/app';
+import Router from 'next/router';
+import nprogress from 'nprogress';
+import {RecoilRoot} from 'recoil';
 
-const MyApp = ({Component, pageProps}: AppProps) => (
-  <Component {...pageProps} />
-);
+import 'nprogress/nprogress.css';
+
+nprogress.configure({showSpinner: false, speed: 400, minimum: 0.25});
+
+const MyApp = ({Component, pageProps}: AppProps) => {
+  Router.events.on('routeChangeStart', () => {
+    nprogress.start();
+  });
+
+  Router.events.on('routeChangeComplete', () => {
+    nprogress.done();
+  });
+
+  Router.events.on('routeChangeError', () => {
+    nprogress.done();
+  });
+
+  return (
+    <RecoilRoot>
+      <ChakraProvider>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </RecoilRoot>
+  );
+};
 
 export default MyApp;
