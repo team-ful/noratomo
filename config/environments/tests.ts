@@ -24,7 +24,7 @@ const config: Config = {
     host: '127.0.0.1',
     user: 'docker',
     password: 'docker',
-    database: 'noratomo',
+    database: 'test',
   },
 };
 

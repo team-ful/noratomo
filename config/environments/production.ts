@@ -19,8 +19,7 @@ const config: Config = {
   cateiruSSOClientId: '',
 
   db: {
-    // TODO: 変える
-    host: '127.0.0.1',
+    host: 'db',
     user: 'docker',
     password: 'docker',
     database: 'noratomo',
