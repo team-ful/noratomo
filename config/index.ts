@@ -3,10 +3,10 @@ import productionConfig from './environments/production';
 import testConfig from './environments/tests';
 
 const config = () => {
-  const environment = process.env.ENVIRONMENT;
+  const environment = process.env.NODE_ENV;
 
   switch (environment) {
-    case 'local':
+    case 'development':
       return localConfig;
     case 'production':
       return productionConfig;
