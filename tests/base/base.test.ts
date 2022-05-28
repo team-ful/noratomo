@@ -17,7 +17,6 @@ describe('getQuery', () => {
       test: async ({fetch}) => {
         const res = await fetch();
         expect(res.status).toBe(200);
-        res.status.end;
       },
     });
   });
