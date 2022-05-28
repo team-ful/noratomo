@@ -1,20 +1,11 @@
 version: '3'
 
 services:
-  # MY
-  db:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: noratomo
-      MYSQL_USER: docker
-      MYSQL_PASSWORD: docker
-      TZ: 'Asia/Tokyo'
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - ./db/data:/var/lib/mysql
-      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./db/sql:/docker-entrypoint-initdb.d
+  # Next.js
+  next:
+    build: .
+    container_name: next
     ports:
-      - 3306:3306
+      - 3000:3000
+    environment:
+      NODE_ENV: production
