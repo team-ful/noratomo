@@ -73,6 +73,7 @@ export class JWT {
     });
 
     if (req.status !== 200) {
+      console.log(await req.text());
       throw new ApiError(400, 'no connected cateirusso token endpoint');
     }
 
@@ -106,6 +107,7 @@ export class JWT {
     const resp = await fetch(config.cateiruSSOPublicKeyEndpoint.toString());
 
     if (resp.status !== 200) {
+      console.log(await resp.text());
       throw new ApiError(
         400,
         'no connected cateirusso JWT Public key endpoint'
