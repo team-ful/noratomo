@@ -1,4 +1,7 @@
+import type {Connection} from 'mysql2/promise';
+import {getCertByUserID} from '../services/cert';
 import {gender, Gender} from './common';
+import type Cert from './cret';
 
 export interface UserModel {
   // ユーザを識別するID
@@ -14,7 +17,7 @@ export interface UserModel {
   mail: string;
 
   // プロフィール
-  profile: string | null;
+  profile?: string;
 
   // ユーザ名
   // Twitterのidと同じ立ち位置
@@ -28,13 +31,13 @@ export interface UserModel {
   gender: Gender;
 
   // Banされているかどうか
-  is_ban: boolean | null;
+  is_ban?: boolean;
 
   // ペナルティを食らっているかどうか
-  is_penalty: boolean | null;
+  is_penalty?: boolean;
 
   // 管理者ユーザかどうか
-  is_admin: boolean | null;
+  is_admin?: boolean;
 
   // アカウントを作成した日時
   join_date: Date;
@@ -50,50 +53,45 @@ class User implements UserModel {
   readonly id: number;
   readonly display_name: string;
   readonly mail: string;
-  readonly profile: string | null;
+  readonly profile?: string;
   readonly user_name: string;
   readonly age: number;
   readonly gender: Gender;
-  readonly is_ban: boolean | null;
-  readonly is_penalty: boolean | null;
-  readonly is_admin: boolean | null;
+  readonly is_ban?: boolean;
+  readonly is_penalty?: boolean;
+  readonly is_admin?: boolean;
   readonly join_date: Date;
   readonly avatar_url: string;
 
-  constructor(init: Partial<User>) {
+  private cert?: Cert;
+
+  constructor(init: UserModel) {
     // is_ban
-    let isBan: boolean | null = null;
-    if (init.is_ban !== null) {
-      isBan = Boolean(init.is_ban);
+    if (typeof init.is_ban !== 'undefined') {
+      this.is_ban = Boolean(init.is_ban);
     }
 
     // is_penalty
-    let isPenalty: boolean | null = null;
-    if (init.is_penalty !== null) {
-      isPenalty = Boolean(init.is_penalty);
+    if (typeof init.is_penalty !== 'undefined') {
+      this.is_penalty = Boolean(init.is_penalty);
     }
 
     // is_admin
-    let isAdmin: boolean | null = null;
-    if (init.is_admin !== null) {
-      isAdmin = Boolean(init.is_admin);
+    if (typeof init.is_admin !== 'undefined') {
+      this.is_admin = Boolean(init.is_admin);
     }
 
-    this.id = init.id || NaN;
-    this.display_name = init.display_name || '';
-    this.mail = init.mail || '';
-    this.profile = init.profile || null;
-    this.user_name = init.user_name || '';
-    this.age = init.age || NaN;
+    this.id = init.id as Required<number>;
+    this.display_name = init.display_name;
+    this.mail = init.mail;
+    this.profile = init.profile;
+    this.user_name = init.user_name;
+    this.age = init.age;
 
     this.gender = gender(init.gender as number);
 
-    this.is_ban = isBan;
-    this.is_penalty = isPenalty;
-    this.is_admin = isAdmin;
-
-    this.join_date = new Date(init.join_date || '');
-    this.avatar_url = init.avatar_url || '';
+    this.join_date = new Date(init.join_date);
+    this.avatar_url = init.avatar_url;
   }
 
   /**
@@ -118,6 +116,22 @@ class User implements UserModel {
       Date.parse(this.join_date.toISOString());
 
     return diff > 0;
+  }
+
+  /**
+   * ユーザのcertを返す
+   *
+   * @param {Connection} db - database
+   * @returns {Cert} - cert
+   */
+  public async getCert(db: Connection): Promise<Cert> {
+    if (this.cert) {
+      return this.cert;
+    }
+
+    const cert = await getCertByUserID(db, this.id);
+    this.cert = cert;
+    return cert;
   }
 }
 

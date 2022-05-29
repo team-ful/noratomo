@@ -13,7 +13,7 @@ export async function getUserByUserID(
   id: number
 ): Promise<User> {
   const [rows] = await db.query<RowDataPacket[]>(
-    'SELECT * FROM user WHERE id = ?',
+    "SELECT * FROM user WHERE id = '?' LIMIT 1",
     [id]
   );
 
@@ -21,7 +21,7 @@ export async function getUserByUserID(
     throw new Error('not found');
   }
 
-  return new User(rows[0] as Partial<User>);
+  return new User(rows[0] as UserModel);
 }
 
 /**
@@ -67,4 +67,28 @@ export async function createUser(
   user.id = rows.insertId;
 
   return new User(user);
+}
+
+/**
+ * CateiruSSOでログインしている場合、そのユーザを取得する
+ *
+ * @param {Connection | Pool} db - db
+ * @param {string} id - cateirusso userid
+ */
+export async function getUserByCateiruSSO(
+  db: Connection | Pool,
+  id: string
+): Promise<User | null> {
+  const [row] = await db.query<RowDataPacket[]>(
+    `SELECT * FROM user WHERE user.id = (
+    SELECT 'user_id' FROM cert WHERE cert.cateiru_sso_id = '?' LIMIT 1
+  ) LIMIT 1`,
+    [id]
+  );
+
+  if (row.length === 0) {
+    return null;
+  }
+
+  return new User(row[0] as UserModel);
 }
