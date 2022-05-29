@@ -17,6 +17,7 @@ describe('is', () => {
     const first = new User(user1);
     const second = new User(user3);
 
+    expect(first.id).toBe(second.id);
     expect(first.is(second)).toBe(true);
   });
 

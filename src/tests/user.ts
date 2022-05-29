@@ -1,6 +1,5 @@
-import {Connection, ResultSetHeader} from 'mysql2/promise';
 import {v4} from 'uuid';
-import User, {UserModel} from '../models/user';
+import {UserModel} from '../models/user';
 
 /**
  * 参加日時を作成する
@@ -24,7 +23,7 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
   const joinDate = createJoinDate(new Date(Date.now()));
 
   const newUser: UserModel = {
-    id: option?.id || Math.floor(Math.random() * 100), // 上書きされる
+    id: option?.id || Math.floor(Math.random() * 1000000), // 上書きされる
     display_name: option?.display_name || v4().slice(0, 10),
     mail: option?.mail || `${v4().slice(0, 10)}@example.com`,
     profile: option?.profile || v4(),
@@ -39,51 +38,4 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
   };
 
   return newUser;
-}
-
-/**
- * テスト用のダミーユーザを作成する
- *
- * @param {Connection} db - database
- * @param {Partial<UserModel>} option - カスタムしたユーザー
- * @returns {Promise<number>} id
- */
-export async function createUser(
-  db: Connection,
-  option?: Partial<UserModel>
-): Promise<User> {
-  const newUser = createUserModel(option);
-
-  const [rows] = await db.query<ResultSetHeader>(
-    `INSERT INTO user (
-    display_name,
-    mail,
-    profile,
-    user_name,
-    age,
-    gender,
-    is_ban,
-    is_penalty,
-    is_admin,
-    join_date,
-    avatar_url
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      newUser.display_name,
-      newUser.mail,
-      newUser.profile,
-      newUser.user_name,
-      newUser.age,
-      newUser.gender,
-      newUser.is_ban,
-      newUser.is_penalty,
-      newUser.is_admin,
-      newUser.join_date, // 通常now()を使用して日時を設定するがテスト用で時間を合わせたいためjs側から入れる
-      newUser.avatar_url,
-    ]
-  );
-
-  newUser.id = rows.insertId;
-
-  return new User(newUser);
 }
