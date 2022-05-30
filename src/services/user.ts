@@ -1,5 +1,6 @@
 import {ResultSetHeader} from 'mysql2/promise';
 import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
+import {Gender} from '../models/common';
 import User, {UserModel} from '../models/user';
 
 /**
@@ -26,12 +27,13 @@ export async function findUserByUserID(
 
 /**
  * ユーザを作成する
+ * WARN: 主にテストで使用する
  *
  * @param {Connection} db - database
  * @param {UserModel} user - 追加するユーザ
  * @returns {Promise<User>} id
  */
-export async function createUser(
+export async function createTestUser(
   db: Connection,
   user: UserModel
 ): Promise<User> {
@@ -70,6 +72,43 @@ export async function createUser(
 }
 
 /**
+ * Cateiru SSO用のユーザ作成
+ *
+ * @param {Connection} db - database
+ * @param {string} displayName - 表示名
+ * @param {string} mail - メールアドレス
+ * @param {string} userName - ユーザ名
+ * @param {string} gender - 性別
+ * @param {string} isAdmin - 管理者かどうか
+ * @param {string} avatarURL - アバターのURL
+ * @returns {Promise<number>} user id
+ */
+export async function createUserSSO(
+  db: Connection,
+  displayName: string,
+  mail: string,
+  userName: string,
+  gender: Gender,
+  isAdmin: boolean,
+  avatarURL: string
+): Promise<number> {
+  const [rows] = await db.query<ResultSetHeader>(
+    `INSERT INTO user (
+    display_name,
+    mail,
+    user_name,
+    gender,
+    is_admin,
+    avatar_url,
+    join_date
+  ) VALUES (?, ?, ?, ?, ?, ?, now())`,
+    [displayName, mail, userName, gender, isAdmin, avatarURL]
+  );
+
+  return rows.insertId;
+}
+
+/**
  * CateiruSSOでログインしている場合、そのユーザを取得する
  *
  * @param {Connection | Pool} db - db
@@ -81,10 +120,12 @@ export async function findUserByCateiruSSO(
 ): Promise<User | null> {
   const [row] = await db.query<RowDataPacket[]>(
     `SELECT * FROM user WHERE user.id = (
-    SELECT 'user_id' FROM cert WHERE cert.cateiru_sso_id = '?' LIMIT 1
+    SELECT user_id FROM cert WHERE cert.cateiru_sso_id = ? LIMIT 1
   ) LIMIT 1`,
     [id]
   );
+
+  console.log(row);
 
   if (row.length === 0) {
     return null;
