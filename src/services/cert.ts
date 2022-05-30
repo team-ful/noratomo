@@ -34,7 +34,7 @@ export async function setCert(db: Connection, cert: CertModel) {
       user_id,
       password,
       cateiru_sso_id
-    ) VALUES (?, ?)`,
+    ) VALUES (?, ?, ?)`,
       [cert.user_id, cert.password, cert.cateiru_sso_id]
     );
   }
