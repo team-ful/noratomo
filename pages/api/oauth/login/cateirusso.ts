@@ -1,6 +1,9 @@
+import mysql from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
+import config from '../../../../config';
 import Base from '../../../../src/base/base';
 import {handlerWrapper} from '../../../../src/base/handlerWrapper';
+import {CreateAccountBySSO} from '../../../../src/createAccount';
 import {JWT} from '../../../../src/oauth/cateirusso/jwt';
 
 /**
@@ -24,8 +27,13 @@ async function handler(base: Base<void>) {
 
   const data = await jwt.parse();
 
-  // TODO
-  console.log(data);
+  const db = await mysql.createConnection(config.db);
+  const ca = new CreateAccountBySSO(db, data);
+
+  const user = await ca.login();
+
+  // TODO: session情報保存してcookieに入れる
+  console.log(JSON.stringify(user));
 }
 
 export default handlerWrapper(handler);
