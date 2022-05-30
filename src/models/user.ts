@@ -1,7 +1,4 @@
-import type {Connection} from 'mysql2/promise';
-import {getCertByUserID} from '../services/cert';
 import {gender, Gender} from './common';
-import type Cert from './cret';
 
 export interface UserModel {
   // ユーザを識別するID
@@ -63,8 +60,6 @@ class User implements UserModel {
   readonly join_date: Date;
   readonly avatar_url: string | null;
 
-  private cert?: Cert;
-
   constructor(init: UserModel) {
     this.is_ban = Boolean(init.is_ban);
     this.is_penalty = Boolean(init.is_penalty);
@@ -105,22 +100,6 @@ class User implements UserModel {
       Date.parse(this.join_date.toISOString());
 
     return diff > 0;
-  }
-
-  /**
-   * ユーザのcertを返す
-   *
-   * @param {Connection} db - database
-   * @returns {Cert} - cert
-   */
-  public async getCert(db: Connection): Promise<Cert> {
-    if (this.cert) {
-      return this.cert;
-    }
-
-    const cert = await getCertByUserID(db, this.id);
-    this.cert = cert;
-    return cert;
   }
 }
 

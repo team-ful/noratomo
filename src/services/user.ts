@@ -8,7 +8,7 @@ import User, {UserModel} from '../models/user';
  * @param {Connection | Pool} db - database
  * @param {number} id - User ID
  */
-export async function getUserByUserID(
+export async function findUserByUserID(
   db: Connection | Pool,
   id: number
 ): Promise<User> {
@@ -75,7 +75,7 @@ export async function createUser(
  * @param {Connection | Pool} db - db
  * @param {string} id - cateirusso userid
  */
-export async function getUserByCateiruSSO(
+export async function findUserByCateiruSSO(
   db: Connection | Pool,
   id: string
 ): Promise<User | null> {

@@ -6,9 +6,9 @@ import Cert, {CertModel} from '../models/cret';
  * Certを作成する
  *
  * @param {Connection} db - database
- * @param {Cert} cert - cert
+ * @param {CertModel} cert - cert
  */
-export async function setCert(db: Connection, cert: Cert) {
+export async function setCert(db: Connection, cert: CertModel) {
   if (cert.password) {
     await db.query(
       `
@@ -47,7 +47,7 @@ export async function setCert(db: Connection, cert: Cert) {
  * @param {number} userId - User ID
  * @returns {Cert} - cert object.
  */
-export async function getCertByUserID(
+export async function findCertByUserID(
   db: Connection,
   userId: number
 ): Promise<Cert> {

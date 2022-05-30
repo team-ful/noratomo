@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import config from '../../config';
-import {getUserByUserID, createUser} from '../../src/services/user';
+import {findUserByUserID, createUser} from '../../src/services/user';
 import {createUserModel} from '../../src/tests/user';
 
 describe('getUser', () => {
@@ -18,14 +18,14 @@ describe('getUser', () => {
   test('byUserID', async () => {
     const dummy = await createUser(connection, createUserModel());
 
-    const user = await getUserByUserID(connection, dummy.id);
+    const user = await findUserByUserID(connection, dummy.id);
 
     expect(user).toEqual(dummy);
   }, 10000);
 
   test('byUserIdで存在しないidはエラーが帰る', async () => {
     expect(async () => {
-      await getUserByUserID(connection, 123451234512345);
+      await findUserByUserID(connection, 123451234512345);
     }).rejects.toThrowError('not found');
   });
 
@@ -51,7 +51,7 @@ describe('createUser', () => {
 
     expect(user.display_name).toBe(userModel.display_name);
 
-    const dbUser = await getUserByUserID(connection, user.id);
+    const dbUser = await findUserByUserID(connection, user.id);
 
     expect(dbUser).toEqual(user);
   });
