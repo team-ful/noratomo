@@ -8,7 +8,7 @@ import {CertModel} from '../models/cret';
  * @returns {CertModel} cert
  */
 export const createCertModel = (options?: Partial<CertModel>): CertModel => ({
-  user_id: options?.user_id || randomInt(32),
+  user_id: options?.user_id || randomInt(1000000),
   cateiru_sso_id: options?.cateiru_sso_id || null,
   password: options?.password || null,
 });
