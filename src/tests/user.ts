@@ -1,6 +1,4 @@
 import {randomBytes, randomInt} from 'crypto';
-import {v4} from 'uuid';
-import {CertModel} from '../models/cret';
 import {UserModel} from '../models/user';
 
 /**
