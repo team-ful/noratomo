@@ -1,5 +1,10 @@
 import {randomBytes, randomInt} from 'crypto';
-import {UserModel} from '../models/user';
+import {Connection} from 'mysql2/promise';
+import {CertModel} from '../models/cret';
+import User, {UserModel} from '../models/user';
+import {setCert} from '../services/cert';
+import {createTestUser} from '../services/user';
+import {createCertModel} from './cert';
 
 /**
  * 参加日時を作成する
@@ -41,17 +46,45 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
 }
 
 export class TestUser {
-  readonly userModel: UserModel;
+  private userModel: UserModel;
+  public user?: User;
 
-  private password?: string;
-  private cateiruSSO?: string;
+  private certModel?: CertModel;
 
   constructor(options?: Partial<UserModel>) {
     this.userModel = createUserModel(options);
   }
 
-  public setPassword(pw: string) {
-    // TODO
-    this.password = pw;
+  public async create(db: Connection) {
+    this.user = await createTestUser(db, this.userModel);
+  }
+
+  public async loginFromCateiruSSO(db: Connection) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
+
+    this.certModel = createCertModel({
+      user_id: this.user?.id,
+      cateiru_sso_id: randomBytes(32).toString('hex'),
+    });
+
+    await setCert(db, this.certModel);
+  }
+
+  get cateiruSSOId() {
+    if (typeof this.certModel === 'undefined') {
+      throw new Error('not login');
+    }
+
+    return this.certModel?.cateiru_sso_id;
+  }
+
+  get password() {
+    if (typeof this.certModel === 'undefined') {
+      throw new Error('not login');
+    }
+
+    return this.certModel?.password;
   }
 }
