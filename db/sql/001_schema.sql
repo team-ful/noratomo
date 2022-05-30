@@ -2,17 +2,17 @@
 
 CREATE TABLE IF NOT EXISTS `user` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `display_name` VARCHAR(20) NOT NULL,
+    `display_name` VARCHAR(20),
     `mail` VARCHAR(254) NOT NULL,
     `profile` TEXT,
     `user_name` VARCHAR(64) UNIQUE NOT NULL,
-    `age` INT(3) NOT NULL,
+    `age` INT(3) UNSIGNED,
     `gender` INT(1) NOT NULL,
-    `is_ban` BOOLEAN,
-    `is_penalty` BOOLEAN,
-    `is_admin` BOOLEAN,
+    `is_ban` BOOLEAN DEFAULT 0,
+    `is_penalty` BOOLEAN DEFAULT 0,
+    `is_admin` BOOLEAN DEFAULT 0,
     `join_date` TIMESTAMP NOT NULL,
-    `avatar_url` TEXT NOT NULL,
+    `avatar_url` TEXT,
     PRIMARY KEY (`id`)
 );
 

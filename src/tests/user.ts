@@ -24,18 +24,34 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
 
   const newUser: UserModel = {
     id: option?.id || Math.floor(Math.random() * 1000000), // 上書きされる
-    display_name: option?.display_name || v4().slice(0, 10),
+    display_name: option?.display_name || null,
     mail: option?.mail || `${v4().slice(0, 10)}@example.com`,
-    profile: option?.profile || v4(),
+    profile: option?.profile || null,
     user_name: option?.user_name || v4(),
-    age: option?.age || Math.floor(Math.random() * 100),
+    age: option?.age || null,
     gender: option?.gender || 1,
-    is_ban: option?.is_ban || false,
-    is_penalty: option?.is_penalty || false,
-    is_admin: option?.is_admin || false,
+    is_ban: option?.is_ban || null,
+    is_penalty: option?.is_penalty || null,
+    is_admin: option?.is_admin || null,
     join_date: option?.join_date || joinDate,
-    avatar_url: option?.avatar_url || `https://example.com/${v4()}`,
+    avatar_url: option?.avatar_url || null,
   };
 
   return newUser;
+}
+
+export class TestUser {
+  readonly userModel: UserModel;
+
+  private password?: string;
+  private cateiruSSO?: string;
+
+  constructor(options?: Partial<UserModel>) {
+    this.userModel = createUserModel(options);
+  }
+
+  public setPassword(pw: string) {
+    // TODO
+    this.password = pw;
+  }
 }

@@ -11,13 +11,13 @@ export interface UserModel {
 
   // 表示名
   // 自由に付与することができる
-  display_name: string;
+  display_name: string | null;
 
   // メールアドレス
   mail: string;
 
   // プロフィール
-  profile?: string;
+  profile: string | null;
 
   // ユーザ名
   // Twitterのidと同じ立ち位置
@@ -25,25 +25,25 @@ export interface UserModel {
   user_name: string;
 
   // 年齢
-  age: number;
+  age: number | null;
 
   // 性別
   gender: Gender;
 
   // Banされているかどうか
-  is_ban?: boolean;
+  is_ban: boolean | null;
 
   // ペナルティを食らっているかどうか
-  is_penalty?: boolean;
+  is_penalty: boolean | null;
 
   // 管理者ユーザかどうか
-  is_admin?: boolean;
+  is_admin: boolean | null;
 
   // アカウントを作成した日時
   join_date: Date;
 
   // アバターURL
-  avatar_url: string;
+  avatar_url: string | null;
 }
 
 /**
@@ -51,35 +51,24 @@ export interface UserModel {
  */
 class User implements UserModel {
   readonly id: number;
-  readonly display_name: string;
+  readonly display_name: string | null;
   readonly mail: string;
-  readonly profile?: string;
+  readonly profile: string | null;
   readonly user_name: string;
-  readonly age: number;
+  readonly age: number | null;
   readonly gender: Gender;
-  readonly is_ban?: boolean;
-  readonly is_penalty?: boolean;
-  readonly is_admin?: boolean;
+  readonly is_ban: boolean;
+  readonly is_penalty: boolean;
+  readonly is_admin: boolean;
   readonly join_date: Date;
-  readonly avatar_url: string;
+  readonly avatar_url: string | null;
 
   private cert?: Cert;
 
   constructor(init: UserModel) {
-    // is_ban
-    if (typeof init.is_ban !== 'undefined') {
-      this.is_ban = Boolean(init.is_ban);
-    }
-
-    // is_penalty
-    if (typeof init.is_penalty !== 'undefined') {
-      this.is_penalty = Boolean(init.is_penalty);
-    }
-
-    // is_admin
-    if (typeof init.is_admin !== 'undefined') {
-      this.is_admin = Boolean(init.is_admin);
-    }
+    this.is_ban = Boolean(init.is_ban);
+    this.is_penalty = Boolean(init.is_penalty);
+    this.is_admin = Boolean(init.is_admin);
 
     this.id = init.id as Required<number>;
     this.display_name = init.display_name;
