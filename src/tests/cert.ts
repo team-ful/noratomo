@@ -4,7 +4,6 @@ import {CertModel} from '../models/cret';
 /**
  * ダミーのCertオブジェクトを作成する
  *
- * @param {number} userId - ユーザID
  * @param {Partial<CertModel>} options - オプション
  * @returns {CertModel} cert
  */
