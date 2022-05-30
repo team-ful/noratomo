@@ -1,13 +1,13 @@
 export interface CertModel {
   user_id: number;
-  password?: string;
-  cateiru_sso_id?: string;
+  password: string | null;
+  cateiru_sso_id: string | null;
 }
 
 class Cert implements CertModel {
   readonly user_id: number;
-  readonly password?: string;
-  readonly cateiru_sso_id?: string;
+  readonly password: string | null;
+  readonly cateiru_sso_id: string | null;
 
   constructor(init: CertModel) {
     this.user_id = init.user_id;
