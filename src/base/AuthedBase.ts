@@ -1,7 +1,7 @@
 import {Connection, Pool} from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import User from '../models/user';
-import {getUserByUserID} from '../services/user';
+import {findUserByUserID} from '../services/user';
 import Base from './base';
 
 /**
@@ -17,7 +17,7 @@ class AuthedBase<T> extends Base<T> {
   }
 
   public async getUser(db: Connection | Pool): Promise<User> {
-    return await getUserByUserID(db, this.userId);
+    return await findUserByUserID(db, this.userId);
   }
 }
 

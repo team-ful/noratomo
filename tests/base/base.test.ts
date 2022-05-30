@@ -348,9 +348,6 @@ describe('sendJson', () => {
       handler: h,
       test: async ({fetch}) => {
         const res = await fetch();
-
-        console.log(res.headers);
-
         expect(res.status).toBe(200);
         expect(await res.json()).toEqual(data);
       },
@@ -377,9 +374,6 @@ describe('checkReferer', () => {
       },
       test: async ({fetch}) => {
         const res = await fetch();
-
-        console.log(res.headers);
-
         expect(res.status).toBe(200);
       },
     });
@@ -401,9 +395,6 @@ describe('checkReferer', () => {
       },
       test: async ({fetch}) => {
         const res = await fetch();
-
-        console.log(res.headers);
-
         expect(res.status).toBe(200);
       },
     });
@@ -422,9 +413,6 @@ describe('checkReferer', () => {
       handler: h,
       test: async ({fetch}) => {
         const res = await fetch();
-
-        console.log(res.headers);
-
         expect(res.status).toBe(200);
       },
     });
@@ -446,9 +434,6 @@ describe('checkReferer', () => {
       },
       test: async ({fetch}) => {
         const res = await fetch();
-
-        console.log(res.headers);
-
         expect(res.status).toBe(400);
       },
     });
