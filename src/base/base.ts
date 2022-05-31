@@ -38,6 +38,7 @@ class Base<T> {
   private ip: string;
   private userAgent: UserAgent;
   private cookies: string[];
+  private postBody?: ParsedUrlQuery;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     this.req = req;
@@ -99,14 +100,31 @@ class Base<T> {
    * Content-Type: application/x-www-form-urlencoded
    * のデータを取得する
    *
-   * @returns {ParsedUrlQuery} - クエリの値
+   * @param {string} key - key
+   * @returns {string} - クエリの値
    */
-  public getPostForm(): ParsedUrlQuery {
-    if (!this.checkContentType('application/x-www-form-urlencoded')) {
-      throw new ApiError(400, 'no application/x-www-form-urlencoded');
+  public getPostForm(key: string): string {
+    let p: ParsedUrlQuery;
+
+    if (typeof this.postBody === 'undefined') {
+      if (!this.checkContentType('application/x-www-form-urlencoded')) {
+        throw new ApiError(400, 'no application/x-www-form-urlencoded');
+      }
+
+      this.postBody = this.req.body;
+
+      p = this.req.body;
+    } else {
+      p = this.postBody;
     }
 
-    return this.req.body;
+    const value = p[key] || '';
+
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    return value.join('');
   }
 
   /**

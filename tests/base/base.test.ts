@@ -73,8 +73,8 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      const form = base.getPostForm();
-      expect(form['test']).toBe('hoge');
+      const form = base.getPostForm('test');
+      expect(form).toBe('hoge');
     };
 
     const h = handlerWrapper(handler, 'POST');
@@ -99,7 +99,7 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(() => base.getPostForm()).toThrow(
+      expect(() => base.getPostForm('test')).toThrow(
         new ApiError(400, 'no application/x-www-form-urlencoded')
       );
     };
@@ -126,7 +126,7 @@ describe('getPostForm', () => {
 describe('getPostJson', () => {
   const query = {test: 'hoge'};
 
-  test('getPostFormで取得できる', async () => {
+  test('getPostJsonで取得できる', async () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
