@@ -443,7 +443,9 @@ describe('checkReferer', () => {
       },
     });
   });
+});
 
+describe('cookie', () => {
   test('cookieを取得できる', async () => {
     expect.hasAssertions();
 
@@ -468,9 +470,7 @@ describe('checkReferer', () => {
       },
     });
   });
-});
 
-describe('cookie', () => {
   test('cookieがない場合はundefinedが返る', async () => {
     expect.hasAssertions();
 
@@ -509,6 +509,28 @@ describe('cookie', () => {
         const cookie = res.cookies[0]['test'];
 
         expect(cookie).toBe('test-value');
+      },
+    });
+  });
+
+  test('cookieを複数セットできる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.setCookie('test', 'test-value');
+      base.setCookie('test2', 'hogehoge');
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+
+        expect(res.cookies[0]['test']).toBe('test-value');
+        expect(res.cookies[0]['test2']).toBe('hogehoge');
       },
     });
   });

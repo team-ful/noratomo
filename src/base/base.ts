@@ -37,6 +37,7 @@ class Base<T> {
   private contentType: ParsedMediaType;
   private ip: string;
   private userAgent: UserAgent;
+  private cookies: string[];
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     this.req = req;
@@ -45,6 +46,8 @@ class Base<T> {
     this.contentType = parse(this.req.headers['content-type'] || 'text/plain');
     this.ip = this.parseIp();
     this.userAgent = this.parseUA();
+
+    this.cookies = [];
   }
 
   /**
@@ -285,8 +288,14 @@ class Base<T> {
     value: string,
     options?: CookieSerializeOptions
   ) {
-    this.res.setHeader('Set-Cookie', serialize(name, value, options));
+    this.cookies.push(serialize(name, value, options));
+
+    this.res.setHeader('Set-Cookie', this.cookies.join(';'));
   }
+
+  // public clearCookie(name: string, options?: CookieSerializeOptions) {
+  //   this.res;
+  // }
 
   /**
    * Cookieを取得する
