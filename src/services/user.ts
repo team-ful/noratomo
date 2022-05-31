@@ -133,3 +133,29 @@ export async function findUserByCateiruSSO(
 
   return new User(row[0] as UserModel);
 }
+
+/**
+ * Session Tokenからユーザを取得する
+ *
+ * @param {Connection} db - database
+ * @param {string} token - session token
+ */
+export async function findUserBySessionToken(
+  db: Connection,
+  token: string
+): Promise<User> {
+  const [row] = await db.query<RowDataPacket[]>(
+    `
+    SELECT * FROM user
+      WHERE id = (
+        SELECT user_id FROM session
+        WHERE
+          session_token = ? AND
+          period_date <= NOW()
+      )
+  `,
+    [token]
+  );
+
+  return new User(row[0] as UserModel);
+}
