@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 CREATE TABLE IF NOT EXISTS `cert` (
     `user_id` INT UNSIGNED NOT NULL,
-    `password` TEXt,
-    `cateiru_sso_id` TEXt,
+    `password` TEXT,
+    `cateiru_sso_id` TEXT,
     PRIMARY KEY (`user_id`)
 );
 

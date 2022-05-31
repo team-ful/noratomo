@@ -29,7 +29,7 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
     display_name: option?.display_name || null,
     mail: option?.mail || `${randomBytes(32).toString('hex')}@example.com`,
     profile: option?.profile || null,
-    user_name: option?.user_name || randomBytes(32).toString('hex'),
+    user_name: option?.user_name || randomBytes(16).toString('hex'),
     age: option?.age || null,
     gender: option?.gender || 1,
     is_ban: option?.is_ban || null,
