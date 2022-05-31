@@ -362,16 +362,6 @@ describe('sendJson', () => {
 
 describe('checkReferer', () => {
   const url = new URL('https://example.com');
-  let connection: mysql.Connection;
-
-  beforeAll(async () => {
-    connection = await mysql.createConnection(config.db);
-    await connection.connect();
-  });
-
-  afterAll(async () => {
-    await connection.end();
-  });
 
   test('同じrefererのときはtrueが返る', async () => {
     expect.hasAssertions();
@@ -478,7 +468,9 @@ describe('checkReferer', () => {
       },
     });
   });
+});
 
+describe('cookie', () => {
   test('cookieがない場合はundefinedが返る', async () => {
     expect.hasAssertions();
 
@@ -519,6 +511,19 @@ describe('checkReferer', () => {
         expect(cookie).toBe('test-value');
       },
     });
+  });
+});
+
+describe('newLogin', () => {
+  let connection: mysql.Connection;
+
+  beforeAll(async () => {
+    connection = await mysql.createConnection(config.db);
+    await connection.connect();
+  });
+
+  afterAll(async () => {
+    await connection.end();
   });
 
   test('新規でログインするとsession tokenがcookieにセットされる', async () => {
