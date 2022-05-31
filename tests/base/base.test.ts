@@ -1,7 +1,13 @@
+import {URL} from 'url';
+import {serialize} from 'cookie';
+import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
+import config from '../../config';
 import Base, {Device} from '../../src/base/base';
 import {handlerWrapper} from '../../src/base/handlerWrapper';
+import {findUserBySessionToken} from '../../src/services/user';
+import {TestUser} from '../../src/tests/user';
 
 describe('getQuery', () => {
   test('URLクエリパラメータが取得できる', async () => {
@@ -67,11 +73,11 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      const form = base.getPostForm();
-      expect(form['test']).toBe('hoge');
+      const form = base.getPostForm('test');
+      expect(form).toBe('hoge');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -93,12 +99,12 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(() => base.getPostForm()).toThrow(
+      expect(() => base.getPostForm('test')).toThrow(
         new ApiError(400, 'no application/x-www-form-urlencoded')
       );
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -120,7 +126,7 @@ describe('getPostForm', () => {
 describe('getPostJson', () => {
   const query = {test: 'hoge'};
 
-  test('getPostFormで取得できる', async () => {
+  test('getPostJsonで取得できる', async () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
@@ -128,7 +134,7 @@ describe('getPostJson', () => {
       expect(json).toEqual(query);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -155,7 +161,7 @@ describe('getPostJson', () => {
       );
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -183,7 +189,7 @@ describe('checkContentType', () => {
       expect(base.checkContentType('Text/Plain')).toBe(true);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -209,7 +215,7 @@ describe('checkContentType', () => {
       expect(base.checkContentType('text/pl')).toBe(false);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -347,11 +353,312 @@ describe('sendJson', () => {
       handler: h,
       test: async ({fetch}) => {
         const res = await fetch();
-
-        console.log(res.headers);
-
         expect(res.status).toBe(200);
         expect(await res.json()).toEqual(data);
+      },
+    });
+  });
+});
+
+describe('checkReferer', () => {
+  const url = new URL('https://example.com');
+
+  test('同じrefererのときはtrueが返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      expect(base.checkReferer(url)).toBe(true);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {referer: url.toString()};
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('違うrefererのときはfalseが返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      expect(base.checkReferer(new URL('https://example.test'))).toBe(false);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {referer: url.toString()};
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('refererがからの場合はfalse', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      expect(base.checkReferer(url)).toBe(false);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('refererがURLでパースできない場合は400が返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.checkReferer(url);
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {referer: url.hostname};
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(400);
+      },
+    });
+  });
+});
+
+describe('cookie', () => {
+  test('cookieを取得できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      const cookie = base.getCookie('test');
+
+      expect(cookie).toBe('test-value');
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: serialize('test', 'test-value'),
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('cookieがない場合はundefinedが返る', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      const cookie = base.getCookie('test');
+
+      expect(cookie).toBeUndefined();
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('cookieをセットできる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.setCookie('test', 'test-value');
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+
+        const cookie = res.cookies[0]['test'];
+
+        expect(cookie).toBe('test-value');
+      },
+    });
+  });
+
+  test('cookieを複数セットできる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.setCookie('test', 'test-value');
+      base.setCookie('test2', 'hogehoge');
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+
+        expect(res.cookies[0]['test']).toBe('test-value');
+        expect(res.cookies[1]['test2']).toBe('hogehoge');
+      },
+    });
+  });
+
+  test('cookieを削除できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.clearCookie('test');
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: serialize('test', 'test-value'),
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+        expect(res.cookies[0]['test']).toBe('');
+        expect(res.cookies[0]['max-age']).toBe('-1');
+      },
+    });
+  });
+});
+
+describe('newLogin', () => {
+  let connection: mysql.Connection;
+
+  beforeAll(async () => {
+    connection = await mysql.createConnection(config.db);
+    await connection.connect();
+  });
+
+  afterAll(async () => {
+    await connection.end();
+  });
+
+  test('新規でログインするとsession tokenがcookieにセットされる', async () => {
+    expect.hasAssertions();
+
+    let userId = NaN;
+
+    const handler = async (base: Base<void>) => {
+      const user = new TestUser();
+      await user.create(await base.db());
+      await user.addSession(await base.db());
+
+      userId = user.user?.id || NaN;
+
+      if (typeof user.user !== 'undefined') {
+        await base.newLogin(user.user);
+      }
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+
+        const session = res.cookies[0][config.sessionCookieName];
+
+        const user = await findUserBySessionToken(connection, session);
+
+        expect(user?.id).toBe(userId);
+      },
+    });
+  });
+});
+
+describe('checkMethod', () => {
+  test('何も指定しないとGET', async () => {
+    expect.hasAssertions();
+
+    const handler = async () => {
+      null;
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('指定できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async () => {
+      null;
+    };
+
+    const h = handlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('違うメソッドでアクセスするとエラー', async () => {
+    expect.hasAssertions();
+
+    const handler = async () => {
+      null;
+    };
+
+    const h = handlerWrapper(handler, 'POST');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(400);
       },
     });
   });

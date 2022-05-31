@@ -1,11 +1,16 @@
 import {ParsedUrlQuery} from 'querystring';
+import {URL} from 'url';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
+import {serialize, CookieSerializeOptions} from 'cookie';
 import mysql from 'mysql2/promise';
+import {Connection} from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
+import User from '../models/user';
+import {createSession} from '../services/session';
 
 export enum Device {
   Console = 'Console',
@@ -27,9 +32,13 @@ class Base<T> {
   public req: NextApiRequest;
   public res: NextApiResponse;
 
+  private _db?: Connection;
+
   private contentType: ParsedMediaType;
   private ip: string;
   private userAgent: UserAgent;
+  private cookies: string[];
+  private postBody?: ParsedUrlQuery;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     this.req = req;
@@ -38,6 +47,8 @@ class Base<T> {
     this.contentType = parse(this.req.headers['content-type'] || 'text/plain');
     this.ip = this.parseIp();
     this.userAgent = this.parseUA();
+
+    this.cookies = [];
   }
 
   /**
@@ -45,11 +56,21 @@ class Base<T> {
    *
    * @returns {mysql.Connection} DB Connection
    */
-  public async connectionDB() {
+  public async db() {
+    if (typeof this._db !== 'undefined') {
+      return this._db;
+    }
+
     const connection = await mysql.createConnection(config.db);
     await connection.connect();
 
+    this._db = connection;
+
     return connection;
+  }
+
+  public async end() {
+    await this._db?.end();
   }
 
   /**
@@ -79,14 +100,31 @@ class Base<T> {
    * Content-Type: application/x-www-form-urlencoded
    * のデータを取得する
    *
-   * @returns {ParsedUrlQuery} - クエリの値
+   * @param {string} key - key
+   * @returns {string} - クエリの値
    */
-  public getPostForm(): ParsedUrlQuery {
-    if (!this.checkContentType('application/x-www-form-urlencoded')) {
-      throw new ApiError(400, 'no application/x-www-form-urlencoded');
+  public getPostForm(key: string): string {
+    let p: ParsedUrlQuery;
+
+    if (typeof this.postBody === 'undefined') {
+      if (!this.checkContentType('application/x-www-form-urlencoded')) {
+        throw new ApiError(400, 'no application/x-www-form-urlencoded');
+      }
+
+      this.postBody = this.req.body;
+
+      p = this.req.body;
+    } else {
+      p = this.postBody;
     }
 
-    return this.req.body;
+    const value = p[key] || '';
+
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    return value.join('');
   }
 
   /**
@@ -231,6 +269,105 @@ class Base<T> {
    */
   public sendJson<T extends Object>(body: T) {
     this.res.json(body);
+  }
+
+  /**
+   * 引数のURLとRefererのホストが同じかどうかを判定する
+   *
+   * @param {URL} url - 対象のURL
+   * @returns {boolean} 同じ場合、true。違う場合はfalse
+   */
+  public checkReferer(url: URL): boolean {
+    const referer = this.req.headers['referer'];
+
+    if (typeof referer === 'undefined') {
+      return false;
+    }
+
+    let refererURL: URL;
+    try {
+      refererURL = new URL(referer);
+    } catch (e) {
+      throw new ApiError(400, 'no parse referer url');
+    }
+
+    return refererURL.hostname === url.hostname;
+  }
+
+  /**
+   * Cookieを設定する
+   *
+   * @param {string} name - cookie name
+   * @param {string} value - cookie value
+   * @param {CookieSerializeOptions} options - cookie options
+   */
+  public setCookie(
+    name: string,
+    value: string,
+    options?: CookieSerializeOptions
+  ) {
+    this.cookies.push(serialize(name, value, options));
+
+    this.res.setHeader('Set-Cookie', this.cookies);
+  }
+
+  /**
+   * Cookieを削除する
+   *
+   * @param {string} name - cookie name
+   * @param {CookieSerializeOptions} options - cookie options
+   */
+  public clearCookie(name: string, options?: CookieSerializeOptions) {
+    const d = new Date(Date.now());
+    d.setHours(d.getHours() - 1);
+
+    this.cookies.push(
+      serialize(name, '', {
+        ...options,
+        expires: d,
+        maxAge: -1,
+      })
+    );
+
+    this.res.setHeader('Set-Cookie', this.cookies);
+  }
+
+  /**
+   * Cookieを取得する
+   *
+   * @param {string} name - cookie name
+   * @returns {string | undefined} cookie value 存在しない場合はundefined
+   */
+  public getCookie(name: string): string | undefined {
+    return this.req.cookies[name];
+  }
+
+  /**
+   * 新規にログインする
+   *
+   * @param {User} user - user
+   */
+  public async newLogin(user: User) {
+    const session = await createSession(await this.db(), user.id);
+
+    this.setCookie(
+      config.sessionCookieName,
+      session.session_token,
+      config.sessionCookieOptions()
+    );
+  }
+
+  /**
+   * methodを判定する
+   *
+   * @param {string} m - 判定するmethod
+   */
+  public checkMethod(m: string) {
+    const _m = this.req.method;
+
+    if (typeof m !== 'string' || _m?.toLocaleLowerCase() !== m.toLowerCase()) {
+      throw new ApiError(400, 'That HTTP method is not supported');
+    }
   }
 }
 

@@ -1,89 +1,80 @@
-import {Connection, ResultSetHeader} from 'mysql2/promise';
-import {v4} from 'uuid';
+import {randomBytes} from 'crypto';
+import argon2 from 'argon2';
+import {Connection} from 'mysql2/promise';
+import {CertModel} from '../models/cret';
+import {Session} from '../models/session';
 import User, {UserModel} from '../models/user';
+import {setCert} from '../services/cert';
+import {createSession} from '../services/session';
+import {createTestUser} from '../services/user';
+import {createUserModel} from './models';
+import {createCertModel} from './models';
 
-/**
- * 参加日時を作成する
- *
- * @param {Date} d - date
- * @returns {Date} - 参加日時。YYYY-MM-DD HH:MM:SS形式である
- */
-export function createJoinDate(d: Date): Date {
-  d.setMilliseconds(0); // MySQLのDATETIMEはYYYY-MM-DD HH:MM:SSでありmilisecondは含まれない
+export class TestUser {
+  private userModel: UserModel;
+  public user?: User;
 
-  return d;
-}
+  private certModel?: CertModel;
+  public session?: Session;
+  public password?: string;
 
-/**
- * テスト用のダミーUserModelを作成する
- *
- * @param {Partial<UserModel>} option -カスタムするUserModel
- * @returns {UserModel} - 作成されたダミーのUserModelオブジェクト
- */
-export function createUserModel(option?: Partial<UserModel>): UserModel {
-  const joinDate = createJoinDate(new Date(Date.now()));
+  constructor(options?: Partial<UserModel>) {
+    this.userModel = createUserModel(options);
+  }
 
-  const newUser: UserModel = {
-    id: option?.id || Math.floor(Math.random() * 100), // 上書きされる
-    display_name: option?.display_name || v4().slice(0, 10),
-    mail: option?.mail || `${v4().slice(0, 10)}@example.com`,
-    profile: option?.profile || v4(),
-    user_name: option?.user_name || v4(),
-    age: option?.age || Math.floor(Math.random() * 100),
-    gender: option?.gender || 1,
-    is_ban: option?.is_ban || false,
-    is_penalty: option?.is_penalty || false,
-    is_admin: option?.is_admin || false,
-    join_date: option?.join_date || joinDate,
-    avatar_url: option?.avatar_url || `https://example.com/${v4()}`,
-  };
+  public async create(db: Connection) {
+    this.user = await createTestUser(db, this.userModel);
+  }
 
-  return newUser;
-}
+  public async loginFromCateiruSSO(db: Connection) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
 
-/**
- * テスト用のダミーユーザを作成する
- *
- * @param {Connection} db - database
- * @param {Partial<UserModel>} option - カスタムしたユーザー
- * @returns {Promise<number>} id
- */
-export async function createUser(
-  db: Connection,
-  option?: Partial<UserModel>
-): Promise<User> {
-  const newUser = createUserModel(option);
+    this.certModel = createCertModel({
+      user_id: this.user?.id,
+      cateiru_sso_id: randomBytes(32).toString('hex'),
+    });
 
-  const [rows] = await db.query<ResultSetHeader>(
-    `INSERT INTO user (
-    display_name,
-    mail,
-    profile,
-    user_name,
-    age,
-    gender,
-    is_ban,
-    is_penalty,
-    is_admin,
-    join_date,
-    avatar_url
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      newUser.display_name,
-      newUser.mail,
-      newUser.profile,
-      newUser.user_name,
-      newUser.age,
-      newUser.gender,
-      newUser.is_ban,
-      newUser.is_penalty,
-      newUser.is_admin,
-      newUser.join_date, // 通常now()を使用して日時を設定するがテスト用で時間を合わせたいためjs側から入れる
-      newUser.avatar_url,
-    ]
-  );
+    await setCert(db, this.certModel);
+  }
 
-  newUser.id = rows.insertId;
+  public async loginFromPassword(db: Connection) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
 
-  return new User(newUser);
+    this.password = randomBytes(32).toString('hex');
+
+    this.certModel = createCertModel({
+      user_id: this.user?.id,
+      password: await argon2.hash(this.password),
+    });
+
+    await setCert(db, this.certModel);
+  }
+
+  public async addSession(db: Connection) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
+
+    this.session = await createSession(db, this.user.id);
+  }
+
+  get cateiruSSOId() {
+    if (typeof this.certModel === 'undefined') {
+      throw new Error('not login');
+    }
+
+    return this.certModel?.cateiru_sso_id;
+  }
+
+  get ePassword() {
+    if (typeof this.certModel === 'undefined') {
+      throw new Error('not login');
+    }
+
+    return this.certModel?.password;
+  }
 }

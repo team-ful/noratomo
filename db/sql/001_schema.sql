@@ -2,18 +2,27 @@
 
 CREATE TABLE IF NOT EXISTS `user` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `display_name` VARCHAR(20) NOT NULL,
-    `mail` VARCHAR(254) NOT NULL,
+    `display_name` VARCHAR(20),
+    `mail` VARCHAR(254) UNIQUE NOT NULL,
     `profile` TEXT,
     `user_name` VARCHAR(64) UNIQUE NOT NULL,
-    `age` INT(3) NOT NULL,
+    `age` INT(3) UNSIGNED,
     `gender` INT(1) NOT NULL,
-    `is_ban` BOOLEAN,
-    `is_penalty` BOOLEAN,
-    `is_admin` BOOLEAN,
-    `join_date` DATETIME NOT NULL,
-    `avatar_url` TEXT NOT NULL,
+    `is_ban` BOOLEAN DEFAULT 0,
+    `is_penalty` BOOLEAN DEFAULT 0,
+    `is_admin` BOOLEAN DEFAULT 0,
+    `join_date` TIMESTAMP NOT NULL,
+    `avatar_url` TEXT,
     PRIMARY KEY (`id`)
+);
+
+-- ユーザの認証情報
+
+CREATE TABLE IF NOT EXISTS `cert` (
+    `user_id` INT UNSIGNED NOT NULL,
+    `password` TEXT,
+    `cateiru_sso_id` TEXT,
+    PRIMARY KEY (`user_id`)
 );
 
 -- ログイン履歴
@@ -28,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `login_history` (
     `is_tablet` BOOLEAN,
     `is_desktop` BOOLEAN,
     `blowser_name` VARCHAR(256),
-    `login_date` DATETIME NOT NULL,
+    `login_date` TIMESTAMP NOT NULL,
     PRIMARY KEY (`id`)
 );
 
@@ -97,21 +106,10 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
 
 CREATE TABLE IF NOT EXISTS `session` (
     `session_token` VARCHAR(256) UNIQUE NOT NULL,
-    `date` DATETIME NOT NULL,
-    `period_date` DATETIME NOT NULL,
+    `date` TIMESTAMP NOT NULL,
+    `period_date` TIMESTAMP NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`session_token`)
-);
-
--- リフレッシュトークン
-
-CREATE TABLE IF NOT EXISTS `refresh` (
-    `refresh_token` VARCHAR(512) UNIQUE NOT NULL,
-    `session_token` VARCHAR(256) UNIQUE NOT NULL,
-    `date` DATETIME NOT NULL,
-    `period_date` DATETIME NOT NULL,
-    `user_id` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`refresh_token`)
 );
 
 -- 投稿エントリ
@@ -122,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `title` VARCHAR(512) NOT NULL,
     `shop_id` INT UNSIGNED NOT NULL,
     `number_of_people` INT UNSIGNED NOT NULL,
-    `date` DATETIME NOT NULL,
+    `date` TIMESTAMP NOT NULL,
     `body` TEXT,
     `is_closed` BOOLEAN NOT NULL,
     PRIMARY KEY (`id`)
@@ -174,7 +172,36 @@ CREATE TABLE IF NOT EXISTS `application` (
     `user_id` INT UNSIGNED NOT NULL,
     `entry_id` INT UNSIGNED NOT NULL,
     `body` TEXT,
-    `apply_date` DATETIME NOT NULL,
+    `apply_date` TIMESTAMP NOT NULL,
     `is_meeted` BOOLEAN NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+-- Banユーザ
+
+CREATE TABLE IF NOT EXISTS `ban` (
+    `ip_address` INT(10) UNSIGNED NOT NULL,
+    `mail` VARCHAR(254) NOT NULL
+);
+
+-- 野良認証のセッション情報
+
+CREATE TABLE IF NOT EXISTS `nora_session` (
+    `token` INT UNSIGNED NOT NULL,
+    `total_questions` SMALLINT NOT NULL,
+    `current_question` SMALLINT NOT NULL,
+    `score` INT UNSIGNED NOT NULL,
+    `question_ids` TEXT NOT NULL,
+    PRIMARY KEY (`token`)
+);
+
+-- 野良認証の問題
+
+CREATE TABLE IF NOT EXISTS `nora_question` (
+    `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    `question_title` TEXT NOT NULL,
+    `answers` TEXT NOT NULL,
+    `current_answer_index` SMALLINT NOT NULL,
+    `score` INT NOT NULL,
     PRIMARY KEY (`id`)
 );

@@ -1,5 +1,6 @@
 import {URL} from 'url';
 import {ConnectionOptions} from 'mysql2';
+import {CookieSerializeOptions} from 'next/dist/server/web/types';
 
 export interface Config {
   environment: string;
@@ -8,10 +9,16 @@ export interface Config {
   host: URL;
 
   // OAuth関連
-  twitterOauthClientId: string;
-  twitterOauthClientSecret: string;
-  googleOauthClientId: string;
-  googleOauthClientSecrete: string;
+  cateiruSSOEndpoint: URL;
+  cateiruSSOTokenEndpoint: URL;
+  cateiruSSOPublicKeyEndpoint: URL;
+  cateiruSSOClientId: string;
+  cateiruSSOClientSecret: string;
+
+  // session cookie
+  sessionCookieName: string;
+  sessionPeriodDay: number;
+  sessionCookieOptions: () => CookieSerializeOptions;
 
   // DB
   db: ConnectionOptions;

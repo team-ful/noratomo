@@ -1,5 +1,4 @@
-import {RowDataPacket} from 'mysql2';
-import {Gender} from './common';
+import {gender, Gender} from './common';
 
 export interface UserModel {
   // ユーザを識別するID
@@ -9,7 +8,7 @@ export interface UserModel {
 
   // 表示名
   // 自由に付与することができる
-  display_name: string;
+  display_name: string | null;
 
   // メールアドレス
   mail: string;
@@ -23,7 +22,7 @@ export interface UserModel {
   user_name: string;
 
   // 年齢
-  age: number;
+  age: number | null;
 
   // 性別
   gender: Gender;
@@ -41,83 +40,42 @@ export interface UserModel {
   join_date: Date;
 
   // アバターURL
-  avatar_url: string;
-}
-
-/**
- * query叩いて帰ってきたRowデータをUserModelに変更します
- *
- * @param {RowDataPacket} row - DBの結果
- * @returns {UserModel} ユーザモデル
- */
-export function convertUser(row: RowDataPacket): UserModel {
-  // 性別
-  let gender: Gender = Gender.NotNone;
-  if (row.gender) {
-    switch (row.gender) {
-      case 0:
-        gender = Gender.NotNone;
-        break;
-      case 1:
-        gender = Gender.Male;
-        break;
-      case 2:
-        gender = Gender.Female;
-        break;
-      case 3:
-        gender = Gender.NotApplicable;
-        break;
-    }
-  }
-
-  // profile
-  let profile: string | null = null;
-  if (row.profile !== null) {
-    profile = row.profile as string;
-  }
-
-  // is_ban
-  let isBan: boolean | null = null;
-  if (row.is_ban !== null) {
-    isBan = Boolean(row.is_ban);
-  }
-
-  // is_penalty
-  let isPenalty: boolean | null = null;
-  if (row.is_penalty !== null) {
-    isPenalty = Boolean(row.is_penalty);
-  }
-
-  // is_admin
-  let isAdmin: boolean | null = null;
-  if (row.is_admin !== null) {
-    isAdmin = Boolean(row.is_admin);
-  }
-
-  return {
-    id: row.id as number,
-    display_name: row.display_name as string,
-    mail: row.mail as string,
-    profile: profile,
-    user_name: row.user_name as string,
-    age: row.age as number,
-    gender: gender,
-    is_ban: isBan,
-    is_penalty: isPenalty,
-    is_admin: isAdmin,
-    join_date: new Date(row.join_date),
-    avatar_url: row.avatar_url as string,
-  };
+  avatar_url: string | null;
 }
 
 /**
  * ユーザ関連の操作をするクラス
  */
-class User {
-  public user: UserModel;
+class User implements UserModel {
+  readonly id: number;
+  readonly display_name: string | null;
+  readonly mail: string;
+  readonly profile: string | null;
+  readonly user_name: string;
+  readonly age: number | null;
+  readonly gender: Gender;
+  readonly is_ban: boolean;
+  readonly is_penalty: boolean;
+  readonly is_admin: boolean;
+  readonly join_date: Date;
+  readonly avatar_url: string | null;
 
-  constructor(user: UserModel) {
-    this.user = user;
+  constructor(init: UserModel) {
+    this.is_ban = Boolean(init.is_ban);
+    this.is_penalty = Boolean(init.is_penalty);
+    this.is_admin = Boolean(init.is_admin);
+
+    this.id = init.id as Required<number>;
+    this.display_name = init.display_name;
+    this.mail = init.mail;
+    this.profile = init.profile;
+    this.user_name = init.user_name;
+    this.age = init.age;
+
+    this.gender = gender(init.gender as number);
+
+    this.join_date = new Date(init.join_date);
+    this.avatar_url = init.avatar_url;
   }
 
   /**
@@ -127,7 +85,7 @@ class User {
    * @returns {boolean} 同じユーザの場合trueになる
    */
   public is(user: User) {
-    return this.user.id === user.user.id;
+    return this.id === user.id;
   }
 
   /**
@@ -138,8 +96,8 @@ class User {
    */
   public isSeniority(user: User) {
     const diff =
-      Date.parse(user.user.join_date.toISOString()) -
-      Date.parse(this.user.join_date.toISOString());
+      Date.parse(user.join_date.toISOString()) -
+      Date.parse(this.join_date.toISOString());
 
     return diff > 0;
   }

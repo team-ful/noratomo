@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import httpMocks from 'node-mocks-http';
-import AuthedBase from '../../src/base/AuthedBase';
+import AuthedBase from '../../src/base/authedBase';
 import Base from '../../src/base/base';
 import {
   handlerWrapper,
@@ -8,7 +8,7 @@ import {
 } from '../../src/base/handlerWrapper';
 
 jest.mock('../../src/base/base');
-jest.mock('../../src/base/AuthedBase');
+jest.mock('../../src/base/authedBase');
 
 const BaseMock = Base as jest.Mock;
 const AuthedBaseMock = AuthedBase as jest.Mock;

@@ -36,7 +36,8 @@
             {
                 "allowModules": [
                     "next-test-api-route-handler",
-                    "node-mocks-http"
+                    "node-mocks-http",
+                    "fetch-mock-jest"
                 ]
             }
         ]
