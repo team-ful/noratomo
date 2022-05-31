@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS `user` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
     `display_name` VARCHAR(20),
-    `mail` VARCHAR(254) NOT NULL,
+    `mail` VARCHAR(254) UNIQUE NOT NULL,
     `profile` TEXT,
     `user_name` VARCHAR(64) UNIQUE NOT NULL,
     `age` INT(3) UNSIGNED,

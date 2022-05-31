@@ -150,9 +150,65 @@ export async function findUserBySessionToken(
         WHERE
           session_token = ? AND
           period_date >= NOW()
+        LIMIT 1
       )
+      LIMIT 1
   `,
     [token]
+  );
+
+  if (row.length === 0) {
+    return null;
+  }
+
+  return new User(row[0] as UserModel);
+}
+
+/**
+ * メールアドレスからユーザを探す
+ *
+ * @param {Connection} db - database
+ * @param {string} mail - メールアドレス
+ */
+export async function findUserByMail(
+  db: Connection,
+  mail: string
+): Promise<User | null> {
+  const [row] = await db.query<RowDataPacket[]>(
+    `
+  SELECT * FROM user
+    WHERE
+      mail = ?
+    LIMIT 1
+  `,
+    [mail]
+  );
+
+  if (row.length === 0) {
+    return null;
+  }
+
+  return new User(row[0] as UserModel);
+}
+
+/**
+ * ユーザ名からユーザを探す
+ *
+ * @param {Connection} db - database
+ * @param {string} userName - ユーザ名
+ */
+export async function findUserByUserName(
+  db: Connection,
+  userName: string
+): Promise<User | null> {
+  const [row] = await db.query<RowDataPacket[]>(
+    `
+  SELECT * FROM user
+    WHERE
+      user_name = ?
+    LIMIT 1
+  `,
+    [userName]
   );
 
   if (row.length === 0) {
