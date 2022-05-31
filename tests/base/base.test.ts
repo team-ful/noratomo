@@ -77,7 +77,7 @@ describe('getPostForm', () => {
       expect(form['test']).toBe('hoge');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -104,7 +104,7 @@ describe('getPostForm', () => {
       );
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -134,7 +134,7 @@ describe('getPostJson', () => {
       expect(json).toEqual(query);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -161,7 +161,7 @@ describe('getPostJson', () => {
       );
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -189,7 +189,7 @@ describe('checkContentType', () => {
       expect(base.checkContentType('Text/Plain')).toBe(true);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
@@ -215,7 +215,7 @@ describe('checkContentType', () => {
       expect(base.checkContentType('text/pl')).toBe(false);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'POST');
 
     await testApiHandler({
       handler: h,
