@@ -1,6 +1,4 @@
-import mysql from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
-import config from '../../../../config';
 import Base from '../../../../src/base/base';
 import {handlerWrapper} from '../../../../src/base/handlerWrapper';
 import {CreateAccountBySSO} from '../../../../src/createAccount';
@@ -27,8 +25,7 @@ async function handler(base: Base<void>) {
 
   const data = await jwt.parse();
 
-  const db = await mysql.createConnection(config.db);
-  const ca = new CreateAccountBySSO(db, data);
+  const ca = new CreateAccountBySSO(await base.db(), data);
 
   const user = await ca.login();
 

@@ -3,6 +3,7 @@ import {URL} from 'url';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import mysql from 'mysql2/promise';
+import {Connection} from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
@@ -28,6 +29,8 @@ class Base<T> {
   public req: NextApiRequest;
   public res: NextApiResponse;
 
+  private _db?: Connection;
+
   private contentType: ParsedMediaType;
   private ip: string;
   private userAgent: UserAgent;
@@ -46,11 +49,21 @@ class Base<T> {
    *
    * @returns {mysql.Connection} DB Connection
    */
-  public async connectionDB() {
+  public async db() {
+    if (typeof this._db !== 'undefined') {
+      return this._db;
+    }
+
     const connection = await mysql.createConnection(config.db);
     await connection.connect();
 
+    this._db = connection;
+
     return connection;
+  }
+
+  public async end() {
+    await this._db?.end();
   }
 
   /**

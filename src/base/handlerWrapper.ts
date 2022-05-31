@@ -9,6 +9,7 @@ export const handlerWrapper =
 
     await handler(base);
 
+    await base.end();
     res.end();
   };
 
@@ -19,5 +20,6 @@ export const authHandlerWrapper =
 
     await handler(authBase);
 
+    await authBase.end();
     res.end();
   };
