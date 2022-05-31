@@ -3,7 +3,8 @@ import mysql from 'mysql2/promise';
 import config from '../config';
 import {CreateAccountBySSO} from '../src/createAccount';
 import {findUserByUserID} from '../src/services/user';
-import {createUserModel, TestUser} from '../src/tests/user';
+import {createUserModel} from '../src/tests/models';
+import {TestUser} from '../src/tests/user';
 
 describe('cateiruSSO', () => {
   let db: mysql.Connection;

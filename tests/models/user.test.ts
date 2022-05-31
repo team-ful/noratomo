@@ -1,5 +1,5 @@
 import User, {UserModel} from '../../src/models/user';
-import {createJoinDate, createUserModel} from '../../src/tests/user';
+import {createUserModel, dbDate} from '../../src/tests/models';
 
 describe('is', () => {
   let user1: UserModel;
@@ -38,7 +38,7 @@ describe('isSeniority', () => {
     user1 = createUserModel();
 
     // 現在時刻より1000s早い時間にする
-    const joinDate = createJoinDate(new Date(Date.now() - 1000));
+    const joinDate = dbDate(new Date(Date.now() - 1000));
     user2 = createUserModel({join_date: joinDate});
 
     user3 = createUserModel({join_date: user1.join_date});

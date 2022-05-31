@@ -1,4 +1,4 @@
-import {randomBytes, randomInt} from 'crypto';
+import {randomBytes} from 'crypto';
 import Cert from '../../src/models/cret';
 
 describe('cert', () => {

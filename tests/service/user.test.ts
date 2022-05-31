@@ -8,8 +8,7 @@ import {
   createUserSSO,
   findUserByCateiruSSO,
 } from '../../src/services/user';
-import {createCertModel} from '../../src/tests/cert';
-import {createUserModel} from '../../src/tests/user';
+import {createCertModel, createUserModel} from '../../src/tests/models';
 
 describe('getUser', () => {
   let connection: mysql.Connection;

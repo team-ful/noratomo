@@ -2,7 +2,7 @@ import {randomBytes} from 'crypto';
 import mysql from 'mysql2/promise';
 import config from '../../config';
 import {findCertByUserID, setCert} from '../../src/services/cert';
-import {createCertModel} from '../../src/tests/cert';
+import {createCertModel} from '../../src/tests/models';
 
 describe('cert', () => {
   let connection: mysql.Connection;
