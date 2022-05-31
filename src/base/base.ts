@@ -2,12 +2,15 @@ import {ParsedUrlQuery} from 'querystring';
 import {URL} from 'url';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
+import {serialize, CookieSerializeOptions} from 'cookie';
 import mysql from 'mysql2/promise';
 import {Connection} from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
+import User from '../models/user';
+import {createSession} from '../services/session';
 
 export enum Device {
   Console = 'Console',
@@ -268,6 +271,46 @@ class Base<T> {
     }
 
     return refererURL.hostname === url.hostname;
+  }
+
+  /**
+   * Cookieを設定する
+   *
+   * @param {string} name - cookie name
+   * @param {string} value - cookie value
+   * @param {CookieSerializeOptions} options - cookie options
+   */
+  public setCookie(
+    name: string,
+    value: string,
+    options?: CookieSerializeOptions
+  ) {
+    this.res.setHeader('Set-Cookie', serialize(name, value, options));
+  }
+
+  /**
+   * Cookieを取得する
+   *
+   * @param {string} name - cookie name
+   * @returns {string | undefined} cookie value 存在しない場合はundefined
+   */
+  public getCookie(name: string): string | undefined {
+    return this.req.cookies[name];
+  }
+
+  /**
+   * 新規にログインする
+   *
+   * @param {User} user - user
+   */
+  public async newLogin(user: User) {
+    const session = await createSession(await this.db(), user.id);
+
+    this.setCookie(
+      config.sessionCookieName,
+      session.session_token,
+      config.sessionCookieOptions()
+    );
   }
 }
 
