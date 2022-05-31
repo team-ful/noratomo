@@ -607,3 +607,59 @@ describe('newLogin', () => {
     });
   });
 });
+
+describe('checkMethod', () => {
+  test('何も指定しないとGET', async () => {
+    expect.hasAssertions();
+
+    const handler = async () => {
+      null;
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('指定できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async () => {
+      null;
+    };
+
+    const h = handlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('違うメソッドでアクセスするとエラー', async () => {
+    expect.hasAssertions();
+
+    const handler = async () => {
+      null;
+    };
+
+    const h = handlerWrapper(handler, 'POST');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(400);
+      },
+    });
+  });
+});

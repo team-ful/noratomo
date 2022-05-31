@@ -338,6 +338,19 @@ class Base<T> {
       config.sessionCookieOptions()
     );
   }
+
+  /**
+   * methodを判定する
+   *
+   * @param {string} m - 判定するmethod
+   */
+  public checkMethod(m: string) {
+    const _m = this.req.method;
+
+    if (typeof m !== 'string' || _m?.toLocaleLowerCase() !== m.toLowerCase()) {
+      throw new ApiError(400, 'That HTTP method is not supported');
+    }
+  }
 }
 
 export default Base;
