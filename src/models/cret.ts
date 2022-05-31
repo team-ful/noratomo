@@ -1,3 +1,5 @@
+import argon2 from 'argon2';
+
 export interface CertModel {
   user_id: number;
   password: string | null;
@@ -26,13 +28,17 @@ class Cert implements CertModel {
   }
 
   /**
-   * パスワードを比較する
+   * Argoin2のパスワードを検証する
    *
    * @param {string} pw - パスワード
    * @returns {boolean} - パスワードが同じ場合はtrue
    */
-  public equalPassword(pw: string) {
-    return this.password === pw;
+  public async equalPassword(pw: string) {
+    if (!this.password) {
+      return false;
+    }
+
+    return await argon2.verify(this.password, pw);
   }
 }
 

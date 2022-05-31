@@ -1,4 +1,5 @@
 import {randomBytes} from 'crypto';
+import argon2 from 'argon2';
 import Cert from '../../src/models/cret';
 
 describe('cert', () => {
@@ -16,17 +17,17 @@ describe('cert', () => {
     expect(cert1.equalCateiruSSO(id1)).toBeTruthy();
   });
 
-  test('equalPassword', () => {
+  test('equalPassword', async () => {
     const pw1 = randomBytes(32).toString('hex');
     const pw2 = randomBytes(32).toString('hex');
 
     const cert1 = new Cert({
       user_id: 1,
-      password: pw1,
+      password: await argon2.hash(pw1),
       cateiru_sso_id: null,
     });
 
-    expect(cert1.equalPassword(pw2)).toBeFalsy();
-    expect(cert1.equalPassword(pw1)).toBeTruthy();
+    expect(await cert1.equalPassword(pw2)).toBeFalsy();
+    expect(await cert1.equalPassword(pw1)).toBeTruthy();
   });
 });
