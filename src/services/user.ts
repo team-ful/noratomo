@@ -109,6 +109,37 @@ export async function createUserSSO(
 }
 
 /**
+ * パスワード用ユーザ作成
+ *
+ * @param {Connection} db - database
+ * @param {string} mail - メールアドレス
+ * @param {string} userName - ユーザ名
+ * @param {string} gender - 性別
+ * @param {number} age - 年齢
+ * @returns {Promise<number>} user id
+ */
+export async function createUserPW(
+  db: Connection,
+  mail: string,
+  userName: string,
+  gender: Gender,
+  age: number
+): Promise<number> {
+  const [rows] = await db.query<ResultSetHeader>(
+    `INSERT INTO user (
+    mail,
+    user_name,
+    gender,
+    age,
+    join_date
+  ) VALUES (?, ?, ?, ?, NOW())`,
+    [mail, userName, gender, age]
+  );
+
+  return rows.insertId;
+}
+
+/**
  * CateiruSSOでログインしている場合、そのユーザを取得する
  *
  * @param {Connection | Pool} db - db

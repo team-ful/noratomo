@@ -10,6 +10,7 @@ import {
   findUserBySessionToken,
   findUserByMail,
   findUserByUserName,
+  createUserPW,
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
 import {TestUser} from '../../src/tests/user';
@@ -249,5 +250,35 @@ describe('findUserByUserName', () => {
     );
 
     expect(dbUser).toBeNull();
+  });
+});
+
+describe('createUserPW', () => {
+  let db: mysql.Connection;
+
+  beforeAll(async () => {
+    db = await mysql.createConnection(config.db);
+    await db.connect();
+  });
+
+  afterAll(async () => {
+    await db.end();
+  });
+
+  test('作成できる', async () => {
+    const userModel = createUserModel();
+
+    const userId = await createUserPW(
+      db,
+      userModel.mail,
+      userModel.user_name,
+      userModel.gender,
+      userModel.age || 24
+    );
+
+    const dbUser = await findUserByUserID(db, userId);
+
+    // とりあえず同じであることをuser_idで判定する
+    expect(dbUser.user_name).toBe(userModel.user_name);
   });
 });
