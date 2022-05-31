@@ -1,5 +1,5 @@
 import {NextApiHandler, NextApiRequest, NextApiResponse} from 'next';
-import AuthedBase from './AuthedBase';
+import AuthedBase from './authedBase';
 import Base from './base';
 
 export const handlerWrapper =
@@ -7,7 +7,13 @@ export const handlerWrapper =
   async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const base = new Base<T>(req, res);
 
-    await handler(base);
+    try {
+      await handler(base);
+    } catch (e) {
+      // db閉じないといけない
+      await base.end();
+      throw e;
+    }
 
     await base.end();
     res.end();
@@ -18,7 +24,14 @@ export const authHandlerWrapper =
   async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const authBase = new AuthedBase<T>(req, res);
 
-    await handler(authBase);
+    try {
+      await authBase.login();
+      await handler(authBase);
+    } catch (e) {
+      // db閉じないといけない
+      await authBase.end();
+      throw e;
+    }
 
     await authBase.end();
     res.end();
