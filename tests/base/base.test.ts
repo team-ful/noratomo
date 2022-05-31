@@ -530,7 +530,32 @@ describe('cookie', () => {
         expect(res.status).toBe(200);
 
         expect(res.cookies[0]['test']).toBe('test-value');
-        expect(res.cookies[0]['test2']).toBe('hogehoge');
+        expect(res.cookies[1]['test2']).toBe('hogehoge');
+      },
+    });
+  });
+
+  test('cookieを削除できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.clearCookie('test');
+    };
+
+    const h = handlerWrapper(handler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: serialize('test', 'test-value'),
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+        expect(res.cookies[0]['test']).toBe('');
+        expect(res.cookies[0]['max-age']).toBe('-1');
       },
     });
   });

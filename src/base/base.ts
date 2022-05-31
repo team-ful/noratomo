@@ -290,12 +290,29 @@ class Base<T> {
   ) {
     this.cookies.push(serialize(name, value, options));
 
-    this.res.setHeader('Set-Cookie', this.cookies.join(';'));
+    this.res.setHeader('Set-Cookie', this.cookies);
   }
 
-  // public clearCookie(name: string, options?: CookieSerializeOptions) {
-  //   this.res;
-  // }
+  /**
+   * Cookieを削除する
+   *
+   * @param {string} name - cookie name
+   * @param {CookieSerializeOptions} options - cookie options
+   */
+  public clearCookie(name: string, options?: CookieSerializeOptions) {
+    const d = new Date(Date.now());
+    d.setHours(d.getHours() - 1);
+
+    this.cookies.push(
+      serialize(name, '', {
+        ...options,
+        expires: d,
+        maxAge: -1,
+      })
+    );
+
+    this.res.setHeader('Set-Cookie', this.cookies);
+  }
 
   /**
    * Cookieを取得する
