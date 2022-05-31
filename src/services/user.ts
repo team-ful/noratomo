@@ -125,8 +125,6 @@ export async function findUserByCateiruSSO(
     [id]
   );
 
-  console.log(row);
-
   if (row.length === 0) {
     return null;
   }
