@@ -7,8 +7,10 @@ import {
   createTestUser,
   createUserSSO,
   findUserByCateiruSSO,
+  findUserBySessionToken,
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
+import {TestUser} from '../../src/tests/user';
 
 describe('getUser', () => {
   let connection: mysql.Connection;
@@ -131,5 +133,44 @@ describe('findUserByCateiruSSO', () => {
 
     expect(dbUser).not.toBeNull();
     expect(dbUser?.id).toEqual(user.id);
+  });
+});
+
+describe('findUserBySessionToken', () => {
+  let connection: mysql.Connection;
+
+  beforeAll(async () => {
+    connection = await mysql.createConnection(config.db);
+    await connection.connect();
+  });
+
+  afterAll(async () => {
+    await connection.end();
+  });
+
+  test('取得できる', async () => {
+    const user = new TestUser();
+    await user.create(connection);
+    await user.addSession(connection);
+
+    const dbUser = await findUserBySessionToken(
+      connection,
+      user.session?.session_token || ''
+    );
+
+    expect(dbUser).not.toBeNull();
+    expect(dbUser?.id).toBe(user.user?.id);
+  });
+
+  test('存在しない場合はnullが返る', async () => {
+    const user = new TestUser();
+    await user.create(connection);
+
+    const dbUser = await findUserBySessionToken(
+      connection,
+      randomBytes(128).toString('hex')
+    );
+
+    expect(dbUser).toBeNull();
   });
 });

@@ -1,8 +1,10 @@
 import {randomBytes} from 'crypto';
 import {Connection} from 'mysql2/promise';
 import {CertModel} from '../models/cret';
+import {Session} from '../models/session';
 import User, {UserModel} from '../models/user';
 import {setCert} from '../services/cert';
+import {createSession} from '../services/session';
 import {createTestUser} from '../services/user';
 import {createUserModel} from './models';
 import {createCertModel} from './models';
@@ -12,6 +14,7 @@ export class TestUser {
   public user?: User;
 
   private certModel?: CertModel;
+  public session?: Session;
 
   constructor(options?: Partial<UserModel>) {
     this.userModel = createUserModel(options);
@@ -32,6 +35,14 @@ export class TestUser {
     });
 
     await setCert(db, this.certModel);
+  }
+
+  public async addSession(db: Connection) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
+
+    this.session = await createSession(db, this.user.id);
   }
 
   get cateiruSSOId() {

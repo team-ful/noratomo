@@ -143,7 +143,7 @@ export async function findUserByCateiruSSO(
 export async function findUserBySessionToken(
   db: Connection,
   token: string
-): Promise<User> {
+): Promise<User | null> {
   const [row] = await db.query<RowDataPacket[]>(
     `
     SELECT * FROM user
@@ -151,11 +151,15 @@ export async function findUserBySessionToken(
         SELECT user_id FROM session
         WHERE
           session_token = ? AND
-          period_date <= NOW()
+          period_date >= NOW()
       )
   `,
     [token]
   );
+
+  if (row.length === 0) {
+    return null;
+  }
 
   return new User(row[0] as UserModel);
 }
