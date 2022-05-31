@@ -29,8 +29,7 @@ async function handler(base: Base<void>) {
 
   const user = await ca.login();
 
-  // TODO: session情報保存してcookieに入れる
-  console.log(JSON.stringify(user));
+  await base.newLogin(user);
 }
 
 export default handlerWrapper(handler);

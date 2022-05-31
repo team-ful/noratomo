@@ -1,4 +1,5 @@
 import {randomBytes} from 'crypto';
+import argon2 from 'argon2';
 import {Connection} from 'mysql2/promise';
 import {CertModel} from '../models/cret';
 import {Session} from '../models/session';
@@ -15,6 +16,7 @@ export class TestUser {
 
   private certModel?: CertModel;
   public session?: Session;
+  public password?: string;
 
   constructor(options?: Partial<UserModel>) {
     this.userModel = createUserModel(options);
@@ -37,6 +39,21 @@ export class TestUser {
     await setCert(db, this.certModel);
   }
 
+  public async loginFromPassword(db: Connection) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
+
+    this.password = randomBytes(32).toString('hex');
+
+    this.certModel = createCertModel({
+      user_id: this.user?.id,
+      password: await argon2.hash(this.password),
+    });
+
+    await setCert(db, this.certModel);
+  }
+
   public async addSession(db: Connection) {
     if (typeof this.user === 'undefined') {
       throw new Error('user is undefined');
@@ -53,7 +70,7 @@ export class TestUser {
     return this.certModel?.cateiru_sso_id;
   }
 
-  get password() {
+  get ePassword() {
     if (typeof this.certModel === 'undefined') {
       throw new Error('not login');
     }
