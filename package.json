@@ -19,6 +19,7 @@
         "@chakra-ui/react": "^2.1.2",
         "@emotion/react": "^11",
         "@emotion/styled": "^11",
+        "argon2": "^0.28.5",
         "client-hints": "^0.2.2",
         "content-type": "^1.0.4",
         "cookie": "^0.5.0",
