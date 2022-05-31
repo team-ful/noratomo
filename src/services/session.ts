@@ -1,6 +1,7 @@
 import {randomBytes} from 'crypto';
 import {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
+import config from '../../config';
 import {Session, SessionModel} from '../models/session';
 
 /**
@@ -42,9 +43,13 @@ export async function createSession(
   userId: number
 ): Promise<Session> {
   const sessionToken = randomBytes(128).toString('hex');
-  const periodDay = 7; // 有効期限1週間
 
-  return createSessionSpecifyToken(db, sessionToken, periodDay, userId);
+  return createSessionSpecifyToken(
+    db,
+    sessionToken,
+    config.sessionPeriodDay,
+    userId
+  );
 }
 
 /**
