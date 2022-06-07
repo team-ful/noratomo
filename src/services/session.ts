@@ -1,6 +1,7 @@
 import {randomBytes} from 'crypto';
 import {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
+import sql, {select, gte, insert, delete as sqlDelete} from 'sql-bricks';
 import config from '../../config';
 import {Session, SessionModel} from '../models/session';
 
@@ -14,15 +15,13 @@ export async function findSessionBySessionToken(
   db: Connection,
   token: string
 ): Promise<Session | null> {
-  const [row] = await db.query<RowDataPacket[]>(
-    `
-  SELECT * FROM session
-    WHERE
-      session_token = ? AND
-      period_date >= NOW()
-  `,
-    [token]
-  );
+  const query = select('*')
+    .from('session')
+    .where({session_token: token})
+    .and(gte('period_date', sql('now()')))
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (row.length === 0) {
     return null;
@@ -66,22 +65,14 @@ export async function createSessionSpecifyToken(
   periodDay: number,
   userId: number
 ) {
-  await db.query(
-    `
-  INSERT INTO session (
-    session_token,
-    date,
-    period_date,
-    user_id
-  ) VALUES (
-    ?,
-    NOW(),
-    DATE_ADD(NOW(), INTERVAL ? DAY),
-    ?
-  )
-  `,
-    [sessionToken, periodDay, userId]
-  );
+  const query = insert('session', {
+    session_token: sessionToken,
+    date: sql('NOW()'),
+    period_date: sql('DATE_ADD(NOW(), INTERVAL ? DAY)', periodDay),
+    user_id: userId,
+  }).toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
 
   const session = await findSessionBySessionToken(db, sessionToken);
 
@@ -101,12 +92,8 @@ export async function deleteSessionBySessionToken(
   db: Connection,
   sessionToken: string
 ) {
-  await db.query<RowDataPacket[]>(
-    `
-  DELETE from session
-  WHERE
-    session_token = ?
-  `,
-    [sessionToken]
-  );
+  const query = sqlDelete('session')
+    .where({session_token: sessionToken})
+    .toParams({placeholder: '?'});
+  await db.query<RowDataPacket[]>(query.text, query.values);
 }

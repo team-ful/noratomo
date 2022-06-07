@@ -1,10 +1,11 @@
-import {randomInt} from 'crypto';
+import {randomBytes, randomInt} from 'crypto';
 import mysql from 'mysql2/promise';
 import config from '../../config';
 import {
   createSession,
   findSessionBySessionToken,
   deleteSessionBySessionToken,
+  createSessionSpecifyToken,
 } from '../../src/services/session';
 
 describe('session', () => {
@@ -29,18 +30,31 @@ describe('session', () => {
 
     expect(dbSession?.user_id).toBe(session.user_id);
   });
-});
 
-describe('sessionを削除', () => {
-  let db: mysql.Connection;
+  test('作成できる', async () => {
+    const token = randomBytes(128).toString('hex');
+    const periodDay = 1;
+    const userId = randomInt(10000);
 
-  beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
-  });
+    const session = await createSessionSpecifyToken(
+      db,
+      token,
+      periodDay,
+      userId
+    );
 
-  afterAll(async () => {
-    await db.end();
+    expect(session.user_id).toBe(userId);
+
+    const now = new Date(Date.now());
+
+    // 時間をみる: hourのみ
+    expect(session.date.getHours()).toBe(now.getHours());
+    // period dateは+1日なので時間は同じはず
+    expect(session.period_date.getHours()).toBe(now.getHours());
+
+    // 1日進める
+    now.setDate(now.getDate() + 1);
+    expect(session.period_date.getDate()).toBe(now.getDate());
   });
 
   test('削除できる', async () => {
