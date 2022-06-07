@@ -21,12 +21,13 @@ const config: Config = {
     date.setDate(date.getDate() + config.sessionPeriodDay);
 
     return {
-      domain: 'localhost:3000',
+      domain: 'localhost',
       expires: date,
       maxAge: config.sessionPeriodDay * 24,
       sameSite: 'strict',
       secure: false, // テスト用であるためfalse
       httpOnly: false, // クライアント側でcookieを読みたいためfalse
+      path: '/',
     };
   },
 
