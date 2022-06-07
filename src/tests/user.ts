@@ -1,6 +1,8 @@
 import {randomBytes} from 'crypto';
 import argon2 from 'argon2';
+import {serialize} from 'cookie';
 import {Connection} from 'mysql2/promise';
+import config from '../../config';
 import {CertModel} from '../models/cret';
 import {Session} from '../models/session';
 import User, {UserModel} from '../models/user';
@@ -76,5 +78,13 @@ export class TestUser {
     }
 
     return this.certModel?.password;
+  }
+
+  get sessionCookie() {
+    if (!this.session) {
+      throw new Error('no session');
+    }
+
+    return serialize(config.sessionCookieName, this.session.session_token);
   }
 }

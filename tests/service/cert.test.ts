@@ -4,7 +4,7 @@ import config from '../../config';
 import {findCertByUserID, setCert} from '../../src/services/cert';
 import {createCertModel} from '../../src/tests/models';
 
-describe('cert', () => {
+describe('setCert', () => {
   let connection: mysql.Connection;
 
   beforeAll(async () => {
@@ -16,7 +16,7 @@ describe('cert', () => {
     await connection.end();
   });
 
-  test('setCert', async () => {
+  test('ssoだけ', async () => {
     const ssoId = randomBytes(32).toString('hex');
 
     const certModel = createCertModel({cateiru_sso_id: ssoId});
@@ -28,5 +28,34 @@ describe('cert', () => {
     expect(cert.user_id).toBe(certModel.user_id);
     expect(cert.cateiru_sso_id).toBe(ssoId);
     expect(cert.password).toBe(null);
+  });
+
+  test('passwordだけ', async () => {
+    const pw = randomBytes(32).toString('hex');
+
+    const certModel = createCertModel({password: pw});
+
+    await setCert(connection, certModel);
+
+    const cert = await findCertByUserID(connection, certModel.user_id);
+
+    expect(cert.user_id).toBe(certModel.user_id);
+    expect(cert.cateiru_sso_id).toBe(null);
+    expect(cert.password).toBe(pw);
+  });
+
+  test('ssoとpassword', async () => {
+    const pw = randomBytes(32).toString('hex');
+    const ssoId = randomBytes(32).toString('hex');
+
+    const certModel = createCertModel({password: pw, cateiru_sso_id: ssoId});
+
+    await setCert(connection, certModel);
+
+    const cert = await findCertByUserID(connection, certModel.user_id);
+
+    expect(cert.user_id).toBe(certModel.user_id);
+    expect(cert.cateiru_sso_id).toBe(ssoId);
+    expect(cert.password).toBe(pw);
   });
 });

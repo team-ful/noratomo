@@ -21,4 +21,4 @@ async function handler(base: Base<void>) {
   base.res.redirect(url);
 }
 
-export default handlerWrapper(handler);
+export default handlerWrapper(handler, 'GET');

@@ -10,7 +10,9 @@ export const handlerWrapper =
   async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const base = new Base<T>(req, res);
 
-    base.checkMethod(method || 'GET');
+    if (method) {
+      base.checkMethod(method);
+    }
 
     try {
       await handler(base);
@@ -32,7 +34,9 @@ export const authHandlerWrapper =
   async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const authBase = new AuthedBase<T>(req, res);
 
-    authBase.checkMethod(method || 'GET');
+    if (method) {
+      authBase.checkMethod(method);
+    }
 
     try {
       await authBase.login();

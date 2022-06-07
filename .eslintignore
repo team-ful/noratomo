@@ -1,3 +1,4 @@
 next.config.js
 db/data/**
 jest.config.js
+@types/**

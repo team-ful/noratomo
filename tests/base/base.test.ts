@@ -15,7 +15,7 @@ describe('getQuery', () => {
       expect(base.getQuery('hoge')).toBe('huga');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -34,7 +34,7 @@ describe('getQuery', () => {
       expect(base.getQuery('hoge')).toBe('');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -53,7 +53,7 @@ describe('getQuery', () => {
       expect(base.getQuery('nya')).toBe(undefined);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -75,6 +75,13 @@ describe('getPostForm', () => {
     const handler = async (base: Base<void>) => {
       const form = base.getPostForm('test');
       expect(form).toBe('hoge');
+
+      const noExistForm = base.getPostForm('testaaaaa');
+      expect(noExistForm).toBeUndefined();
+
+      expect(() => {
+        base.getPostForm('testaaaaa', true);
+      }).toThrow('Illegal form value testaaaaa');
     };
 
     const h = handlerWrapper(handler, 'POST');
@@ -242,7 +249,7 @@ describe('parseIp', () => {
       expect(base.getIp()).toBe('::ffff:127.0.0.1');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -265,7 +272,7 @@ describe('parseUA', () => {
       expect(base.getDevice()).toEqual(Device.Desktop);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -291,7 +298,7 @@ describe('parseUA', () => {
       expect(base.getDevice()).toEqual(Device.Mobile);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -317,7 +324,7 @@ describe('parseUA', () => {
       expect(base.getDevice()).toEqual(Device.Desktop);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -347,7 +354,7 @@ describe('sendJson', () => {
       base.sendJson(data);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -370,7 +377,7 @@ describe('checkReferer', () => {
       expect(base.checkReferer(url)).toBe(true);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -391,7 +398,7 @@ describe('checkReferer', () => {
       expect(base.checkReferer(new URL('https://example.test'))).toBe(false);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -412,7 +419,7 @@ describe('checkReferer', () => {
       expect(base.checkReferer(url)).toBe(false);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -430,7 +437,7 @@ describe('checkReferer', () => {
       base.checkReferer(url);
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -455,7 +462,7 @@ describe('cookie', () => {
       expect(cookie).toBe('test-value');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -480,7 +487,7 @@ describe('cookie', () => {
       expect(cookie).toBeUndefined();
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -498,7 +505,7 @@ describe('cookie', () => {
       base.setCookie('test', 'test-value');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -521,7 +528,7 @@ describe('cookie', () => {
       base.setCookie('test2', 'hogehoge');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -542,7 +549,7 @@ describe('cookie', () => {
       base.clearCookie('test');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -590,7 +597,7 @@ describe('newLogin', () => {
       }
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -616,7 +623,7 @@ describe('checkMethod', () => {
       null;
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,

@@ -81,7 +81,7 @@ describe('CreateAccountByPassword', () => {
 
   test('新規作成', async () => {
     const dummy = createUserModel();
-    const password = randomBytes(64).toString('hex');
+    const password = randomBytes(32).toString('hex');
 
     const ca = new CreateAccountByPassword(
       dummy.user_name,
@@ -110,7 +110,7 @@ describe('CreateAccountByPassword', () => {
 
     const mail = user.user?.mail || '';
     const dummy = createUserModel();
-    const password = randomBytes(64).toString('hex');
+    const password = randomBytes(32).toString('hex');
 
     const ca = new CreateAccountByPassword(
       dummy.user_name,
@@ -120,7 +120,9 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    expect(ca.check(db)).rejects.toThrow('mail is already exist');
+    expect(async () => {
+      await ca.check(db);
+    }).rejects.toThrow('user is already exists');
   });
 
   test('すでにユーザ名が存在する場合はチェックが失敗する', async () => {
@@ -129,7 +131,7 @@ describe('CreateAccountByPassword', () => {
 
     const userName = user.user?.user_name || '';
     const dummy = createUserModel();
-    const password = randomBytes(64).toString('hex');
+    const password = randomBytes(32).toString('hex');
 
     const ca = new CreateAccountByPassword(
       userName,
@@ -139,7 +141,9 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    expect(ca.check(db)).rejects.toThrow('user name is already exist');
+    expect(async () => {
+      await ca.check(db);
+    }).rejects.toThrow('user is already exists');
   });
 
   // TODO: 他のチェックも書く

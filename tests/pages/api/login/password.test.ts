@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
-import config from '../../../config';
-import passwordLoginHandler from '../../../pages/api/login/password';
-import User from '../../../src/models/user';
-import {findUserBySessionToken} from '../../../src/services/user';
-import {TestUser} from '../../../src/tests/user';
+import config from '../../../../config';
+import passwordLoginHandler from '../../../../pages/api/login/password';
+import User from '../../../../src/models/user';
+import {findUserBySessionToken} from '../../../../src/services/user';
+import {TestUser} from '../../../../src/tests/user';
 
 describe('パスワードでログイン', () => {
   let db: mysql.Connection;
@@ -75,6 +75,25 @@ describe('パスワードでログイン', () => {
         const u = await findUserBySessionToken(db, session);
 
         expect(u?.id).toBe(user.id);
+      },
+    });
+  });
+
+  test('値が不正な場合は400', async () => {
+    expect.hasAssertions();
+
+    await testApiHandler({
+      handler: passwordLoginHandler,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          body: `user=${user.user_name}`,
+        });
+
+        expect(res.status).toBe(400);
       },
     });
   });

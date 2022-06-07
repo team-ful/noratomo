@@ -10,10 +10,10 @@ import {
   createUserPW,
   createUserSSO,
   findUserByCateiruSSO,
-  findUserByMail,
   findUserByUserID,
-  findUserByUserName,
+  findUserByUserNameAndMail,
 } from './services/user';
+import * as check from './syntax/check';
 
 export class CreateAccountBySSO {
   private displayName: string;
@@ -116,55 +116,15 @@ export class CreateAccountByPassword {
    * @param {Connection} db - database
    */
   public async check(db: Connection) {
-    // ユーザ名は3文字以上63文字以下
-    const userNameLen = this.userName.length;
-    if (userNameLen < 3 || userNameLen >= 64) {
-      throw new ApiError(400, 'user name is 3 <= x < 64');
-    }
+    check.checkUserName(this.userName);
+    check.checkMail(this.mail);
+    check.checkAge(this.age);
+    check.checkPW(this.password);
 
-    // ログイン時に同じフォーム内でメールアドレスとユーザ名を入れるので
-    // ユーザ名にメールアドレスとお同じフォーマットで来られると困る
     if (
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        this.userName
-      )
+      (await findUserByUserNameAndMail(db, this.userName, this.mail)) !== null
     ) {
-      throw new ApiError(400, 'not user name format');
-    }
-
-    // メールアドレスが正しいフォーマットかどうかを判定する
-    if (
-      !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        this.mail
-      )
-    ) {
-      throw new ApiError(400, 'not email format');
-    }
-
-    // 年齢は0以下はありえない
-    // また、2022年現在150歳の人間はいない
-    if (this.age < 0 || this.age >= 150) {
-      throw new ApiError(400, 'not age format');
-    }
-
-    // パスワードは10文字異常127文字以下
-    const passwordLen = this.password.length;
-    if (passwordLen >= 10 && passwordLen < 128) {
-      throw new ApiError(400, 'password is 10 <= x < 128');
-    }
-
-    // TODO: ここSQLで WHERE user_id = ? AND mail = ? ってしたい
-    const userNameUser = await findUserByUserName(db, this.userName);
-    if (userNameUser !== null) {
-      throw new ApiError(400, 'user name is already exist');
-    }
-
-    // 何故かこのメソッドをfindUserByUserNameの前に持ってくると、
-    // `Can't add new command when connection is in closed state` エラーが起きる
-    // TODO: 原因究明
-    const mailUser = await findUserByMail(db, this.mail);
-    if (mailUser !== null) {
-      throw new ApiError(400, 'mail is already exist');
+      throw new ApiError(400, 'user is already exists');
     }
   }
 
