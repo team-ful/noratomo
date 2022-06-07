@@ -19,10 +19,10 @@ jobs:
     name: test
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env: 
+      TZ: "Asia/Tokyo"
     steps:
       - uses: actions/checkout@v1
-        env: 
-          TZ: "Asia/Tokyo" # タイムゾーンを指定
       
       - name: docker
         run: docker-compose up -d
