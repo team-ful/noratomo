@@ -1,7 +1,7 @@
 import {randomBytes} from 'crypto';
+import sql, {select, gte, insert, delete as sqlDelete} from 'mysql-bricks';
 import {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
-import sql, {select, gte, insert, delete as sqlDelete} from 'sql-bricks';
 import config from '../../config';
 import {Session, SessionModel} from '../models/session';
 

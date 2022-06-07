@@ -1,6 +1,6 @@
+import {select, insert} from 'mysql-bricks';
 import type {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
-import {select, insert} from 'sql-bricks';
 import Cert, {CertModel} from '../models/cret';
 
 /**
