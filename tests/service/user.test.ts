@@ -12,6 +12,7 @@ import {
   findUserByUserName,
   createUserPW,
   findUserByUserNameAndMail,
+  updateUser,
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
 import {TestUser} from '../../src/tests/user';
@@ -330,5 +331,53 @@ describe('findUserByUserNameAndMail', () => {
     const dbUser = await findUserByUserNameAndMail(db, 'hugahuga', 'hogehoge');
 
     expect(dbUser).toBeNull();
+  });
+});
+
+describe('updateUser', () => {
+  let db: mysql.Connection;
+
+  beforeAll(async () => {
+    db = await mysql.createConnection(config.db);
+    await db.connect();
+  });
+
+  afterAll(async () => {
+    await db.end();
+  });
+
+  test('display_nameを更新できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newDisplayName = 'nyanya';
+
+    await updateUser(db, u.id, {
+      displayName: newDisplayName,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.display_name).not.toBe(u.display_name);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('同じuserNameで更新するとエラー', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    const user2 = new TestUser();
+    await user2.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(async () => {
+      await updateUser(db, u.id, {
+        userName: user2.user?.user_name || '',
+      });
+    }).rejects.toThrow();
   });
 });

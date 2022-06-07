@@ -53,7 +53,35 @@ export function checkAge(age: number) {
  */
 export function checkPW(password: string) {
   const passwordLen = password.length;
-  if (passwordLen >= 10 && passwordLen < 128) {
+  if (passwordLen < 10 || passwordLen >= 128) {
     throw new ApiError(400, 'password is 10 <= x < 128');
+  }
+}
+
+/**
+ * display nameをチェックする
+ *
+ * @param {string} displayName - display name
+ */
+export function checkDisplayName(displayName: string) {
+  const displayNameLen = displayName.length;
+  if (displayNameLen < 1 || displayNameLen >= 32) {
+    throw new ApiError(400, 'display name is 1 <= x < 32');
+  }
+
+  if (!/^[0-9a-zA-Z_-]+$/.test(displayName)) {
+    throw new ApiError(400, 'not display name format');
+  }
+}
+
+/**
+ * プロフィールをチェックする
+ *
+ * @param {string} profile - プロフィール
+ */
+export function checkProfile(profile: string) {
+  const profileLen = profile.length;
+  if (profileLen >= 128) {
+    throw new ApiError(400, 'display name is 1 <= x < 32');
   }
 }

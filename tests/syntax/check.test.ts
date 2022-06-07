@@ -1,9 +1,11 @@
 import {randomBytes} from 'crypto';
 import {
   checkAge,
+  checkDisplayName,
   checkMail,
   checkPW,
   checkUserName,
+  checkProfile,
 } from '../../src/syntax/check';
 
 describe('checkUserName', () => {
@@ -74,7 +76,7 @@ describe('checkAge', () => {
 
 describe('checkPW', () => {
   test('正しい', () => {
-    const pw = randomBytes(64).toString('hex');
+    const pw = randomBytes(32).toString('hex');
 
     expect(() => checkPW(pw)).not.toThrow();
   });
@@ -82,6 +84,40 @@ describe('checkPW', () => {
   test('10文字より小さいとエラー', () => {
     const pw = 'hogehoge';
 
-    expect(() => checkPW(pw)).not.toThrow();
+    expect(() => checkPW(pw)).toThrow();
+  });
+});
+
+describe('checkDisplayName', () => {
+  test('正しい', () => {
+    const names = ['hogehoge', 'asdlwp0-sdf', 'asdp34dps3', 'asdg_asd3', 'a'];
+
+    for (const n of names) {
+      expect(() => checkDisplayName(n)).not.toThrow();
+    }
+  });
+
+  test('フォーマットが正しくないとエラー', () => {
+    const names = ['@@@asogo4p', '', randomBytes(64).toString('hex')];
+
+    for (const n of names) {
+      expect(() => checkDisplayName(n)).toThrow();
+    }
+  });
+});
+
+describe('checkProfile', () => {
+  test('正しい', () => {
+    const p = ['a', randomBytes(32).toString('hex')];
+
+    for (const n of p) {
+      expect(() => checkProfile(n)).not.toThrow();
+    }
+  });
+
+  test('128文字制限', () => {
+    const p = randomBytes(128).toString('hex');
+
+    expect(() => checkProfile(p)).toThrow();
   });
 });

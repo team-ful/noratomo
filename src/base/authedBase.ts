@@ -12,7 +12,7 @@ class AuthedBase<T> extends Base<T> {
   private userId: number;
   readonly sessionToken: string;
 
-  _user?: User;
+  private _user?: User;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     super(req, res);

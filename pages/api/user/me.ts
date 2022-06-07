@@ -2,7 +2,7 @@ import AuthedBase from '../../../src/base/authedBase';
 import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
 
 /**
- * パスワードを検証してログインする
+ * ユーザ情報を取得する
  *
  * @param {AuthedBase<void>} base base
  */

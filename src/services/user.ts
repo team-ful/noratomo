@@ -285,3 +285,57 @@ export async function findUserByUserNameAndMail(
 
   return new User(row[0] as UserModel);
 }
+
+/**
+ * 設定、プロフィールを更新する
+ *
+ * @param {Connection} db - database
+ * @param {number} id - ユーザID
+ * @param {{}} option - option
+ * @param {string | null} option.displayName - display name
+ * @param {string} option.mail - メールアドレス
+ * @param {string | null} option.profile - profile
+ * @param {string} option.userName - user name
+ * @param {number} option.age - 年齢
+ * @param {Gender} option.gender - 性別
+ */
+export async function updateUser(
+  db: Connection,
+  id: number,
+  option: {
+    displayName?: string | null;
+    mail?: string;
+    profile?: string | null;
+    userName?: string;
+    age?: number;
+    gender?: Gender;
+  }
+) {
+  const q: {[key: string]: string | number | null} = {};
+
+  if (typeof option.displayName !== 'undefined') {
+    q['display_name'] = option.displayName;
+  }
+  if (option.mail) {
+    q['mail'] = option.mail;
+  }
+  if (typeof option.profile !== 'undefined') {
+    q['profile'] = option.profile;
+  }
+  if (option.userName) {
+    q['user_name'] = option.userName;
+  }
+  if (option.age) {
+    q['age'] = option.age;
+  }
+  if (option.gender) {
+    q['gender'] = option.gender;
+  }
+
+  const query = sql
+    .update('user', q)
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
+}
