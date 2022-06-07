@@ -1,3 +1,4 @@
+import {select, insert} from 'mysql-bricks';
 import type {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
 import Cert, {CertModel} from '../models/cret';
@@ -9,35 +10,19 @@ import Cert, {CertModel} from '../models/cret';
  * @param {CertModel} cert - cert
  */
 export async function setCert(db: Connection, cert: CertModel) {
+  const insertElement: {[key: string]: string | number} = {
+    user_id: cert.user_id,
+  };
   if (cert.password) {
-    await db.query(
-      `
-    INSERT INTO cert (
-      user_id,
-      password
-    ) VALUES (?, ?)`,
-      [cert.user_id, cert.password]
-    );
-  } else if (cert.cateiru_sso_id) {
-    await db.query(
-      `
-    INSERT INTO cert (
-      user_id,
-      cateiru_sso_id
-    ) VALUES (?, ?)`,
-      [cert.user_id, cert.cateiru_sso_id]
-    );
-  } else {
-    await db.query(
-      `
-    INSERT INTO cert (
-      user_id,
-      password,
-      cateiru_sso_id
-    ) VALUES (?, ?, ?)`,
-      [cert.user_id, cert.password, cert.cateiru_sso_id]
-    );
+    insertElement['password'] = cert.password;
   }
+  if (cert.cateiru_sso_id) {
+    insertElement['cateiru_sso_id'] = cert.cateiru_sso_id;
+  }
+
+  const query = insert('cert', insertElement).toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
 }
 
 /**
@@ -51,10 +36,13 @@ export async function findCertByUserID(
   db: Connection,
   userId: number
 ): Promise<Cert> {
-  const [row] = await db.query<RowDataPacket[]>(
-    "SELECT * FROM cert WHERE user_id = '?'",
-    [userId]
-  );
+  const query = select('*')
+    .from('cert')
+    .where({user_id: userId})
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (row.length === 0) {
     throw new ApiError(400, 'no cert');

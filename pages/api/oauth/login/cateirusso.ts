@@ -32,4 +32,4 @@ async function handler(base: Base<void>) {
   await base.newLogin(user);
 }
 
-export default handlerWrapper(handler);
+export default handlerWrapper(handler, 'GET');

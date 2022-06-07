@@ -1,3 +1,4 @@
+import sql from 'mysql-bricks';
 import {ResultSetHeader} from 'mysql2/promise';
 import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
 import {Gender} from '../models/common';
@@ -13,10 +14,14 @@ export async function findUserByUserID(
   db: Connection | Pool,
   id: number
 ): Promise<User> {
-  const [rows] = await db.query<RowDataPacket[]>(
-    "SELECT * FROM user WHERE id = '?' LIMIT 1",
-    [id]
-  );
+  const query = sql
+    .select('*')
+    .from('user')
+    .where({id: id})
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [rows] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (rows.length === 0) {
     throw new Error('not found');
@@ -37,34 +42,23 @@ export async function createTestUser(
   db: Connection,
   user: UserModel
 ): Promise<User> {
-  const [rows] = await db.query<ResultSetHeader>(
-    `INSERT INTO user (
-    display_name,
-    mail,
-    profile,
-    user_name,
-    age,
-    gender,
-    is_ban,
-    is_penalty,
-    is_admin,
-    join_date,
-    avatar_url
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      user.display_name,
-      user.mail,
-      user.profile,
-      user.user_name,
-      user.age,
-      user.gender,
-      user.is_ban,
-      user.is_penalty,
-      user.is_admin,
-      user.join_date, // 通常now()を使用して日時を設定するがテスト用で時間を合わせたいためjs側から入れる
-      user.avatar_url,
-    ]
-  );
+  const query = sql
+    .insert('user', {
+      display_name: user.display_name,
+      mail: user.mail,
+      profile: user.profile,
+      user_name: user.user_name,
+      age: user.age,
+      gender: user.gender,
+      is_ban: user.is_ban,
+      is_penalty: user.is_penalty,
+      is_admin: user.is_admin,
+      join_date: user.join_date, // 通常now()を使用して日時を設定するがテスト用で時間を合わせたいためjs側から入れる
+      avatar_url: user.avatar_url,
+    })
+    .toParams({placeholder: '?'});
+
+  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
 
   user.id = rows.insertId;
 
@@ -92,18 +86,19 @@ export async function createUserSSO(
   isAdmin: boolean,
   avatarURL: string
 ): Promise<number> {
-  const [rows] = await db.query<ResultSetHeader>(
-    `INSERT INTO user (
-    display_name,
-    mail,
-    user_name,
-    gender,
-    is_admin,
-    avatar_url,
-    join_date
-  ) VALUES (?, ?, ?, ?, ?, ?, now())`,
-    [displayName, mail, userName, gender, isAdmin, avatarURL]
-  );
+  const query = sql
+    .insert('user', {
+      display_name: displayName,
+      mail: mail,
+      user_name: userName,
+      gender: gender,
+      is_admin: isAdmin,
+      join_date: sql('NOW()'),
+      avatar_url: avatarURL,
+    })
+    .toParams({placeholder: '?'});
+
+  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
 
   return rows.insertId;
 }
@@ -125,16 +120,17 @@ export async function createUserPW(
   gender: Gender,
   age: number
 ): Promise<number> {
-  const [rows] = await db.query<ResultSetHeader>(
-    `INSERT INTO user (
-    mail,
-    user_name,
-    gender,
-    age,
-    join_date
-  ) VALUES (?, ?, ?, ?, NOW())`,
-    [mail, userName, gender, age]
-  );
+  const query = sql
+    .insert('user', {
+      mail: mail,
+      user_name: userName,
+      gender: gender,
+      age: age,
+      join_date: sql('NOW()'),
+    })
+    .toParams({placeholder: '?'});
+
+  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
 
   return rows.insertId;
 }
@@ -149,12 +145,23 @@ export async function findUserByCateiruSSO(
   db: Connection | Pool,
   id: string
 ): Promise<User | null> {
-  const [row] = await db.query<RowDataPacket[]>(
-    `SELECT * FROM user WHERE user.id = (
-    SELECT user_id FROM cert WHERE cert.cateiru_sso_id = ? LIMIT 1
-  ) LIMIT 1`,
-    [id]
-  );
+  const query = sql
+    .select('*')
+    .from('user')
+    .where(
+      sql.eq(
+        'user.id',
+        sql
+          .select('user_id')
+          .from('cert')
+          .where('cert.cateiru_sso_id', id)
+          .limit(1)
+      )
+    )
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (row.length === 0) {
     return null;
@@ -173,20 +180,24 @@ export async function findUserBySessionToken(
   db: Connection,
   token: string
 ): Promise<User | null> {
-  const [row] = await db.query<RowDataPacket[]>(
-    `
-    SELECT * FROM user
-      WHERE id = (
-        SELECT user_id FROM session
-        WHERE
-          session_token = ? AND
-          period_date >= NOW()
-        LIMIT 1
+  const query = sql
+    .select('*')
+    .from('user')
+    .where(
+      sql.eq(
+        'user.id',
+        sql
+          .select('user_id')
+          .from('session')
+          .where('session.session_token', token)
+          .and(sql.gte('period_date', sql('NOW()')))
+          .limit(1)
       )
-      LIMIT 1
-  `,
-    [token]
-  );
+    )
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (row.length === 0) {
     return null;
@@ -205,15 +216,14 @@ export async function findUserByMail(
   db: Connection,
   mail: string
 ): Promise<User | null> {
-  const [row] = await db.query<RowDataPacket[]>(
-    `
-  SELECT * FROM user
-    WHERE
-      mail = ?
-    LIMIT 1
-  `,
-    [mail]
-  );
+  const query = sql
+    .select('*')
+    .from('user')
+    .where('mail', mail)
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (row.length === 0) {
     return null;
@@ -232,19 +242,79 @@ export async function findUserByUserName(
   db: Connection,
   userName: string
 ): Promise<User | null> {
-  const [row] = await db.query<RowDataPacket[]>(
-    `
-  SELECT * FROM user
-    WHERE
-      user_name = ?
-    LIMIT 1
-  `,
-    [userName]
-  );
+  const query = sql
+    .select('*')
+    .from('user')
+    .where('user_name', userName)
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 
   if (row.length === 0) {
     return null;
   }
 
   return new User(row[0] as UserModel);
+}
+
+/**
+ * ユーザ名とメールアドレスでselectする
+ *
+ * @param {Connection} db - database
+ * @param {string} userName - user name
+ * @param {string} mail - mail
+ */
+export async function findUserByUserNameAndMail(
+  db: Connection,
+  userName: string,
+  mail: string
+): Promise<User | null> {
+  const query = sql
+    .select('*')
+    .from('user')
+    .where(sql.or({user_name: userName, mail: mail}))
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+
+  if (row.length === 0) {
+    return null;
+  }
+
+  return new User(row[0] as UserModel);
+}
+
+/**
+ * 設定、プロフィールを更新する
+ *
+ * @param {Connection} db - database
+ * @param {number} id - ユーザID
+ * @param {{}} option - option
+ * @param {string | null} option.display_name - display name
+ * @param {string} option.mail - メールアドレス
+ * @param {string | null} option.profile - profile
+ * @param {string} option.user_name - user name
+ * @param {number} option.age - 年齢
+ * @param {Gender} option.gender - 性別
+ */
+export async function updateUser(
+  db: Connection,
+  id: number,
+  option: {
+    display_name?: string | null;
+    mail?: string;
+    profile?: string | null;
+    user_name?: string;
+    age?: number;
+    gender?: Gender;
+  }
+) {
+  const query = sql
+    .update('user', option)
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
 }

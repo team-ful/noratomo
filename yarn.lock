@@ -5519,6 +5519,13 @@ mute-stream@0.0.8:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
+mysql-bricks@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/mysql-bricks/-/mysql-bricks-1.1.1.tgz#6346463719f02b41ab045ff5823926d3a5a6d8b4"
+  integrity sha512-EpyNJ+lylR1KvyvTVhsswFgxcm7Ys3yIe7vyj0eCFSLpM1aCrKUBTvhm1ZuH9yYcL4hOpmu5S2X+vxfYcqr3Lw==
+  dependencies:
+    sql-bricks "^2.0.3"
+
 mysql2@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/mysql2/-/mysql2-2.3.3.tgz#944f3deca4b16629052ff8614fbf89d5552545a0"
@@ -6514,6 +6521,18 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
+sql-bricks@^2.0.3:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/sql-bricks/-/sql-bricks-2.0.5.tgz#96db7c9044cb07811f61218737a9761344156962"
+  integrity sha512-Q9qpODBZPMaPb+bjlmFYKMNk/6zpXSv1VNjJmGd9LvoqXwxd8TmE39s79wzrgAfw2lzohr4eNEpWRhHT5UYAfQ==
+  dependencies:
+    underscore "1.4.x"
+
+sql-bricks@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/sql-bricks/-/sql-bricks-3.0.0.tgz#4628bfc80579454529957c1ce9b941a42de95b4e"
+  integrity sha512-P9fXYWdPFOcU2uQr7hwzNa0m6qOjMSV6wmo3DPk1Nzxh9rZWyjgbFaRji41EMV1uHps4SCgwa+Cdv0tUJ+mySw==
+
 sqlstring@^2.3.2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.3.tgz#2ddc21f03bce2c387ed60680e739922c65751d0c"
@@ -6896,6 +6915,11 @@ unbox-primitive@^1.0.2:
     has-bigints "^1.0.2"
     has-symbols "^1.0.3"
     which-boxed-primitive "^1.0.2"
+
+underscore@1.4.x:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.4.4.tgz#61a6a32010622afa07963bf325203cf12239d604"
+  integrity sha1-YaajIBBiKvoHljvzJSA88SI51gQ=
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"

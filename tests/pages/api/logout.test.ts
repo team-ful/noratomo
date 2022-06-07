@@ -3,14 +3,11 @@ import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../config';
 import logoutHandler from '../../../pages/api/logout';
-import User from '../../../src/models/user';
 import {findUserBySessionToken} from '../../../src/services/user';
 import {TestUser} from '../../../src/tests/user';
 
 describe('パスワードでログイン', () => {
   let db: mysql.Connection;
-  let user: User;
-  let password: string;
   let sessionToken: string;
 
   beforeAll(async () => {
@@ -21,11 +18,6 @@ describe('パスワードでログイン', () => {
     await u.create(db);
     await u.loginFromPassword(db);
     await u.addSession(db);
-
-    password = u.password || '';
-    if (typeof u.user !== 'undefined') {
-      user = u.user;
-    }
 
     sessionToken = u.session?.session_token || '';
   });

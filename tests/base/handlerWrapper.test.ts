@@ -17,7 +17,7 @@ describe('handlerWrapper', () => {
   test('base', async () => {
     const handler = jest.fn();
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     const req = httpMocks.createRequest<NextApiRequest>();
     const res = httpMocks.createResponse<NextApiResponse>();
@@ -30,7 +30,7 @@ describe('handlerWrapper', () => {
   test('authBase', async () => {
     const handler = jest.fn();
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     const req = httpMocks.createRequest<NextApiRequest>();
     const res = httpMocks.createResponse<NextApiResponse>();

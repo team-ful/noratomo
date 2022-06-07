@@ -38,7 +38,7 @@ describe('login', () => {
       expect(user?.id).toBe(userId);
     };
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -65,7 +65,7 @@ describe('login', () => {
       null;
     };
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -83,7 +83,7 @@ describe('login', () => {
       null;
     };
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -102,6 +102,46 @@ describe('login', () => {
 
         expect(res.cookies[0][config.sessionCookieName]).toBe('');
         expect(res.cookies[0]['max-age']).toBe('-1');
+      },
+    });
+  });
+
+  test('getPublicUserData', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: AuthedBase<void>) => {
+      const u = base.getPublicUserData();
+      const ua = base.user;
+
+      expect(u).toEqual({
+        display_name: ua.display_name,
+        mail: ua.mail,
+        profile: ua.profile,
+        user_name: ua.user_name,
+        age: ua.age,
+        gender: ua.gender,
+        is_admin: ua.is_admin,
+        avatar_url: ua.avatar_url,
+        join_date: ua.join_date,
+      });
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: serialize(
+            config.sessionCookieName,
+            sessionToken,
+            config.sessionCookieOptions()
+          ),
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
       },
     });
   });

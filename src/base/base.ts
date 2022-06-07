@@ -101,9 +101,12 @@ class Base<T> {
    * のデータを取得する
    *
    * @param {string} key - key
+   * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
    * @returns {string} - クエリの値
    */
-  public getPostForm(key: string): string {
+  public getPostForm(key: string, require: true): string;
+  public getPostForm(key: string): string | undefined;
+  public getPostForm(key: string, require = false): string | undefined {
     let p: ParsedUrlQuery;
 
     if (typeof this.postBody === 'undefined') {
@@ -118,7 +121,14 @@ class Base<T> {
       p = this.postBody;
     }
 
-    const value = p[key] || '';
+    const value = p[key];
+
+    if (typeof value === 'undefined') {
+      if (require) {
+        throw new ApiError(400, `Illegal form value ${key}`);
+      }
+      return undefined;
+    }
 
     if (typeof value === 'string') {
       return value;
