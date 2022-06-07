@@ -11,6 +11,7 @@ import {
   findUserByMail,
   findUserByUserName,
   createUserPW,
+  findUserByUserNameAndMail,
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
 import {TestUser} from '../../src/tests/user';
@@ -280,5 +281,54 @@ describe('createUserPW', () => {
 
     // とりあえず同じであることをuser_idで判定する
     expect(dbUser.user_name).toBe(userModel.user_name);
+  });
+});
+
+describe('findUserByUserNameAndMail', () => {
+  let db: mysql.Connection;
+
+  beforeAll(async () => {
+    db = await mysql.createConnection(config.db);
+    await db.connect();
+  });
+
+  afterAll(async () => {
+    await db.end();
+  });
+
+  test('ユーザ名で取得できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+    await user.addSession(db);
+
+    const dbUser = await findUserByUserNameAndMail(
+      db,
+      user.user?.user_name || '',
+      ''
+    );
+
+    expect(dbUser).not.toBeNull();
+    expect(dbUser?.id).toBe(user.user?.id);
+  });
+
+  test('メールアドレスで取得できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+    await user.addSession(db);
+
+    const dbUser = await findUserByUserNameAndMail(
+      db,
+      '',
+      user.user?.mail || ''
+    );
+
+    expect(dbUser).not.toBeNull();
+    expect(dbUser?.id).toBe(user.user?.id);
+  });
+
+  test('ユーザ名、メールアドレスがどちらも存在しないと取得できない', async () => {
+    const dbUser = await findUserByUserNameAndMail(db, 'hugahuga', 'hogehoge');
+
+    expect(dbUser).toBeNull();
   });
 });

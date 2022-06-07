@@ -120,7 +120,9 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    expect(ca.check(db)).rejects.toThrow('mail is already exist');
+    expect(async () => {
+      await ca.check(db);
+    }).rejects.toThrow('user is already exists');
   });
 
   test('すでにユーザ名が存在する場合はチェックが失敗する', async () => {
@@ -139,7 +141,9 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    expect(ca.check(db)).rejects.toThrow('user name is already exist');
+    expect(async () => {
+      await ca.check(db);
+    }).rejects.toThrow('user is already exists');
   });
 
   // TODO: 他のチェックも書く

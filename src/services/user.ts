@@ -257,3 +257,31 @@ export async function findUserByUserName(
 
   return new User(row[0] as UserModel);
 }
+
+/**
+ * ユーザ名とメールアドレスでselectする
+ *
+ * @param {Connection} db - database
+ * @param {string} userName - user name
+ * @param {string} mail - mail
+ */
+export async function findUserByUserNameAndMail(
+  db: Connection,
+  userName: string,
+  mail: string
+): Promise<User | null> {
+  const query = sql
+    .select('*')
+    .from('user')
+    .where(sql.or({user_name: userName, mail: mail}))
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+
+  if (row.length === 0) {
+    return null;
+  }
+
+  return new User(row[0] as UserModel);
+}
