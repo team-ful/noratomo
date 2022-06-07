@@ -17,7 +17,18 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "incremental": true
+        "incremental": true,
+        "baseUrl": "./",
+        "paths": {
+            "mysql-bricks": [
+                "node_modules/sql-bricks",
+                "@types/mysql-bricks",
+            ]
+        },
+        "typeRoots": [
+            "@types",
+            "node_modules/@types"
+        ],
     },
     "include": [
         "next-env.d.ts",
@@ -26,5 +37,5 @@
     ],
     "exclude": [
         "node_modules"
-    ]
+    ],
 }
