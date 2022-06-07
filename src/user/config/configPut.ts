@@ -1,8 +1,8 @@
 import {ApiError} from 'next/dist/server/api-utils';
+import AuthedBase from '../../base/authedBase';
+import {gender as ge, Gender} from '../../models/common';
+import {findUserByUserName, updateUser} from '../../services/user';
 import * as check from '../../syntax/check';
-import AuthedBase from 'src/base/authedBase';
-import {gender as ge, Gender} from 'src/models/common';
-import {findUserByUserName, updateUser} from 'src/services/user';
 
 /**
  * ユーザ設定を更新する
@@ -40,9 +40,11 @@ export async function setConfigHandler(base: AuthedBase<void>) {
     check.checkUserName(userName);
 
     // ユーザ名はユニークなのですでに使われているかチェックする
-    if (!(await findUserByUserName(await base.db(), userName))) {
+    if ((await findUserByUserName(await base.db(), userName)) !== null) {
       throw new ApiError(400, 'user name is already used');
     }
+
+    option['user_name'] = userName;
   }
   if (age) {
     let a = NaN;

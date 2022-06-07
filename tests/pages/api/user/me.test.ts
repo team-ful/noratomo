@@ -1,10 +1,9 @@
-import {serialize} from 'cookie';
 import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../../config';
 import meHandler from '../../../../pages/api/user/me';
+import User from '../../../../src/models/user';
 import {TestUser} from '../../../../src/tests/user';
-import User from 'src/models/user';
 
 describe('me', () => {
   let db: mysql.Connection;
@@ -23,7 +22,7 @@ describe('me', () => {
     if (u.user) {
       user = u.user;
     }
-    sessionToken = u.session?.session_token || '';
+    sessionToken = u.sessionCookie;
   });
 
   afterAll(async () => {
@@ -37,7 +36,7 @@ describe('me', () => {
       handler: meHandler,
       requestPatcher: async req => {
         req.headers = {
-          cookie: serialize(config.sessionCookieName, sessionToken),
+          cookie: sessionToken,
         };
       },
       test: async ({fetch}) => {

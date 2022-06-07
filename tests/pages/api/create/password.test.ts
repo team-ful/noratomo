@@ -22,7 +22,7 @@ describe('create', () => {
     expect.hasAssertions();
 
     const user = createUserModel({age: 20});
-    const password = randomBytes(100).toString('hex');
+    const password = randomBytes(50).toString('hex');
 
     await testApiHandler({
       handler: createPasswordHandler,

@@ -81,7 +81,7 @@ describe('CreateAccountByPassword', () => {
 
   test('新規作成', async () => {
     const dummy = createUserModel();
-    const password = randomBytes(64).toString('hex');
+    const password = randomBytes(32).toString('hex');
 
     const ca = new CreateAccountByPassword(
       dummy.user_name,
@@ -110,7 +110,7 @@ describe('CreateAccountByPassword', () => {
 
     const mail = user.user?.mail || '';
     const dummy = createUserModel();
-    const password = randomBytes(64).toString('hex');
+    const password = randomBytes(32).toString('hex');
 
     const ca = new CreateAccountByPassword(
       dummy.user_name,
@@ -131,7 +131,7 @@ describe('CreateAccountByPassword', () => {
 
     const userName = user.user?.user_name || '';
     const dummy = createUserModel();
-    const password = randomBytes(64).toString('hex');
+    const password = randomBytes(32).toString('hex');
 
     const ca = new CreateAccountByPassword(
       userName,

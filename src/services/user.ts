@@ -292,10 +292,10 @@ export async function findUserByUserNameAndMail(
  * @param {Connection} db - database
  * @param {number} id - ユーザID
  * @param {{}} option - option
- * @param {string | null} option.displayName - display name
+ * @param {string | null} option.display_name - display name
  * @param {string} option.mail - メールアドレス
  * @param {string | null} option.profile - profile
- * @param {string} option.userName - user name
+ * @param {string} option.user_name - user name
  * @param {number} option.age - 年齢
  * @param {Gender} option.gender - 性別
  */
@@ -303,37 +303,16 @@ export async function updateUser(
   db: Connection,
   id: number,
   option: {
-    displayName?: string | null;
+    display_name?: string | null;
     mail?: string;
     profile?: string | null;
-    userName?: string;
+    user_name?: string;
     age?: number;
     gender?: Gender;
   }
 ) {
-  const q: {[key: string]: string | number | null} = {};
-
-  if (typeof option.displayName !== 'undefined') {
-    q['display_name'] = option.displayName;
-  }
-  if (option.mail) {
-    q['mail'] = option.mail;
-  }
-  if (typeof option.profile !== 'undefined') {
-    q['profile'] = option.profile;
-  }
-  if (option.userName) {
-    q['user_name'] = option.userName;
-  }
-  if (option.age) {
-    q['age'] = option.age;
-  }
-  if (option.gender) {
-    q['gender'] = option.gender;
-  }
-
   const query = sql
-    .update('user', q)
+    .update('user', option)
     .where('id', id)
     .toParams({placeholder: '?'});
 

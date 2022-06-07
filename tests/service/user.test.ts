@@ -355,7 +355,7 @@ describe('updateUser', () => {
     const newDisplayName = 'nyanya';
 
     await updateUser(db, u.id, {
-      displayName: newDisplayName,
+      display_name: newDisplayName,
     });
 
     const u1 = await findUserByUserID(db, user.user?.id || NaN);
@@ -376,7 +376,7 @@ describe('updateUser', () => {
 
     expect(async () => {
       await updateUser(db, u.id, {
-        userName: user2.user?.user_name || '',
+        user_name: user2.user?.user_name || '',
       });
     }).rejects.toThrow();
   });
