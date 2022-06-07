@@ -11,17 +11,10 @@ import {setConfigHandler} from '../../../src/user/config/configPut';
 
 describe('更新', () => {
   let db: mysql.Connection;
-  let u: TestUser;
 
   beforeAll(async () => {
     db = await mysql.createConnection(config.db);
     await db.connect();
-
-    const _u = new TestUser();
-    await _u.create(db);
-    await _u.addSession(db);
-
-    u = _u;
   });
 
   afterAll(async () => {
@@ -29,6 +22,10 @@ describe('更新', () => {
   });
 
   test('すべて更新できる', async () => {
+    const u = new TestUser();
+    await u.create(db);
+    await u.addSession(db);
+
     const newUser = createUserModel({
       display_name: randomBytes(10).toString('hex'),
       profile: randomBytes(20).toString('hex'),
@@ -70,6 +67,10 @@ describe('更新', () => {
   });
 
   test('1つ更新できる', async () => {
+    const u = new TestUser();
+    await u.create(db);
+    await u.addSession(db);
+
     const newUser = createUserModel({
       profile: randomBytes(20).toString('hex'),
     });
