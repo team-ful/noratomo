@@ -39,6 +39,7 @@ export async function findCertByUserID(
   const query = select('*')
     .from('cert')
     .where({user_id: userId})
+    .limit(1)
     .toParams({placeholder: '?'});
 
   const [row] = await db.query<RowDataPacket[]>(query.text, query.values);

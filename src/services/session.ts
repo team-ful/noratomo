@@ -19,6 +19,7 @@ export async function findSessionBySessionToken(
     .from('session')
     .where({session_token: token})
     .and(gte('period_date', sql('now()')))
+    .limit(1)
     .toParams({placeholder: '?'});
 
   const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
