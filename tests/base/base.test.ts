@@ -75,6 +75,13 @@ describe('getPostForm', () => {
     const handler = async (base: Base<void>) => {
       const form = base.getPostForm('test');
       expect(form).toBe('hoge');
+
+      const noExistForm = base.getPostForm('testaaaaa');
+      expect(noExistForm).toBeUndefined();
+
+      expect(() => {
+        base.getPostForm('testaaaaa', true);
+      }).toThrow('Illegal form value testaaaaa');
     };
 
     const h = handlerWrapper(handler, 'POST');
