@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `is_ban` BOOLEAN DEFAULT 0,
     `is_penalty` BOOLEAN DEFAULT 0,
     `is_admin` BOOLEAN DEFAULT 0,
-    `join_date` TIMESTAMP NOT NULL,
+    `join_date` DATETIME NOT NULL,
     `avatar_url` TEXT,
     PRIMARY KEY (`id`)
 );
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `login_history` (
     `is_tablet` BOOLEAN,
     `is_desktop` BOOLEAN,
     `blowser_name` VARCHAR(256),
-    `login_date` TIMESTAMP NOT NULL,
+    `login_date` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
 );
 
@@ -106,8 +106,8 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
 
 CREATE TABLE IF NOT EXISTS `session` (
     `session_token` VARCHAR(256) UNIQUE NOT NULL,
-    `date` TIMESTAMP NOT NULL,
-    `period_date` TIMESTAMP NOT NULL,
+    `date` DATETIME NOT NULL,
+    `period_date` DATETIME NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`session_token`)
 );
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `title` VARCHAR(512) NOT NULL,
     `shop_id` INT UNSIGNED NOT NULL,
     `number_of_people` INT UNSIGNED NOT NULL,
-    `date` TIMESTAMP NOT NULL,
+    `date` DATETIME NOT NULL,
     `body` TEXT,
     `is_closed` BOOLEAN NOT NULL,
     PRIMARY KEY (`id`)
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `application` (
     `user_id` INT UNSIGNED NOT NULL,
     `entry_id` INT UNSIGNED NOT NULL,
     `body` TEXT,
-    `apply_date` TIMESTAMP NOT NULL,
+    `apply_date` DATETIME NOT NULL,
     `is_meeted` BOOLEAN NOT NULL,
     PRIMARY KEY (`id`)
 );
