@@ -18,11 +18,10 @@
         "isolatedModules": true,
         "jsx": "preserve",
         "incremental": true,
-        "baseUrl": "./",
         "paths": {
             "mysql-bricks": [
-                "node_modules/sql-bricks",
-                "@types/mysql-bricks",
+                "./node_modules/sql-bricks",
+                "./@types/mysql-bricks",
             ]
         },
         "typeRoots": [
