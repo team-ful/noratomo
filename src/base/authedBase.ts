@@ -12,7 +12,7 @@ class AuthedBase<T> extends Base<T> {
   private userId: number;
   readonly sessionToken: string;
 
-  user?: User;
+  _user?: User;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     super(req, res);
@@ -41,8 +41,34 @@ class AuthedBase<T> extends Base<T> {
 
       throw new ApiError(403, 'login failed');
     } else {
-      this.user = user;
+      this._user = user;
     }
+  }
+
+  // ユーザを返す
+  get user() {
+    if (this._user) {
+      return this._user;
+    } else {
+      throw new ApiError(500, 'no login');
+    }
+  }
+
+  // 公開可能なユーザ情報を返す
+  public getPublicUserData() {
+    const u = this.user;
+
+    return {
+      display_name: u.display_name,
+      mail: u.mail,
+      profile: u.profile,
+      user_name: u.user_name,
+      age: u.age,
+      gender: u.gender,
+      is_admin: u.is_admin,
+      avatar_url: u.avatar_url,
+      join_date: u.join_date,
+    };
   }
 }
 
