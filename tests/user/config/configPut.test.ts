@@ -68,4 +68,42 @@ describe('更新', () => {
       },
     });
   });
+
+  test('1つ更新できる', async () => {
+    const newUser = createUserModel({
+      profile: randomBytes(20).toString('hex'),
+    });
+
+    expect.hasAssertions();
+
+    const h = authHandlerWrapper(setConfigHandler);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: u.sessionCookie,
+          'content-type': 'application/x-www-form-urlencoded',
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'PUT',
+          body: `profile=${newUser.profile}`,
+        });
+
+        expect(res.status).toBe(200);
+
+        // チェックする
+        const uu = await findUserByUserID(db, u.user?.id || NaN);
+
+        expect(uu.id).toBe(u.user?.id);
+        expect(uu.display_name).toBe(u.user?.display_name);
+        expect(uu.profile).toBe(newUser.profile);
+        expect(uu.user_name).toBe(u.user?.user_name);
+        expect(uu.age).toBe(u.user?.age);
+        expect(uu.gender).toBe(u.user?.gender);
+      },
+    });
+  });
 });
