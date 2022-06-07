@@ -91,3 +91,22 @@ export async function createSessionSpecifyToken(
 
   return session;
 }
+
+/**
+ *
+ * @param {Connection} db - database
+ * @param {string} sessionToken - session token
+ */
+export async function deleteSessionBySessionToken(
+  db: Connection,
+  sessionToken: string
+) {
+  await db.query<RowDataPacket[]>(
+    `
+  DELETE from session
+  WHERE
+    session_token = ?
+  `,
+    [sessionToken]
+  );
+}

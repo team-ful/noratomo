@@ -4,6 +4,7 @@ import config from '../../config';
 import {
   createSession,
   findSessionBySessionToken,
+  deleteSessionBySessionToken,
 } from '../../src/services/session';
 
 describe('session', () => {
@@ -27,5 +28,33 @@ describe('session', () => {
     );
 
     expect(dbSession?.user_id).toBe(session.user_id);
+  });
+});
+
+describe('sessionを削除', () => {
+  let db: mysql.Connection;
+
+  beforeAll(async () => {
+    db = await mysql.createConnection(config.db);
+    await db.connect();
+  });
+
+  afterAll(async () => {
+    await db.end();
+  });
+
+  test('削除できる', async () => {
+    const session = await createSession(db, randomInt(10000));
+
+    const sessionToken = session.session_token;
+
+    await deleteSessionBySessionToken(db, sessionToken);
+
+    const dbSession = await findSessionBySessionToken(
+      db,
+      session.session_token
+    );
+
+    expect(dbSession).toBeNull();
   });
 });

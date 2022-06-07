@@ -3,5 +3,10 @@
     "eslint.lintTask.enable": true,
     "editor.formatOnSave": true,
     "files.insertFinalNewline": true,
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    "typescript.format.enable": false,
+    "javascript.format.enable": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
 }

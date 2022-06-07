@@ -10,6 +10,7 @@ import Base from './base';
  */
 class AuthedBase<T> extends Base<T> {
   private userId: number;
+  readonly sessionToken: string;
 
   user?: User;
 
@@ -17,10 +18,6 @@ class AuthedBase<T> extends Base<T> {
     super(req, res);
 
     this.userId = NaN;
-  }
-
-  // ログインする
-  public async login() {
     const session = this.getCookie(config.sessionCookieName);
 
     // cookieがない場合
@@ -28,7 +25,15 @@ class AuthedBase<T> extends Base<T> {
       throw new ApiError(403, 'no login');
     }
 
-    const user = await findUserBySessionToken(await this.db(), session);
+    this.sessionToken = session;
+  }
+
+  // ログインする
+  public async login() {
+    const user = await findUserBySessionToken(
+      await this.db(),
+      this.sessionToken
+    );
 
     if (user === null) {
       // ユーザがnullということは値が不正か有効期限切れであるためcookieを削除する
