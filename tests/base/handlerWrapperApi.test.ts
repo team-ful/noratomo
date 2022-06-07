@@ -9,7 +9,7 @@ describe('API', () => {
       base.res.send('It works!');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -33,7 +33,7 @@ describe('error', () => {
       throw new ApiError(400, 'hogehoge');
     };
 
-    const h = handlerWrapper(handler);
+    const h = handlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,

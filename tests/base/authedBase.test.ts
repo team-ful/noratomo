@@ -38,7 +38,7 @@ describe('login', () => {
       expect(user?.id).toBe(userId);
     };
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -65,7 +65,7 @@ describe('login', () => {
       null;
     };
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
@@ -83,7 +83,7 @@ describe('login', () => {
       null;
     };
 
-    const h = authHandlerWrapper(handler);
+    const h = authHandlerWrapper(handler, 'GET');
 
     await testApiHandler({
       handler: h,
