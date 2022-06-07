@@ -21,10 +21,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v1
-      
-      - name: szenius/set-timezone@v1.0
-        with: |
-          - timezoneLinux: "Asia/Tokyo"
+        env: 
+          TZ: "Asia/Tokyo" # タイムゾーンを指定
       
       - name: docker
         run: docker-compose up -d
