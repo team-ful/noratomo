@@ -49,4 +49,54 @@ describe('create', () => {
       },
     });
   });
+
+  test('formが正しくないとエラー', async () => {
+    expect.hasAssertions();
+
+    const user = createUserModel({age: 20});
+    const password = randomBytes(100).toString('hex');
+
+    await testApiHandler({
+      handler: createPasswordHandler,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          body: `user_name=${user.user_name}&mail=${
+            user.mail
+          }&password=${encodeURI(password)}&gender=${user.gender}`,
+        });
+
+        expect(res.status).toBe(400);
+      },
+    });
+  });
+
+  test('formの値が正しくないとエラー', async () => {
+    expect.hasAssertions();
+
+    const user = createUserModel({age: 20});
+    const password = randomBytes(100).toString('hex');
+
+    await testApiHandler({
+      handler: createPasswordHandler,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          body: `user_name=${user.user_name}&mail=${
+            user.mail
+          }&password=${encodeURI(password)}&age=100000000&gender=${
+            user.gender
+          }`,
+        });
+
+        expect(res.status).toBe(400);
+      },
+    });
+  });
 });
