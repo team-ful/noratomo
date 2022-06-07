@@ -11,8 +11,8 @@ describe('switch', () => {
     const getHandler = async (base: Base<void>) => {
       base.res.send('It works!');
     };
-    const postHandler = async (base: Base<void>) => {};
-    const deleteHandler = async (base: Base<void>) => {};
+    const postHandler = async () => {};
+    const deleteHandler = async () => {};
 
     hw = switchMethod({
       GET: handlerWrapper(getHandler),
