@@ -3,7 +3,8 @@ import type {AppProps} from 'next/app';
 import Router from 'next/router';
 import nprogress from 'nprogress';
 import {RecoilRoot} from 'recoil';
-import {Frame} from '../components/Frame';
+import {Frame} from '../components/Frame/Frame';
+import theme from '../utils/theme';
 
 import 'nprogress/nprogress.css';
 
@@ -23,13 +24,27 @@ const MyApp = ({Component, pageProps}: AppProps) => {
   });
 
   return (
-    <RecoilRoot>
-      <ChakraProvider>
-        <Frame>
-          <Component {...pageProps} />
-        </Frame>
-      </ChakraProvider>
-    </RecoilRoot>
+    <>
+      {/* <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
+          rel="stylesheet"
+        />
+      </Head> */}
+      <RecoilRoot>
+        <ChakraProvider theme={theme}>
+          <Frame>
+            <Component {...pageProps} />
+          </Frame>
+        </ChakraProvider>
+      </RecoilRoot>
+    </>
   );
 };
 
