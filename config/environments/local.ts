@@ -8,9 +8,11 @@ const config: Config = {
 
   // テスト用であるため公開している
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
-  cateiruSSOTokenEndpoint: new URL('https://api.sso.cateiru.com/oauth/token'),
+  cateiruSSOTokenEndpoint: new URL(
+    'https://api.sso.cateiru.com/v1/oauth/token'
+  ),
   cateiruSSOPublicKeyEndpoint: new URL(
-    'https://api.sso.cateiru.com/oauth/jwt/key'
+    'https://api.sso.cateiru.com/v1/oauth/jwt/key'
   ),
   cateiruSSOClientId: '51757e0429fbc3ff1788770ee0d95d',
   cateiruSSOClientSecret:

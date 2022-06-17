@@ -7,9 +7,11 @@ const config: Config = {
   host: new URL('http://localhost:3000'),
 
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com'),
-  cateiruSSOTokenEndpoint: new URL('https://api.sso.cateiru.com/oauth/token'),
+  cateiruSSOTokenEndpoint: new URL(
+    'https://api.sso.cateiru.com/v1/oauth/token'
+  ),
   cateiruSSOPublicKeyEndpoint: new URL(
-    'https://api.sso.cateiru.com/oauth/jwt/key'
+    'https://api.sso.cateiru.com/v1/oauth/jwt/key'
   ),
   cateiruSSOClientSecret: 'cateiru-sso-client-id',
   cateiruSSOClientId: 'cateiru-sso-client-secret',
