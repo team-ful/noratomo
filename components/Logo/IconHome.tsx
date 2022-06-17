@@ -1,6 +1,6 @@
 import {Box} from '@chakra-ui/react';
 
-const IconHome = ({size}) => {
+const IconHome = ({size}: {size: string}) => {
   return (
     <Box width={size}>
       <svg

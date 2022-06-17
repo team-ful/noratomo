@@ -1,10 +1,9 @@
 import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
-import {BsBoxSeam} from 'react-icons/bs';
 import {IoChatbubbleOutline} from 'react-icons/io5';
 import {RiAddBoxLine} from 'react-icons/ri';
-import {TbHeartHandshake, TbTools} from 'react-icons/tb';
+import {TbHeartHandshake} from 'react-icons/tb';
 import IconHome from '../Logo/IconHome';
 
 const Header = () => {
