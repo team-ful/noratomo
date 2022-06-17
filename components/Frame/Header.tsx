@@ -1,9 +1,10 @@
 import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
-import {BsBoxSeam} from 'react-icons/bs';
+import {Tooltip} from '@chakra-ui/react';
 import {IoChatbubbleOutline} from 'react-icons/io5';
 import {RiAddBoxLine} from 'react-icons/ri';
 import {TbHeartHandshake} from 'react-icons/tb';
+import IconHome from '../Logo/IconHome';
 
 const Header = () => {
   return (
@@ -16,21 +17,31 @@ const Header = () => {
         </Center>
         <Spacer />
         <Flex>
-          <Center ml=".5rem">
-            <IoChatbubbleOutline size="26px" />
-          </Center>
-          <Center ml=".5rem">
-            <TbHeartHandshake size="27px" />
-          </Center>
-          <Center ml=".5rem">
-            <RiAddBoxLine size="27px" />
-          </Center>
-          <Center ml=".5rem">
-            <BsBoxSeam size="27px" />
-          </Center>
-          <Center mr=".5rem" ml=".5rem">
-            <Avatar size="sm" />
-          </Center>
+          <Tooltip label="メッセージ">
+            <Center ml=".5rem">
+              <IoChatbubbleOutline size="26px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="通知">
+            <Center ml=".5rem">
+              <TbHeartHandshake size="27px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="募集を作成">
+            <Center ml=".5rem">
+              <RiAddBoxLine size="27px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="ホーム">
+            <Center ml=".5rem">
+              <IconHome size="27px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="マイページ">
+            <Center mr=".5rem" ml=".5rem">
+              <Avatar size="sm" />
+            </Center>
+          </Tooltip>
         </Flex>
       </Flex>
     </Box>
