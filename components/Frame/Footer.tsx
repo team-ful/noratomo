@@ -2,7 +2,7 @@
 import {Box, Container, Link, SimpleGrid, Stack, Text} from '@chakra-ui/react';
 import NextLink from 'next/link';
 import {ReactNode} from 'react';
-import Logo from '../Logo';
+import Logo from '../Logo/Logo';
 
 //リストヘッダー
 const ListHeader = ({children}: {children: ReactNode}) => {
