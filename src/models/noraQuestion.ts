@@ -56,7 +56,7 @@ export class NoraQuestion implements NoraQuestionModel {
     }
 
     return (
-      answerLen >= this.current_answer_index && this.current_answer_index >= 0
+      answerLen > this.current_answer_index && this.current_answer_index >= 0
     );
   }
 }

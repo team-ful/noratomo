@@ -1,4 +1,4 @@
-import sql, {insert, select} from 'mysql-bricks';
+import sql, {insert, select, update} from 'mysql-bricks';
 import type {Connection, ResultSetHeader, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
 import {
@@ -6,6 +6,13 @@ import {
   NoraQuestionModel,
   NoraQuestionSelect,
 } from '../models/noraQuestion';
+
+export interface UpdateNoraQuestion {
+  question_title?: string;
+  answers?: NoraQuestionSelect[];
+  current_answer_index?: number;
+  score?: number;
+}
 
 /**
  * 野良認証のクイズを追加する
@@ -24,7 +31,7 @@ export async function createNoraQuestion(
   score: number
 ): Promise<NoraQuestion> {
   // answerIndexが範囲外のときはエラー
-  if (answerIndex < 0 || answerIndex > answers.length) {
+  if (answerIndex < 0 || answerIndex >= answers.length) {
     throw new ApiError(500, 'answerIndex is out of answers index');
   }
 
@@ -46,6 +53,63 @@ export async function createNoraQuestion(
     current_answer_index: answerIndex,
     score: score,
   });
+}
+
+/**
+ * IDを指定してNoraQuestionを更新sる
+ *
+ * @param {Connection} db - database
+ * @param {number} id - 更新するNoraQuestionのID
+ * @param {UpdateNoraQuestion} d - 更新する値
+ */
+export async function updateNoraQuestionByID(
+  db: Connection,
+  id: number,
+  d: UpdateNoraQuestion
+) {
+  const q = await findNoraQuestionById(db, id);
+
+  // 存在しない場合、そもそも更新はできないためエラーにする
+  if (q === null) {
+    throw new ApiError(
+      500,
+      'no update noraQuestion, because it does not exists'
+    );
+  }
+
+  // 値が正しいかチェックする
+  if (
+    d.current_answer_index &&
+    d.answers &&
+    (d.current_answer_index < 0 || d.current_answer_index >= d.answers.length)
+  ) {
+    throw new ApiError(500, 'answerIndex is out of answers index');
+  } else if (
+    d.current_answer_index &&
+    (d.current_answer_index < 0 || d.current_answer_index > q.answers.length)
+  ) {
+    // answerIndexをしている場合、すでにテーブルに存在しているanswersをみて範囲内か判定する
+    throw new ApiError(500, 'answerIndex is out of answers index');
+  } else if (d.answers && q.current_answer_index >= d.answers.length) {
+    // answersを指定している場合、も上に同じ
+    throw new ApiError(500, 'answerIndex is out of answers index');
+  }
+
+  const _d: {[key: string]: Object | string | number} = {
+    ...d,
+  };
+
+  // answersは文字列にする
+  if (d.answers) {
+    _d.answers = JSON.stringify(d.answers);
+  }
+
+  const query = update('nora_question')
+    .set(_d)
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
 }
 
 /**
