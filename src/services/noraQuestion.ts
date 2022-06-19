@@ -32,7 +32,7 @@ export async function createNoraQuestion(
 ): Promise<NoraQuestion> {
   // answerIndexが範囲外のときはエラー
   if (answerIndex < 0 || answerIndex >= answers.length) {
-    throw new ApiError(500, 'answerIndex is out of answers index');
+    throw new ApiError(400, 'answerIndex is out of answers index');
   }
 
   const query = insert('nora_question', {
@@ -78,21 +78,23 @@ export async function updateNoraQuestionByID(
   }
 
   // 値が正しいかチェックする
-  if (
-    d.current_answer_index &&
-    d.answers &&
-    (d.current_answer_index < 0 || d.current_answer_index >= d.answers.length)
-  ) {
-    throw new ApiError(500, 'answerIndex is out of answers index');
-  } else if (
-    d.current_answer_index &&
-    (d.current_answer_index < 0 || d.current_answer_index > q.answers.length)
-  ) {
-    // answerIndexをしている場合、すでにテーブルに存在しているanswersをみて範囲内か判定する
-    throw new ApiError(500, 'answerIndex is out of answers index');
-  } else if (d.answers && q.current_answer_index >= d.answers.length) {
-    // answersを指定している場合、も上に同じ
-    throw new ApiError(500, 'answerIndex is out of answers index');
+  if (typeof d.current_answer_index === 'number' && d.answers) {
+    if (
+      d.current_answer_index < 0 ||
+      d.current_answer_index >= d.answers.length
+    )
+      throw new ApiError(400, 'answerIndex is out of answers index');
+  } else if (typeof d.current_answer_index === 'number') {
+    if (
+      d.current_answer_index < 0 ||
+      d.current_answer_index >= q.answers.length
+    )
+      // answerIndexをしている場合、すでにテーブルに存在しているanswersをみて範囲内か判定する
+      throw new ApiError(400, 'answerIndex is out of db answers index');
+  } else if (d.answers) {
+    if (q.current_answer_index >= d.answers.length)
+      // answersを指定している場合、も上に同じ
+      throw new ApiError(400, 'db answerIndex is out of answers index');
   }
 
   const _d: {[key: string]: Object | string | number} = {

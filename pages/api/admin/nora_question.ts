@@ -3,7 +3,7 @@ import {switchMethod} from '../../../src/base/switchMethod';
 
 // 野良認証の問題を作成、修正、削除をするメソッド
 // * 管理者のみ
-export default switchMethod({
+export default switchMethod<unknown>({
   GET: get,
   POST: post,
   PUT: put,

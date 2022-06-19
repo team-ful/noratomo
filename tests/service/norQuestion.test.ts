@@ -247,13 +247,13 @@ describe('noraQuestion', () => {
       await updateNoraQuestionByID(db, id, {
         current_answer_index: 10, // 範囲外に更新する
       });
-    }).rejects.toThrow('answerIndex is out of answers index');
+    }).rejects.toThrow('answerIndex is out of db answers index');
 
     expect(async () => {
       await updateNoraQuestionByID(db, id, {
         current_answer_index: -1, // 負の値
       });
-    }).rejects.toThrow('answerIndex is out of answers index');
+    }).rejects.toThrow('answerIndex is out of db answers index');
   });
 
   test('updateNoraQuestionByIDで範囲外になるようなanswersを更新する', async () => {
