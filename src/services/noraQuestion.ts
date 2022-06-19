@@ -139,11 +139,19 @@ export async function findNoraQuestionById(
 /**
  *
  * @param {Connection} db - database
+ * @param {number} limit - limit
  */
 export async function findAllNoraQuestion(
-  db: Connection
+  db: Connection,
+  limit?: number
 ): Promise<NoraQuestion[]> {
-  const query = select('*').from('nora_question').toParams({placeholder: '?'});
+  let q = select('*').from('nora_question');
+
+  if (limit) {
+    q = q.limit(limit);
+  }
+
+  const query = q.toParams({placeholder: '?'});
 
   const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
 

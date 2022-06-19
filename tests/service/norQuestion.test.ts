@@ -107,6 +107,26 @@ describe('noraQuestion', () => {
     expect(questions.find(v => v.id === id)).not.toBeUndefined();
   });
 
+  test('findAllNoraQuestionのlimit付き', async () => {
+    // 3つ追加
+    for (let i = 0; 3 > i; i++) {
+      await db.query<ResultSetHeader>(
+        `INSERT INTO nora_question(
+        question_title,
+        answers,
+        current_answer_index,
+        score
+      ) VALUES (?, ?, ?, ?)`,
+        [title, JSON.stringify(answers), answerIndex, score]
+      );
+    }
+
+    const questions = await findAllNoraQuestion(db, 2);
+
+    // 0 = 空という判断
+    expect(questions.length).toBe(2);
+  });
+
   test('findRandomNoraQuestion', async () => {
     // 最低2個の問題を格納する
     for (let i = 0; 2 > i; ++i) {
