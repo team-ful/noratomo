@@ -171,7 +171,7 @@ describe('noraQuestion', () => {
   });
 
   test('存在しないIDでdeleteNoraQuestionByID', async () => {
-    const id = randomInt(10);
+    const id = randomInt(10000);
 
     expect(async () => {
       await deleteNoraQuestionByID(db, id);
