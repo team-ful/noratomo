@@ -1,9 +1,9 @@
 import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
-import {IoChatbubbleOutline} from 'react-icons/io5';
 import {RiAddBoxLine} from 'react-icons/ri';
 import {TbHeartHandshake} from 'react-icons/tb';
+import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
 
 const Header = () => {
@@ -19,7 +19,7 @@ const Header = () => {
         <Flex>
           <Tooltip label="メッセージ">
             <Center ml=".5rem">
-              <IoChatbubbleOutline size="26px" />
+              <IconChat size="27px" />
             </Center>
           </Tooltip>
           <Tooltip label="通知">
