@@ -19,6 +19,7 @@ export interface NoraQuestionSelect {
   answerText: string;
 }
 
+// 野良認証
 export class NoraQuestion implements NoraQuestionModel {
   readonly id: number;
   readonly question_title: string;
@@ -38,5 +39,24 @@ export class NoraQuestion implements NoraQuestionModel {
 
     this.current_answer_index = init.current_answer_index;
     this.score = init.score;
+  }
+
+  // 回答を返す
+  get answer(): NoraQuestionSelect {
+    return this.answers[this.current_answer_index];
+  }
+
+  // current_answer_indexがanswersの範囲内に存在するかチェックする
+  // 回答が存在しない場合はundefined
+  public checkAnswer(): boolean | undefined {
+    const answerLen = this.answers.length;
+
+    if (answerLen === 0) {
+      return;
+    }
+
+    return (
+      answerLen >= this.current_answer_index && this.current_answer_index >= 0
+    );
   }
 }
