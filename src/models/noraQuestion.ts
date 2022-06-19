@@ -59,4 +59,14 @@ export class NoraQuestion implements NoraQuestionModel {
       answerLen > this.current_answer_index && this.current_answer_index >= 0
     );
   }
+
+  get model(): NoraQuestionModel {
+    return {
+      id: this.id,
+      question_title: this.question_title,
+      answers: this.answers,
+      current_answer_index: this.current_answer_index,
+      score: this.score,
+    };
+  }
 }

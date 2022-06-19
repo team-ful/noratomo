@@ -1,5 +1,9 @@
 import {randomInt} from 'crypto';
-import {NoraQuestion, NoraQuestionSelect} from '../../src/models/noraQuestion';
+import {
+  NoraQuestion,
+  NoraQuestionModel,
+  NoraQuestionSelect,
+} from '../../src/models/noraQuestion';
 
 describe('noraQuestion', () => {
   const answers: NoraQuestionSelect[] = [
@@ -90,5 +94,25 @@ describe('noraQuestion', () => {
     });
 
     expect(q.checkAnswer()).toBeUndefined();
+  });
+
+  test('getModel', () => {
+    const q = new NoraQuestion({
+      id: id,
+      question_title: title,
+      answers: answers,
+      current_answer_index: answerIndex,
+      score: score,
+    });
+
+    const m: NoraQuestionModel = {
+      id: id,
+      question_title: title,
+      answers: answers,
+      current_answer_index: answerIndex,
+      score: score,
+    };
+
+    expect(q.model).toEqual(m);
   });
 });
