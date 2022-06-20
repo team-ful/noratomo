@@ -112,6 +112,17 @@ CREATE TABLE IF NOT EXISTS `session` (
     PRIMARY KEY (`session_token`)
 );
 
+-- リフレッシュトークン
+
+CREATE TABLE IF NOT EXISTS `refres` (
+    `refresh_token` VARCHAR(256) UNIQUE NOT NULL,
+    `session_token` VARCHAR(256) UNIQUE NOT NULL,
+    `date` DATETIME NOT NULL,
+    `period_date` DATETIME NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`refresh_token`)
+)
+
 -- 投稿エントリ
 
 CREATE TABLE IF NOT EXISTS `entry` (
