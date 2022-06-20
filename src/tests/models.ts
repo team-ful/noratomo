@@ -59,6 +59,7 @@ export const createSessionModel = (
 
   return {
     session_token: options?.session_token || randomText(128),
+    refresh_token: options?.refresh_token,
     date: options?.date || now,
     period_date: options?.period_date || period,
     user_id: options?.user_id || randomInt(100000),
