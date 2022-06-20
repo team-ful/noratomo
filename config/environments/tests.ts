@@ -29,7 +29,7 @@ const config: Config = {
       maxAge: config.sessionPeriodDay * 24,
       sameSite: 'strict',
       secure: false, // テスト用であるためfalse
-      httpOnly: false, // クライアント側でcookieを読みたいためfalse
+      httpOnly: true,
       path: '/',
     };
   },
@@ -46,8 +46,19 @@ const config: Config = {
       expires: date,
       maxAge: config.sessionPeriodDay * 24,
       sameSite: 'strict',
-      secure: false, // テスト用であるためfalse
-      httpOnly: false, // クライアント側でcookieを読みたいためfalse
+      secure: true,
+      httpOnly: true,
+      path: '/',
+    };
+  },
+
+  otherCookieName: 'noratomo-options',
+  otherCookieOptions: () => {
+    return {
+      domain: 'localhost',
+      sameSite: 'strict',
+      secure: false,
+      httpOnly: false,
       path: '/',
     };
   },

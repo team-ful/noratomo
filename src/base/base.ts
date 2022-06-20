@@ -381,6 +381,17 @@ class Base<T> {
       session.refresh_token,
       config.refreshCookieOptions()
     );
+
+    const options = {
+      s: true,
+      a: user.is_admin,
+    };
+
+    this.setCookie(
+      config.otherCookieName,
+      JSON.stringify(options),
+      config.otherCookieOptions()
+    );
   }
 
   /**

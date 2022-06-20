@@ -93,6 +93,7 @@ class AuthedBase<T> extends Base<T> {
   public clearSessionCookies() {
     this.clearCookie(config.sessionCookieName, config.sessionCookieOptions());
     this.clearCookie(config.refreshCookieName, config.refreshCookieOptions());
+    this.clearCookie(config.otherCookieName, config.otherCookieOptions());
   }
 
   public async logout() {

@@ -27,6 +27,11 @@ export interface Config {
   refreshPeriodDay: number;
   refreshCookieOptions: () => CookieSerializeOptions;
 
+  // other information cookies
+  // ログイン状態判定などに使用する
+  otherCookieName: string;
+  otherCookieOptions: () => CookieSerializeOptions;
+
   // DB
   db: ConnectionOptions;
 }
