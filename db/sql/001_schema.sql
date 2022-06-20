@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `session` (
 
 -- リフレッシュトークン
 
-CREATE TABLE IF NOT EXISTS `refres` (
+CREATE TABLE IF NOT EXISTS `refresh` (
     `refresh_token` VARCHAR(256) UNIQUE NOT NULL,
     `session_token` VARCHAR(256) UNIQUE NOT NULL,
     `date` DATETIME NOT NULL,
