@@ -16,6 +16,9 @@ describe('login', () => {
     await db.connect();
 
     await user.create(db);
+  });
+
+  beforeEach(async () => {
     await user.addSession(db);
   });
 
@@ -146,6 +149,24 @@ describe('login', () => {
       test: async ({fetch}) => {
         const res = await fetch();
         expect(res.status).toBe(200);
+
+        let sessionToken = '';
+        let refreshToken = '';
+
+        for (const c of res.cookies) {
+          if (typeof c[config.sessionCookieName] === 'string') {
+            sessionToken = c[config.sessionCookieName];
+          } else if (typeof c[config.refreshCookieName] === 'string') {
+            refreshToken = c[config.refreshCookieName];
+          }
+        }
+
+        // Tokenは更新される
+        expect(sessionToken).not.toBe('');
+        expect(refreshToken).not.toBe('');
+
+        expect(sessionToken).not.toBe(user.session?.session_token);
+        expect(refreshToken).not.toBe(user.session?.refresh_token);
       },
     });
   });
