@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import argon2 from 'argon2';
 import Cert from '../../src/models/cret';
 import {randomText} from '../../src/utils/random';

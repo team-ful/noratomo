@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../../config';

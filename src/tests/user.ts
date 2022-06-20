@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import argon2 from 'argon2';
 import {serialize} from 'cookie';
 import {Connection} from 'mysql2/promise';

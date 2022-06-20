@@ -1,4 +1,4 @@
-import {randomBytes, randomInt} from 'crypto';
+import {randomInt} from 'crypto';
 import {Session} from '../../src/models/session';
 import {randomText} from '../../src/utils/random';
 
