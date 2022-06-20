@@ -20,6 +20,11 @@ export interface Config {
   sessionPeriodDay: number;
   sessionCookieOptions: () => CookieSerializeOptions;
 
+  // refresh cookie
+  refreshCookieName: string;
+  refreshPeriodDay: number;
+  refreshCookieOptions: () => CookieSerializeOptions;
+
   // DB
   db: ConnectionOptions;
 }

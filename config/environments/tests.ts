@@ -33,6 +33,23 @@ const config: Config = {
     };
   },
 
+  refreshCookieName: 'noratomo-refresh',
+  refreshPeriodDay: 30,
+  refreshCookieOptions: () => {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + config.sessionPeriodDay);
+
+    return {
+      domain: 'localhost',
+      expires: date,
+      maxAge: config.sessionPeriodDay * 24,
+      sameSite: 'strict',
+      secure: false, // テスト用であるためfalse
+      httpOnly: false, // クライアント側でcookieを読みたいためfalse
+      path: '/',
+    };
+  },
+
   db: {
     host: '127.0.0.1',
     user: 'docker',

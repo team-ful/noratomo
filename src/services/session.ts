@@ -142,7 +142,7 @@ export async function createSession(
     db,
     refreshToken,
     sessionToken,
-    config.sessionPeriodDay,
+    config.refreshPeriodDay,
     userId
   );
 
