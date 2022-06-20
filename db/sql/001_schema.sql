@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `refresh` (
     `period_date` DATETIME NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`refresh_token`)
-)
+);
 
 -- 投稿エントリ
 
