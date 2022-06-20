@@ -1,4 +1,3 @@
-import exp from 'constants';
 import {URL} from 'url';
 import {serialize} from 'cookie';
 import mysql from 'mysql2/promise';

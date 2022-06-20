@@ -3,6 +3,7 @@ import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
 import User from '../models/user';
 import {
+  deleteRefreshByRefreshToken,
   deleteRefreshBySessionToken,
   deleteSessionBySessionToken,
   findRefreshByRefreshToken,
@@ -15,8 +16,6 @@ import Base from './base';
  */
 class AuthedBase<T> extends Base<T> {
   private userId: number;
-  readonly sessionToken?: string;
-  readonly refreshToken?: string;
 
   private _user?: User;
 
@@ -24,11 +23,9 @@ class AuthedBase<T> extends Base<T> {
     super(req, res);
 
     this.userId = NaN;
-    const session = this.getCookie(config.sessionCookieName);
-    const refresh = this.getCookie(config.refreshCookieName);
 
-    this.sessionToken = session;
-    this.refreshToken = refresh;
+    this.sessionToken = this.getCookie(config.sessionCookieName);
+    this.refreshToken = this.getCookie(config.refreshCookieName);
   }
 
   // ログインする
@@ -86,6 +83,7 @@ class AuthedBase<T> extends Base<T> {
     }
 
     // 新しいトークンを付与
+    // this.sessionTokenとthis.refreshTokenは上書きしている
     await this.newLogin(user);
 
     this._user = user;
@@ -95,6 +93,18 @@ class AuthedBase<T> extends Base<T> {
   public clearSessionCookies() {
     this.clearCookie(config.sessionCookieName, config.sessionCookieOptions());
     this.clearCookie(config.refreshCookieName, config.refreshCookieOptions());
+  }
+
+  public async logout() {
+    if (this.sessionToken) {
+      await deleteSessionBySessionToken(await this.db(), this.sessionToken);
+    }
+
+    if (this.refreshToken) {
+      await deleteRefreshByRefreshToken(await this.db(), this.refreshToken);
+    }
+
+    this.clearSessionCookies();
   }
 
   // ユーザを返す

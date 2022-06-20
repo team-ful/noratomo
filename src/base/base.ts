@@ -40,6 +40,9 @@ class Base<T> {
   private cookies: string[];
   private postBody?: ParsedUrlQuery;
 
+  protected sessionToken?: string;
+  protected refreshToken?: string;
+
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     this.req = req;
     this.res = res;
@@ -363,6 +366,9 @@ class Base<T> {
     if (typeof session.refresh_token === 'undefined') {
       throw new ApiError(500, 'refresh_token is empty');
     }
+
+    this.sessionToken = session.session_token;
+    this.refreshToken = session.refresh_token;
 
     this.setCookie(
       config.sessionCookieName,
