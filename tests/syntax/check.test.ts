@@ -7,6 +7,7 @@ import {
   checkUserName,
   checkProfile,
 } from '../../src/syntax/check';
+import {randomText} from '../../src/utils/random';
 
 describe('checkUserName', () => {
   test('正しい', () => {
@@ -24,7 +25,7 @@ describe('checkUserName', () => {
   });
 
   test('16文字より大きいとエラー', () => {
-    const name = randomBytes(32).toString('hex');
+    const name = randomText(32);
 
     expect(() => checkUserName(name)).toThrow();
   });
@@ -76,7 +77,7 @@ describe('checkAge', () => {
 
 describe('checkPW', () => {
   test('正しい', () => {
-    const pw = randomBytes(32).toString('hex');
+    const pw = randomText(32);
 
     expect(() => checkPW(pw)).not.toThrow();
   });
@@ -98,7 +99,7 @@ describe('checkDisplayName', () => {
   });
 
   test('フォーマットが正しくないとエラー', () => {
-    const names = ['@@@asogo4p', '', randomBytes(64).toString('hex')];
+    const names = ['@@@asogo4p', '', randomText(64)];
 
     for (const n of names) {
       expect(() => checkDisplayName(n)).toThrow();
@@ -108,7 +109,7 @@ describe('checkDisplayName', () => {
 
 describe('checkProfile', () => {
   test('正しい', () => {
-    const p = ['a', randomBytes(32).toString('hex')];
+    const p = ['a', randomText(32)];
 
     for (const n of p) {
       expect(() => checkProfile(n)).not.toThrow();
@@ -116,7 +117,7 @@ describe('checkProfile', () => {
   });
 
   test('128文字制限', () => {
-    const p = randomBytes(128).toString('hex');
+    const p = randomText(128);
 
     expect(() => checkProfile(p)).toThrow();
   });

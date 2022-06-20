@@ -7,6 +7,7 @@ import {
   deleteSessionBySessionToken,
   createSessionSpecifyToken,
 } from '../../src/services/session';
+import {randomText} from '../../src/utils/random';
 
 describe('session', () => {
   let db: mysql.Connection;
@@ -32,7 +33,7 @@ describe('session', () => {
   });
 
   test('作成できる', async () => {
-    const token = randomBytes(128).toString('hex');
+    const token = randomText(128);
     const periodDay = 1;
     const userId = randomInt(10000);
 

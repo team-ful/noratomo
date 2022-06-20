@@ -1,11 +1,12 @@
 import {randomBytes} from 'crypto';
 import argon2 from 'argon2';
 import Cert from '../../src/models/cret';
+import {randomText} from '../../src/utils/random';
 
 describe('cert', () => {
   test('equalCateiruSSO', () => {
-    const id1 = randomBytes(32).toString('hex');
-    const id2 = randomBytes(32).toString('hex');
+    const id1 = randomText(32);
+    const id2 = randomText(32);
 
     const cert1 = new Cert({
       user_id: 1,
@@ -18,8 +19,8 @@ describe('cert', () => {
   });
 
   test('equalPassword', async () => {
-    const pw1 = randomBytes(32).toString('hex');
-    const pw2 = randomBytes(32).toString('hex');
+    const pw1 = randomText(32);
+    const pw2 = randomText(32);
 
     const cert1 = new Cert({
       user_id: 1,

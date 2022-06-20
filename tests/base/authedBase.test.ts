@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import {serialize} from 'cookie';
 import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
@@ -6,6 +5,7 @@ import config from '../../config';
 import AuthedBase from '../../src/base/authedBase';
 import {authHandlerWrapper} from '../../src/base/handlerWrapper';
 import {TestUser} from '../../src/tests/user';
+import {randomText} from '../../src/utils/random';
 
 describe('login', () => {
   let db: mysql.Connection;
@@ -91,7 +91,7 @@ describe('login', () => {
         req.headers = {
           cookie: serialize(
             config.sessionCookieName,
-            randomBytes(128).toString('hex'),
+            randomText(128),
             config.sessionCookieOptions()
           ),
         };

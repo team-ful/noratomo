@@ -1,5 +1,6 @@
 import {randomBytes, randomInt} from 'crypto';
 import {Session} from '../../src/models/session';
+import {randomText} from '../../src/utils/random';
 
 describe('isPeriod', () => {
   const now = new Date(Date.now());
@@ -12,7 +13,7 @@ describe('isPeriod', () => {
 
   test('有効期限内の場合はfalse', () => {
     const session = new Session({
-      session_token: randomBytes(32).toString('hex'),
+      session_token: randomText(32),
       date: now,
       period_date: onHourDate,
       user_id: randomInt(10),
@@ -23,7 +24,7 @@ describe('isPeriod', () => {
 
   test('有効期限切れの場合はtrue', () => {
     const session = new Session({
-      session_token: randomBytes(32).toString('hex'),
+      session_token: randomText(32),
       date: now,
       period_date: onDayAgoDate,
       user_id: randomInt(10),

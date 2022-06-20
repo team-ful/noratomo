@@ -3,6 +3,7 @@ import mysql from 'mysql2/promise';
 import config from '../../config';
 import {findCertByUserID, setCert} from '../../src/services/cert';
 import {createCertModel} from '../../src/tests/models';
+import {randomText} from '../../src/utils/random';
 
 describe('setCert', () => {
   let connection: mysql.Connection;
@@ -17,7 +18,7 @@ describe('setCert', () => {
   });
 
   test('ssoだけ', async () => {
-    const ssoId = randomBytes(32).toString('hex');
+    const ssoId = randomText(32);
 
     const certModel = createCertModel({cateiru_sso_id: ssoId});
 
@@ -31,7 +32,7 @@ describe('setCert', () => {
   });
 
   test('passwordだけ', async () => {
-    const pw = randomBytes(32).toString('hex');
+    const pw = randomText(32);
 
     const certModel = createCertModel({password: pw});
 
@@ -45,8 +46,8 @@ describe('setCert', () => {
   });
 
   test('ssoとpassword', async () => {
-    const pw = randomBytes(32).toString('hex');
-    const ssoId = randomBytes(32).toString('hex');
+    const pw = randomText(32);
+    const ssoId = randomText(32);
 
     const certModel = createCertModel({password: pw, cateiru_sso_id: ssoId});
 
