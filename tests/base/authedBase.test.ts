@@ -9,33 +9,28 @@ import {randomText} from '../../src/utils/random';
 
 describe('login', () => {
   let db: mysql.Connection;
-  let sessionToken: string;
-  let userId: number;
+  const user = new TestUser();
 
   beforeAll(async () => {
     db = await mysql.createConnection(config.db);
     await db.connect();
 
-    const user = new TestUser();
     await user.create(db);
     await user.addSession(db);
-
-    sessionToken = user.session?.session_token || '';
-    userId = user.user?.id || NaN;
   });
 
   afterAll(async () => {
     await db.end();
   });
 
-  test('cookieが設定されている場合、認証される', async () => {
+  test('session-token, refresh-tokenどちらのcookieも設定されている場合、認証される', async () => {
     expect.hasAssertions();
 
     const handler = async (base: AuthedBase<void>) => {
       const user = base.user;
 
       expect(user).not.toBeUndefined();
-      expect(user?.id).toBe(userId);
+      expect(user?.id).toBe(user.id);
     };
 
     const h = authHandlerWrapper(handler, 'GET');
@@ -44,11 +39,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: serialize(
-            config.sessionCookieName,
-            sessionToken,
-            config.sessionCookieOptions()
-          ),
+          cookie: user.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -58,7 +49,108 @@ describe('login', () => {
     });
   });
 
-  test('cookieがない場合は認証できない', async () => {
+  test('session-token cookieが設定されている場合、それを使用して認証される', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: AuthedBase<void>) => {
+      const user = base.user;
+
+      expect(user).not.toBeUndefined();
+      expect(user?.id).toBe(user.id);
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: user.sessionCookie,
+        };
+      },
+
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('refresh-token cookieが設定されている場合、それを使用して認証される', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: AuthedBase<void>) => {
+      const user = base.user;
+
+      expect(user).not.toBeUndefined();
+      expect(user?.id).toBe(user.id);
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: user.refreshCookie,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+
+        let sessionToken = '';
+        let refreshToken = '';
+
+        for (const c of res.cookies) {
+          if (typeof c[config.sessionCookieName] === 'string') {
+            sessionToken = c[config.sessionCookieName];
+          } else if (typeof c[config.refreshCookieName] === 'string') {
+            refreshToken = c[config.refreshCookieName];
+          }
+        }
+
+        // Tokenは更新される
+        expect(sessionToken).not.toBe('');
+        expect(refreshToken).not.toBe('');
+
+        expect(sessionToken).not.toBe(user.session?.session_token);
+        expect(refreshToken).not.toBe(user.session?.refresh_token);
+      },
+    });
+  });
+
+  test('session-token cookieが不正な場合はrefresh-tokenを使用してログインする', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: AuthedBase<void>) => {
+      const user = base.user;
+
+      expect(user).not.toBeUndefined();
+      expect(user?.id).toBe(user.id);
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: `${user.refreshCookie}; ${serialize(
+            config.sessionCookieName,
+            randomText(128),
+            config.sessionCookieOptions()
+          )}`,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('なにもcookieがない場合は認証できない', async () => {
     expect.hasAssertions();
 
     const handler = async () => {
@@ -89,19 +181,30 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: serialize(
+          cookie: `${serialize(
+            config.refreshCookieName,
+            randomText(128),
+            config.refreshCookieOptions()
+          )}; ${serialize(
             config.sessionCookieName,
             randomText(128),
             config.sessionCookieOptions()
-          ),
+          )}`,
         };
       },
       test: async ({fetch}) => {
         const res = await fetch();
         expect(res.status).toBe(403);
 
-        expect(res.cookies[0][config.sessionCookieName]).toBe('');
-        expect(res.cookies[0]['max-age']).toBe('-1');
+        const sessionCookie = res.cookies.find(
+          v => typeof v[config.sessionCookieName] === 'string'
+        );
+
+        expect(sessionCookie).not.toBeUndefined();
+        if (sessionCookie) {
+          expect(sessionCookie[config.sessionCookieName]).toBe('');
+          expect(sessionCookie['max-age']).toBe('-1');
+        }
       },
     });
   });
@@ -132,11 +235,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: serialize(
-            config.sessionCookieName,
-            sessionToken,
-            config.sessionCookieOptions()
-          ),
+          cookie: user.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -163,7 +262,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -190,7 +289,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
         };
       },
       test: async ({fetch}) => {

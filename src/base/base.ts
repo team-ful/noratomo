@@ -360,10 +360,20 @@ class Base<T> {
   public async newLogin(user: User) {
     const session = await createSession(await this.db(), user.id);
 
+    if (typeof session.refresh_token === 'undefined') {
+      throw new ApiError(500, 'refresh_token is empty');
+    }
+
     this.setCookie(
       config.sessionCookieName,
       session.session_token,
       config.sessionCookieOptions()
+    );
+
+    this.setCookie(
+      config.refreshCookieName,
+      session.refresh_token,
+      config.refreshCookieOptions()
     );
   }
 

@@ -87,4 +87,16 @@ export class TestUser {
 
     return serialize(config.sessionCookieName, this.session.session_token);
   }
+
+  get refreshCookie() {
+    if (!this.session || typeof this.session.refresh_token === 'undefined') {
+      throw new Error('no session');
+    }
+
+    return serialize(config.refreshCookieName, this.session.refresh_token);
+  }
+
+  get cookie() {
+    return `${this.sessionCookie}; ${this.refreshCookie}`;
+  }
 }

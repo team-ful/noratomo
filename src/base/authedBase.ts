@@ -2,7 +2,12 @@ import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
 import User from '../models/user';
-import {findUserBySessionToken} from '../services/user';
+import {
+  deleteRefreshBySessionToken,
+  deleteSessionBySessionToken,
+  findRefreshByRefreshToken,
+} from '../services/session';
+import {findUserBySessionToken, findUserByUserID} from '../services/user';
 import Base from './base';
 
 /**
@@ -10,7 +15,8 @@ import Base from './base';
  */
 class AuthedBase<T> extends Base<T> {
   private userId: number;
-  readonly sessionToken: string;
+  readonly sessionToken?: string;
+  readonly refreshToken?: string;
 
   private _user?: User;
 
@@ -19,30 +25,76 @@ class AuthedBase<T> extends Base<T> {
 
     this.userId = NaN;
     const session = this.getCookie(config.sessionCookieName);
-
-    // cookieがない場合
-    if (typeof session !== 'string' || session.length === 0) {
-      throw new ApiError(403, 'no login');
-    }
+    const refresh = this.getCookie(config.refreshCookieName);
 
     this.sessionToken = session;
+    this.refreshToken = refresh;
   }
 
   // ログインする
   public async login() {
+    if (
+      typeof this.sessionToken !== 'string' ||
+      this.sessionToken.length === 0
+    ) {
+      // refresh tokenを使用したログインを試みる
+      await this.loginByRefresh();
+      return;
+    }
+
     const user = await findUserBySessionToken(
       await this.db(),
       this.sessionToken
     );
 
     if (user === null) {
-      // ユーザがnullということは値が不正か有効期限切れであるためcookieを削除する
-      this.clearCookie(config.sessionCookieName, config.sessionCookieOptions());
-
-      throw new ApiError(403, 'login failed');
+      // refresh tokenを使用したログインを試みる
+      await this.loginByRefresh();
     } else {
       this._user = user;
     }
+  }
+
+  private async loginByRefresh() {
+    if (
+      typeof this.refreshToken !== 'string' ||
+      this.refreshToken.length === 0
+    ) {
+      this.clearSessionCookies();
+
+      throw new ApiError(403, 'login failed');
+    }
+
+    const session = await findRefreshByRefreshToken(
+      await this.db(),
+      this.refreshToken
+    );
+    if (session === null) {
+      this.clearSessionCookies();
+
+      throw new ApiError(403, 'login failed');
+    }
+
+    // tokenをDBから削除
+    await deleteSessionBySessionToken(await this.db(), session.session_token);
+    await deleteRefreshBySessionToken(await this.db(), session.session_token);
+
+    const user = await findUserByUserID(await this.db(), session?.user_id);
+
+    if (user === null) {
+      throw new ApiError(500, 'no user');
+    }
+
+    // 新しいトークンを付与
+    await this.newLogin(user);
+
+    this._user = user;
+  }
+
+  // 認証用トークンcookieを全部削除する
+  public clearSessionCookies() {
+    this.clearCookie(config.sessionCookieName, config.sessionCookieOptions());
+    this.clearCookie(config.refreshCookieName, config.refreshCookieOptions());
   }
 
   // ユーザを返す

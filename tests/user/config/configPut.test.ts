@@ -41,7 +41,7 @@ describe('更新', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: u.sessionCookie,
+          cookie: u.cookie,
           'content-type': 'application/x-www-form-urlencoded',
         };
       },
@@ -83,7 +83,7 @@ describe('更新', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: u.sessionCookie,
+          cookie: u.cookie,
           'content-type': 'application/x-www-form-urlencoded',
         };
       },
