@@ -12,6 +12,7 @@ const config: Config = {
   cateiruSSOClientSecret: '',
   cateiruSSOClientId: '',
 
+  sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
   sessionPeriodDay: 7,
   sessionCookieOptions: () => {
@@ -29,6 +30,7 @@ const config: Config = {
     };
   },
 
+  refreshTokenLen: 128,
   refreshCookieName: 'noratomo-refresh',
   refreshPeriodDay: 30,
   refreshCookieOptions: () => {

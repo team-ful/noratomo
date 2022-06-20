@@ -16,11 +16,13 @@ export interface Config {
   cateiruSSOClientSecret: string;
 
   // session cookie
+  sessionTokenLen: number;
   sessionCookieName: string;
   sessionPeriodDay: number;
   sessionCookieOptions: () => CookieSerializeOptions;
 
   // refresh cookie
+  refreshTokenLen: number;
   refreshCookieName: string;
   refreshPeriodDay: number;
   refreshCookieOptions: () => CookieSerializeOptions;

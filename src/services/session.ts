@@ -126,8 +126,8 @@ export async function createSession(
   db: Connection,
   userId: number
 ): Promise<Session> {
-  const sessionToken = randomText(64);
-  const refreshToken = randomText(64);
+  const sessionToken = randomText(config.sessionTokenLen);
+  const refreshToken = randomText(config.refreshTokenLen);
 
   // session tokenを追加する
   await createSessionSpecifyToken(
