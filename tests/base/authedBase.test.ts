@@ -145,4 +145,58 @@ describe('login', () => {
       },
     });
   });
+
+  test('adminOnly', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: AuthedBase<void>) => {
+      base.adminOnly();
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    const user = new TestUser({is_admin: true});
+    await user.create(db);
+    await user.addSession(db);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: user.sessionCookie,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('adminOnlyで通常ユーザ', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: AuthedBase<void>) => {
+      base.adminOnly();
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    const user = new TestUser();
+    await user.create(db);
+    await user.addSession(db);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: user.sessionCookie,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(403);
+      },
+    });
+  });
 });

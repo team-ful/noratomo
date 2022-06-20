@@ -70,6 +70,12 @@ class AuthedBase<T> extends Base<T> {
       join_date: u.join_date,
     };
   }
+
+  public adminOnly() {
+    if (this._user && !this._user.is_admin) {
+      throw new ApiError(403, 'no administrator');
+    }
+  }
 }
 
 export default AuthedBase;
