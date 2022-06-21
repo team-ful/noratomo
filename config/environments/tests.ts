@@ -26,7 +26,7 @@ const config: Config = {
     return {
       domain: 'localhost',
       expires: date,
-      maxAge: config.sessionPeriodDay * 24,
+      maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
       secure: false, // テスト用であるためfalse
       httpOnly: true,
@@ -39,12 +39,12 @@ const config: Config = {
   refreshPeriodDay: 30,
   refreshCookieOptions: () => {
     const date = new Date(Date.now());
-    date.setDate(date.getDate() + config.sessionPeriodDay);
+    date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
       domain: 'localhost',
       expires: date,
-      maxAge: config.sessionPeriodDay * 24,
+      maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
       secure: true,
       httpOnly: true,
@@ -54,8 +54,13 @@ const config: Config = {
 
   otherCookieName: 'noratomo-options',
   otherCookieOptions: () => {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + config.refreshPeriodDay);
+
     return {
       domain: 'localhost',
+      expires: date,
+      maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
       secure: false,
       httpOnly: false,
