@@ -30,6 +30,8 @@ async function handler(base: Base<void>) {
   const user = await ca.login();
 
   await base.newLogin(user);
+
+  base.res.redirect('/hello');
 }
 
 export default handlerWrapper(handler, 'GET');

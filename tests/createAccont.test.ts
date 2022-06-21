@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import mysql from 'mysql2/promise';
 import config from '../config';
 import {
@@ -9,6 +8,7 @@ import {findCertByUserID} from '../src/services/cert';
 import {findUserByUserID} from '../src/services/user';
 import {createUserModel} from '../src/tests/models';
 import {TestUser} from '../src/tests/user';
+import {randomText} from '../src/utils/random';
 
 describe('cateiruSSO', () => {
   let db: mysql.Connection;
@@ -31,7 +31,7 @@ describe('cateiruSSO', () => {
       email: userModel.mail,
       role: '',
       picture: 'https://example.com',
-      id: randomBytes(32).toString('hex'),
+      id: randomText(32),
     };
 
     const ca = new CreateAccountBySSO(db, data);
@@ -81,7 +81,7 @@ describe('CreateAccountByPassword', () => {
 
   test('新規作成', async () => {
     const dummy = createUserModel();
-    const password = randomBytes(32).toString('hex');
+    const password = randomText(32);
 
     const ca = new CreateAccountByPassword(
       dummy.user_name,
@@ -110,7 +110,7 @@ describe('CreateAccountByPassword', () => {
 
     const mail = user.user?.mail || '';
     const dummy = createUserModel();
-    const password = randomBytes(32).toString('hex');
+    const password = randomText(32);
 
     const ca = new CreateAccountByPassword(
       dummy.user_name,
@@ -131,7 +131,7 @@ describe('CreateAccountByPassword', () => {
 
     const userName = user.user?.user_name || '';
     const dummy = createUserModel();
-    const password = randomBytes(32).toString('hex');
+    const password = randomText(32);
 
     const ca = new CreateAccountByPassword(
       userName,

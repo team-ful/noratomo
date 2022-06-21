@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import mysql from 'mysql2/promise';
 import config from '../../config';
 import {setCert} from '../../src/services/cert';
@@ -16,6 +15,7 @@ import {
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
 import {TestUser} from '../../src/tests/user';
+import {randomText} from '../../src/utils/random';
 
 describe('getUser', () => {
   let connection: mysql.Connection;
@@ -116,9 +116,7 @@ describe('findUserByCateiruSSO', () => {
   });
 
   test('certが存在しない場合はnullが返る', async () => {
-    expect(
-      await findUserByCateiruSSO(connection, randomBytes(32).toString('hex'))
-    ).toBeNull();
+    expect(await findUserByCateiruSSO(connection, randomText(32))).toBeNull();
   });
 
   test('ssoが存在する場合は返る', async () => {
@@ -127,7 +125,7 @@ describe('findUserByCateiruSSO', () => {
 
     const cert = createCertModel({
       user_id: user.id,
-      cateiru_sso_id: randomBytes(32).toString('hex'),
+      cateiru_sso_id: randomText(32),
     });
     await setCert(connection, cert);
 
@@ -171,10 +169,7 @@ describe('findUserBySessionToken', () => {
     const user = new TestUser();
     await user.create(connection);
 
-    const dbUser = await findUserBySessionToken(
-      connection,
-      randomBytes(128).toString('hex')
-    );
+    const dbUser = await findUserBySessionToken(connection, randomText(128));
 
     expect(dbUser).toBeNull();
   });
@@ -207,10 +202,7 @@ describe('findUserByMail', () => {
     const user = new TestUser();
     await user.create(connection);
 
-    const dbUser = await findUserByMail(
-      connection,
-      randomBytes(128).toString('hex')
-    );
+    const dbUser = await findUserByMail(connection, randomText(128));
 
     expect(dbUser).toBeNull();
   });
@@ -246,10 +238,7 @@ describe('findUserByUserName', () => {
     const user = new TestUser();
     await user.create(connection);
 
-    const dbUser = await findUserByUserName(
-      connection,
-      randomBytes(128).toString('hex')
-    );
+    const dbUser = await findUserByUserName(connection, randomText(128));
 
     expect(dbUser).toBeNull();
   });

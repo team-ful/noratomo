@@ -6,6 +6,7 @@ import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
 import Base, {Device} from '../../src/base/base';
 import {handlerWrapper} from '../../src/base/handlerWrapper';
+import {findSessionTokenByRefreshToken} from '../../src/services/session';
 import {findUserBySessionToken} from '../../src/services/user';
 import {TestUser} from '../../src/tests/user';
 
@@ -580,7 +581,7 @@ describe('newLogin', () => {
     await connection.end();
   });
 
-  test('新規でログインするとsession tokenがcookieにセットされる', async () => {
+  test('新規でログインするとtokenがcookieにセットされる', async () => {
     expect.hasAssertions();
 
     let userId = NaN;
@@ -605,11 +606,29 @@ describe('newLogin', () => {
         const res = await fetch();
         expect(res.status).toBe(200);
 
-        const session = res.cookies[0][config.sessionCookieName];
+        console.log(res.cookies);
+
+        let session = '';
+        let refresh = '';
+
+        for (const c of res.cookies) {
+          if (typeof c[config.sessionCookieName] === 'string') {
+            session = c[config.sessionCookieName];
+          } else if (typeof c[config.refreshCookieName] === 'string') {
+            refresh = c[config.refreshCookieName];
+          }
+        }
 
         const user = await findUserBySessionToken(connection, session);
 
         expect(user?.id).toBe(userId);
+
+        const sessionToken = await findSessionTokenByRefreshToken(
+          connection,
+          refresh
+        );
+
+        expect(sessionToken).toBe(session);
       },
     });
   });

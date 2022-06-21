@@ -12,6 +12,7 @@ const config: Config = {
   cateiruSSOClientSecret: '',
   cateiruSSOClientId: '',
 
+  sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
   sessionPeriodDay: 7,
   sessionCookieOptions: () => {
@@ -21,10 +22,44 @@ const config: Config = {
     return {
       domain: 'localhost',
       expires: date,
-      maxAge: config.sessionPeriodDay * 24,
+      maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
       secure: false, // TODO: httpsにしてtrueにしたい
-      httpOnly: false, // クライアント側でcookieを読みたいためfalse
+      httpOnly: true,
+      path: '/',
+    };
+  },
+
+  refreshTokenLen: 128,
+  refreshCookieName: 'noratomo-refresh',
+  refreshPeriodDay: 30,
+  refreshCookieOptions: () => {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + config.refreshPeriodDay);
+
+    return {
+      domain: 'localhost',
+      expires: date,
+      maxAge: config.refreshPeriodDay * 86400,
+      sameSite: 'strict',
+      secure: false, // テスト用であるためfalse
+      httpOnly: true,
+      path: '/',
+    };
+  },
+
+  otherCookieName: 'noratomo-options',
+  otherCookieOptions: () => {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + config.refreshPeriodDay);
+
+    return {
+      domain: 'localhost',
+      expires: date,
+      maxAge: config.refreshPeriodDay * 86400,
+      sameSite: 'strict',
+      secure: false,
+      httpOnly: false,
       path: '/',
     };
   },

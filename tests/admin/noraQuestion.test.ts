@@ -62,7 +62,7 @@ describe('noraQuestion', () => {
       handler: get,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -82,7 +82,7 @@ describe('noraQuestion', () => {
       handler: get,
       requestPatcher: async req => {
         req.headers = {
-          cookie: normalUser.sessionCookie,
+          cookie: normalUser.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -110,7 +110,7 @@ describe('noraQuestion', () => {
       handler: get,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
         };
       },
       url: '/?limit=2',
@@ -132,7 +132,7 @@ describe('noraQuestion', () => {
       handler: post,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
           'content-type': 'application/json',
         };
       },
@@ -165,7 +165,7 @@ describe('noraQuestion', () => {
       handler: post,
       requestPatcher: async req => {
         req.headers = {
-          cookie: normalUser.sessionCookie,
+          cookie: normalUser.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -182,7 +182,7 @@ describe('noraQuestion', () => {
       handler: post,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
           'content-type': 'application/json',
         };
       },
@@ -207,7 +207,7 @@ describe('noraQuestion', () => {
       handler: post,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
           'content-type': 'application/json',
         };
       },
@@ -235,7 +235,7 @@ describe('noraQuestion', () => {
       handler: post,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
           'content-type': 'application/json',
         };
       },
@@ -276,7 +276,7 @@ describe('noraQuestion', () => {
       handler: put,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
           'content-type': 'application/json',
         };
       },
@@ -318,7 +318,7 @@ describe('noraQuestion', () => {
       handler: put,
       requestPatcher: async req => {
         req.headers = {
-          cookie: normalUser.sessionCookie,
+          cookie: normalUser.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -347,7 +347,7 @@ describe('noraQuestion', () => {
       handler: put,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
           'content-type': 'application/json',
         };
       },
@@ -398,7 +398,7 @@ describe('noraQuestion', () => {
       handler: _delete,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
         };
       },
       url: `/?id=${question.id}`,
@@ -420,7 +420,7 @@ describe('noraQuestion', () => {
       handler: _delete,
       requestPatcher: async req => {
         req.headers = {
-          cookie: normalUser.sessionCookie,
+          cookie: normalUser.cookie,
         };
       },
       test: async ({fetch}) => {
@@ -437,7 +437,7 @@ describe('noraQuestion', () => {
       handler: _delete,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: user.cookie,
         };
       },
       url: `/?id=${randomInt(1000)}`,

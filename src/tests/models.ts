@@ -2,6 +2,7 @@ import {randomBytes, randomInt} from 'crypto';
 import {CertModel} from '../models/cret';
 import {SessionModel} from '../models/session';
 import {UserModel} from '../models/user';
+import {randomText} from '../utils/random';
 
 /**
  * 参加日時を作成する
@@ -27,7 +28,7 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
   const newUser: UserModel = {
     id: option?.id || randomInt(10000), // 上書きされる
     display_name: option?.display_name || null,
-    mail: option?.mail || `${randomBytes(32).toString('hex')}@example.com`,
+    mail: option?.mail || `${randomText(32)}@example.com`,
     profile: option?.profile || null,
     user_name:
       option?.user_name ||
@@ -57,7 +58,8 @@ export const createSessionModel = (
   period.setDate(period.getDate() + 7);
 
   return {
-    session_token: options?.session_token || randomBytes(128).toString('hex'),
+    session_token: options?.session_token || randomText(128),
+    refresh_token: options?.refresh_token,
     date: options?.date || now,
     period_date: options?.period_date || period,
     user_id: options?.user_id || randomInt(100000),
