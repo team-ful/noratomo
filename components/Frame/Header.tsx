@@ -5,8 +5,10 @@ import {RiAddBoxLine} from 'react-icons/ri';
 import {TbHeartHandshake} from 'react-icons/tb';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
+import useUser from '../Session/useUser';
 
 const Header = () => {
+  const user = useUser();
   return (
     <Box width="100%" height="2.5rem">
       <Flex height="100%">
@@ -39,7 +41,7 @@ const Header = () => {
           </Tooltip>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
-              <Avatar size="sm" />
+              <Avatar size="sm" src={user?.avatar_url} />
             </Center>
           </Tooltip>
         </Flex>
