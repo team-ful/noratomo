@@ -4,7 +4,7 @@ import Require from '../components/Session/Require';
 const LoginOauth = () => {
   return (
     <Require path="/" loginRequire={false}>
-      <Center>
+      <Center h="80vh">
         <Link href="/api/oauth/cateirusso">
           <Button as="p">ログイン</Button>
         </Link>
