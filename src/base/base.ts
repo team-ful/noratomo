@@ -382,14 +382,11 @@ class Base<T> {
       config.refreshCookieOptions()
     );
 
-    const options = {
-      s: true,
-      a: user.is_admin,
-    };
+    const options = 'true';
 
     this.setCookie(
       config.otherCookieName,
-      JSON.stringify(options),
+      options,
       config.otherCookieOptions()
     );
   }
