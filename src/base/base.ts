@@ -32,6 +32,8 @@ class Base<T> {
   public req: NextApiRequest;
   public res: NextApiResponse;
 
+  public status: number;
+
   private _db?: Connection;
 
   private contentType: ParsedMediaType;
@@ -52,6 +54,10 @@ class Base<T> {
     this.userAgent = this.parseUA();
 
     this.cookies = [];
+
+    // デフォルトは200を返す
+    // ApiErrorでthrowした場合は別
+    this.status = 200;
   }
 
   /**
