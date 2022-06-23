@@ -69,9 +69,9 @@ const config: Config = {
   },
 
   db: {
-    host: 'db',
-    user: 'docker',
-    password: 'docker',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: 'noratomo',
   },
 };
