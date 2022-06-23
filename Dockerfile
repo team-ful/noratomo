@@ -1,6 +1,6 @@
 # Based on https://github.com/vercel/next.js/tree/canary/examples/with-docker
 # Rebuild the source code only when needed
-FROM node:16-alpine AS builder
+FROM node:16 AS builder
 WORKDIR /app
 COPY . .
 
