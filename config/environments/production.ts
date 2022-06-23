@@ -1,6 +1,8 @@
 import {URL} from 'url';
 import {Config} from '../config';
 
+const DB_SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
+
 const config: Config = {
   environment: 'production',
 
@@ -69,10 +71,10 @@ const config: Config = {
   },
 
   db: {
-    host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: 'noratomo',
+    socketPath: `${DB_SOCKET_PATH}/${process.env.INSTANCE_CONNECTION_NAME}`,
   },
 };
 
