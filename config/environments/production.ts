@@ -4,13 +4,17 @@ import {Config} from '../config';
 const config: Config = {
   environment: 'production',
 
-  host: new URL('http://localhost:3000'),
+  host: new URL('https://noratomo.tdu.app'),
 
-  cateiruSSOEndpoint: new URL('http://localhost:3000'),
-  cateiruSSOTokenEndpoint: new URL('http://localhost:3000'),
-  cateiruSSOPublicKeyEndpoint: new URL('http://localhost:3000'),
-  cateiruSSOClientSecret: '',
-  cateiruSSOClientId: '',
+  cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
+  cateiruSSOTokenEndpoint: new URL(
+    'https://api.sso.cateiru.com/v1/oauth/token'
+  ),
+  cateiruSSOPublicKeyEndpoint: new URL(
+    'https://api.sso.cateiru.com/v1/oauth/jwt/key'
+  ),
+  cateiruSSOClientSecret: process.env.CATEIRU_SSO_CLIENT_SECRET || '',
+  cateiruSSOClientId: process.env.CATEIRU_SSO_CLIENT_ID || '',
 
   sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
@@ -20,11 +24,11 @@ const config: Config = {
     date.setDate(date.getDate() + config.sessionPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: 'noratomo.tdu.app',
       expires: date,
       maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
-      secure: false, // TODO: httpsにしてtrueにしたい
+      secure: true,
       httpOnly: true,
       path: '/',
     };
@@ -38,11 +42,11 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: 'noratomo.tdu.app',
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
-      secure: false, // テスト用であるためfalse
+      secure: true,
       httpOnly: true,
       path: '/',
     };
@@ -54,11 +58,11 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: 'noratomo.tdu.app',
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
-      secure: false,
+      secure: true,
       httpOnly: false,
       path: '/',
     };
