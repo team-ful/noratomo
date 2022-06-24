@@ -2,6 +2,7 @@ import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
 import {RiAddBoxLine} from 'react-icons/ri';
+import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
 import NoticeExist from '../Logo/NoticeExist';
@@ -41,7 +42,11 @@ const Header = () => {
           </Tooltip>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
-              <Avatar size="xs" src={user?.avatar_url} />
+              <Avatar
+                size="xs"
+                src={user?.avatar_url}
+                icon={<Avater size="1.5rem" />}
+              />
             </Center>
           </Tooltip>
         </Flex>
