@@ -149,11 +149,11 @@ const CreateAccount = () => {
             <PasswordStrengthBar
               password={pass}
               scoreWords={[
-                '弱すぎかな',
-                '弱いパスワードだと思う',
-                '少し弱いパスワードかなと思う',
-                'もう少し長くしてみない？',
-                '最強!すごく良いよ!',
+                'もっと',
+                'もっともっと',
+                'もっともっともっと',
+                'もっともっともっともっと',
+                '良い',
               ]}
               shortScoreWord="ナメんな"
               minLength={8}
