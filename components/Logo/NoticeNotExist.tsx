@@ -1,6 +1,6 @@
 import {Box} from '@chakra-ui/react';
 
-const NoticeOff = ({size}: {size: string}) => {
+const NoticeNotExist = ({size}: {size: string}) => {
   return (
     <Box width={size}>
       <svg
@@ -49,4 +49,4 @@ const NoticeOff = ({size}: {size: string}) => {
     </Box>
   );
 };
-export default NoticeOff;
+export default NoticeNotExist;

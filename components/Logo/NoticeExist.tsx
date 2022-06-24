@@ -1,6 +1,6 @@
 import {Box} from '@chakra-ui/react';
 
-const NoticeOn = ({size}: {size: string}) => {
+const NoticeExist = ({size}: {size: string}) => {
   return (
     <Box width={size}>
       <svg
@@ -60,4 +60,4 @@ const NoticeOn = ({size}: {size: string}) => {
     </Box>
   );
 };
-export default NoticeOn;
+export default NoticeExist;

@@ -4,8 +4,7 @@ import {Tooltip} from '@chakra-ui/react';
 import {RiAddBoxLine} from 'react-icons/ri';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
-import NoticeOff from '../Logo/NoticeOff';
-import NoticeOn from '../Logo/NoticeOn';
+import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
 
 const Header = () => {
@@ -27,8 +26,7 @@ const Header = () => {
           </Tooltip>
           <Tooltip label="通知">
             <Center ml=".5rem">
-              {/* <NoticeOff size="25px" /> */}
-              <NoticeOn size="25px" />
+              <NoticeExist size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="募集を作成">
