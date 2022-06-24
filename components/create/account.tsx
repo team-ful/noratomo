@@ -19,6 +19,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
+import {useRouter} from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import {TbEye, TbEyeOff} from 'react-icons/tb';
@@ -40,13 +41,16 @@ const CreateAccount = () => {
   const [show, setShow] = React.useState(false);
   const [pass, setPass] = React.useState('');
   const [pwOk, setPWOK] = React.useState(false);
+  const [load, setLoad] = React.useState(false);
+
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     setError,
     clearErrors,
-    formState: {errors, isSubmitting},
+    formState: {errors},
   } = useForm<CreateAccountForm>();
 
   const onSubmit: SubmitHandler<CreateAccountForm> = data => {
@@ -60,7 +64,31 @@ const CreateAccount = () => {
       clearErrors('password');
     }
 
-    alert('OK');
+    const f = async () => {
+      setLoad(true);
+      const res = await fetch('/api/create/password', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        body: `user_name=${encodeURIComponent(
+          data.user_name
+        )}&password=${encodeURIComponent(
+          data.password
+        )}&mail=${encodeURIComponent(data.mail)}&age=${encodeURIComponent(
+          data.age
+        )}&gender=${encodeURIComponent(data.gender)}`,
+      });
+
+      setLoad(false);
+
+      // TODO: ログインできないときになにかしたい
+      if (res.ok) {
+        router.push('/hello');
+      }
+    };
+
+    f();
   };
 
   React.useEffect(() => {
@@ -225,7 +253,7 @@ const CreateAccount = () => {
           <Button
             mt={4}
             colorScheme="blue"
-            isLoading={isSubmitting}
+            isLoading={load}
             type="submit"
             w="100%"
           >
