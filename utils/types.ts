@@ -9,3 +9,11 @@ export interface User {
   avatar_url: string;
   join_date: Date;
 }
+
+export interface Question {
+  id: number;
+  question_title: string;
+  answers: {index: number; answerText: string}[];
+  current_answer_index: number;
+  score: number;
+}
