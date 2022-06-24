@@ -2,9 +2,9 @@ import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
 import {RiAddBoxLine} from 'react-icons/ri';
-import {TbHeartHandshake} from 'react-icons/tb';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
+import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
 
 const Header = () => {
@@ -21,27 +21,27 @@ const Header = () => {
         <Flex>
           <Tooltip label="メッセージ">
             <Center ml=".5rem">
-              <IconChat size="27px" />
+              <IconChat size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="通知">
             <Center ml=".5rem">
-              <TbHeartHandshake size="27px" />
+              <NoticeExist size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="募集を作成">
             <Center ml=".5rem">
-              <RiAddBoxLine size="27px" />
+              <RiAddBoxLine size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="ホーム">
             <Center ml=".5rem">
-              <IconHome size="27px" />
+              <IconHome size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
-              <Avatar size="sm" src={user?.avatar_url} />
+              <Avatar size="xs" src={user?.avatar_url} />
             </Center>
           </Tooltip>
         </Flex>
