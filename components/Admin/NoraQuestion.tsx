@@ -17,6 +17,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Button,
+  Skeleton,
 } from '@chakra-ui/react';
 import React from 'react';
 import {Question} from '../../utils/types';
@@ -32,6 +33,7 @@ const NoraQuestion = () => {
   const {
     questions,
     maxAnswerLength,
+    getLoad,
     newQuestion,
     updateQuestion,
     removeQuestion,
@@ -55,46 +57,48 @@ const NoraQuestion = () => {
       <Button onClick={createModal.onOpen} colorScheme="blue" mb="1.5rem">
         新規作成
       </Button>
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>ID</Th>
-              <Th>タイトル</Th>
-              <Th>スコア</Th>
-              <AnswerScoreTh />
-            </Tr>
-          </Thead>
-          <Tbody>
-            {questions.map((v, i) => {
-              return (
-                <Tr key={`tr_key_${i}`}>
-                  <Td
-                    onClick={() => {
-                      setSelected(v);
-                      detailsModal.onOpen();
-                    }}
-                    cursor="pointer"
-                  >
-                    {v.id}
-                  </Td>
-                  <Td>{v.question_title}</Td>
-                  <Td>{v.score}</Td>
-                  {v.answers.map((a, i) => {
-                    return i === v.current_answer_index ? (
-                      <Td key={`td_key_${i}`} bgColor="red.300">
-                        {a.answerText}
-                      </Td>
-                    ) : (
-                      <Td key={`td_key_${i}`}>{a.answerText}</Td>
-                    );
-                  })}
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <Skeleton isLoaded={!getLoad}>
+        <TableContainer>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>ID</Th>
+                <Th>タイトル</Th>
+                <Th>スコア</Th>
+                <AnswerScoreTh />
+              </Tr>
+            </Thead>
+            <Tbody>
+              {questions.map((v, i) => {
+                return (
+                  <Tr key={`tr_key_${i}`}>
+                    <Td
+                      onClick={() => {
+                        setSelected(v);
+                        detailsModal.onOpen();
+                      }}
+                      cursor="pointer"
+                    >
+                      {v.id}
+                    </Td>
+                    <Td>{v.question_title}</Td>
+                    <Td>{v.score}</Td>
+                    {v.answers.map((a, i) => {
+                      return i === v.current_answer_index ? (
+                        <Td key={`td_key_${i}`} bgColor="red.300">
+                          {a.answerText}
+                        </Td>
+                      ) : (
+                        <Td key={`td_key_${i}`}>{a.answerText}</Td>
+                      );
+                    })}
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Skeleton>
       {/* 野良認証問題の詳細ページ */}
       <Modal
         isOpen={detailsModal.isOpen}

@@ -5,6 +5,7 @@ import {Question} from '../../utils/types';
 interface Returns {
   questions: Question[];
   maxAnswerLength: number;
+  getLoad: boolean;
   newQuestion: (
     title: string,
     answers: string[],
@@ -26,6 +27,7 @@ interface PutQuestion {
 const useQuestion = (): Returns => {
   const [questions, setQuestions] = React.useState<Question[]>([]);
   const [maxAnswerLength, setMaxAnswerLength] = React.useState(0);
+  const [getLoad, setGetLoad] = React.useState(true); // 最初にgetするのでtrue
 
   const toast = useToast();
 
@@ -33,6 +35,7 @@ const useQuestion = (): Returns => {
   React.useEffect(() => {
     const f = async () => {
       const res = await fetch('/api/admin/nora_question');
+      setGetLoad(false);
 
       if (!res.ok) {
         toast({
@@ -51,15 +54,17 @@ const useQuestion = (): Returns => {
 
   // Answersの回答の最大値を求める
   React.useEffect(() => {
-    const _maxAnswerLength = questions.reduce((_, v, c) => {
+    if (questions.length === 0) {
+      return;
+    }
+
+    const _maxAnswerLength = questions.reduce((max, v) => {
       const answerLen = v.answers.length;
-      if (c < answerLen) {
+      if (max < answerLen) {
         return answerLen;
       }
-      return c;
+      return max;
     }, 0);
-
-    console.log(JSON.stringify(questions));
 
     setMaxAnswerLength(_maxAnswerLength);
   }, [questions]);
@@ -187,6 +192,7 @@ const useQuestion = (): Returns => {
   return {
     questions,
     maxAnswerLength,
+    getLoad,
     newQuestion,
     updateQuestion,
     removeQuestion,
