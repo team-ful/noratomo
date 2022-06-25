@@ -1,6 +1,6 @@
 import {useToast} from '@chakra-ui/react';
 import React from 'react';
-import {Question} from '../../utils/types';
+import {Question} from '../../../utils/types';
 
 interface Returns {
   questions: Question[];

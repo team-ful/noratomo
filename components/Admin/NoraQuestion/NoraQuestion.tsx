@@ -20,7 +20,7 @@ import {
   Skeleton,
 } from '@chakra-ui/react';
 import React from 'react';
-import {Question} from '../../utils/types';
+import {Question} from '../../../utils/types';
 import CreateNewNoraQuestion from './CreateNewNoraQuestion';
 import useQuestion from './useQuestion';
 
