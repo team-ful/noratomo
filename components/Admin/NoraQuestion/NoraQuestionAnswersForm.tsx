@@ -38,6 +38,10 @@ const NoraQuestionAnswersForm = () => {
   });
 
   React.useEffect(() => {
+    if (typeof answers === 'undefined') {
+      return;
+    }
+
     const aIndex = answers.findIndex(v => v.isAnswer);
 
     if (aIndex !== -1) {

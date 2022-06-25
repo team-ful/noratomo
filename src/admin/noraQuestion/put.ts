@@ -49,7 +49,7 @@ async function handler(base: AuthedBase<void>) {
       answerText: v,
     }));
   }
-  if (question.current_answer_index) {
+  if (typeof question.current_answer_index === 'number') {
     q['current_answer_index'] = question.current_answer_index;
   }
   if (question.score) {

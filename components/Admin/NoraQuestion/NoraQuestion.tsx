@@ -18,10 +18,12 @@ import {
   useDisclosure,
   Button,
   Skeleton,
+  Link,
 } from '@chakra-ui/react';
 import React from 'react';
 import {Question} from '../../../utils/types';
 import CreateNewNoraQuestion from './CreateNewNoraQuestion';
+import UpdateNoraQuestion from './UpdataNoraQuestion';
 import useQuestion from './useQuestion';
 
 const NoraQuestion = () => {
@@ -72,14 +74,16 @@ const NoraQuestion = () => {
               {questions.map((v, i) => {
                 return (
                   <Tr key={`tr_key_${i}`}>
-                    <Td
-                      onClick={() => {
-                        setSelected(v);
-                        detailsModal.onOpen();
-                      }}
-                      cursor="pointer"
-                    >
-                      {v.id}
+                    <Td>
+                      <Link
+                        as="p"
+                        onClick={() => {
+                          setSelected(v);
+                          detailsModal.onOpen();
+                        }}
+                      >
+                        {v.id}
+                      </Link>
                     </Td>
                     <Td>{v.question_title}</Td>
                     <Td>{v.score}</Td>
@@ -99,34 +103,13 @@ const NoraQuestion = () => {
           </Table>
         </TableContainer>
       </Skeleton>
-      {/* 野良認証問題の詳細ページ */}
-      <Modal
-        isOpen={detailsModal.isOpen}
+      <UpdateNoraQuestion
         onClose={detailsModal.onClose}
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>ID: {selected?.id} の編集</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody></ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="red"
-              onClick={() => {
-                detailsModal.onClose();
-                deleteModal.onOpen();
-              }}
-            >
-              削除
-            </Button>
-            <Button mr={3} onClick={detailsModal.onClose}>
-              閉じる
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        isOpen={detailsModal.isOpen}
+        onCloseModalOpen={deleteModal.onOpen}
+        defaultQuestion={selected}
+        update={updateQuestion}
+      />
       {/* 野良認証問題を削除するモーダル */}
       <Modal
         isOpen={deleteModal.isOpen}
@@ -142,6 +125,7 @@ const NoraQuestion = () => {
           <ModalFooter>
             <Button
               colorScheme="red"
+              mr=".5rem"
               onClick={() => {
                 if (selected?.id) {
                   const f = async () => {

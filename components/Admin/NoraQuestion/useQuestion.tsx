@@ -16,7 +16,7 @@ interface Returns {
   removeQuestion: (id: number) => Promise<void>;
 }
 
-interface PutQuestion {
+export interface PutQuestion {
   id: number;
   question_title?: string;
   answers?: string[];
@@ -143,7 +143,7 @@ const useQuestion = (): Returns => {
               answerText: v,
             }));
           }
-          if (q.current_answer_index) {
+          if (typeof q.current_answer_index === 'number') {
             newValue.current_answer_index = q.current_answer_index;
           }
           if (q.score) {
@@ -174,7 +174,7 @@ const useQuestion = (): Returns => {
     if (res.ok) {
       toast({
         status: 'info',
-        title: '野良認証問題を更新しました',
+        title: '野良認証問題を削除しました',
         description: questions.find(v => v.id === id)?.question_title,
       });
 
