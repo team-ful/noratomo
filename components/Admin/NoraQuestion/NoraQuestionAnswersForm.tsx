@@ -11,7 +11,13 @@ import {
 import React from 'react';
 import {useFormContext, useFieldArray, useWatch} from 'react-hook-form';
 import {IoAddOutline, IoRemoveOutline} from 'react-icons/io5';
-import {CreateQuestionForm} from './CreateNewNoraQuestion';
+
+export interface AnswersForm {
+  answers: {
+    title: string;
+    isAnswer: boolean;
+  }[];
+}
 
 const NoraQuestionAnswersForm = () => {
   const [answerIndex, setAnswerIndex] = React.useState(-1);
@@ -21,7 +27,7 @@ const NoraQuestionAnswersForm = () => {
     register,
     clearErrors,
     formState: {errors},
-  } = useFormContext<CreateQuestionForm>();
+  } = useFormContext<AnswersForm>();
   const {fields, append, remove} = useFieldArray({
     control,
     name: 'answers',
@@ -44,7 +50,7 @@ const NoraQuestionAnswersForm = () => {
   return (
     <FormControl isInvalid={Boolean(errors.answers)} mt="1rem">
       <FormLabel htmlFor="answers">問題の回答と答え</FormLabel>
-      {fields.map((data, index) => {
+      {fields.map((_, index) => {
         const checkboxDisable = () => {
           // 1つもチェックがついていない場合
           if (answerIndex === -1) {

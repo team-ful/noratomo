@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import {useForm, SubmitHandler, FormProvider} from 'react-hook-form';
-import NoraQuestionAnswersForm from './NoraQuestionAnswersForm';
+import NoraQuestionAnswersForm, {AnswersForm} from './NoraQuestionAnswersForm';
 
 interface Props {
   isOpen: boolean;
@@ -31,18 +31,16 @@ interface Props {
   ) => Promise<void>;
 }
 
-export interface CreateQuestionForm {
+export interface CreateQuestionForm extends AnswersForm {
   question_title: string;
-  answers: {
-    title: string;
-    isAnswer: boolean;
-  }[];
-  score: number;
+  score: string;
 }
 
 const CreateNewNoraQuestion: React.FC<Props> = ({isOpen, onClose, create}) => {
+  const [load, setLoad] = React.useState(false);
+
   const methods = useForm<CreateQuestionForm>({
-    defaultValues: {score: 100, answers: [{title: ''}]},
+    defaultValues: {score: '100', answers: [{title: ''}]},
   });
 
   const {
@@ -51,7 +49,7 @@ const CreateNewNoraQuestion: React.FC<Props> = ({isOpen, onClose, create}) => {
     reset,
     setError,
     clearErrors,
-    formState: {errors, isSubmitSuccessful},
+    formState: {errors},
   } = methods;
 
   const onSubmit: SubmitHandler<CreateQuestionForm> = async data => {
@@ -64,12 +62,16 @@ const CreateNewNoraQuestion: React.FC<Props> = ({isOpen, onClose, create}) => {
       clearErrors('answers');
     }
 
+    setLoad(true);
+
     await create(
       data.question_title,
       data.answers.map(v => v.title),
       data.answers.findIndex(v => v.isAnswer),
-      data.score
+      parseInt(data.score)
     );
+
+    setLoad(false);
 
     onClose();
     reset();
@@ -136,7 +138,7 @@ const CreateNewNoraQuestion: React.FC<Props> = ({isOpen, onClose, create}) => {
                 colorScheme="blue"
                 type="submit"
                 w="100%"
-                isLoading={isSubmitSuccessful}
+                isLoading={load}
               >
                 追加
               </Button>
