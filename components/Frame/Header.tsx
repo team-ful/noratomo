@@ -20,14 +20,9 @@ const Header = () => {
         </Center>
         <Spacer />
         <Flex>
-          <Tooltip label="メッセージ">
+          <Tooltip label="ホーム">
             <Center ml=".5rem">
-              <IconChat size="25px" />
-            </Center>
-          </Tooltip>
-          <Tooltip label="通知">
-            <Center ml=".5rem">
-              <NoticeExist size="25px" />
+              <IconHome size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="募集を作成">
@@ -35,9 +30,14 @@ const Header = () => {
               <RiAddBoxLine size="25px" />
             </Center>
           </Tooltip>
-          <Tooltip label="ホーム">
+          <Tooltip label="通知">
             <Center ml=".5rem">
-              <IconHome size="25px" />
+              <NoticeExist size="25px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="メッセージ">
+            <Center ml=".5rem">
+              <IconChat size="25px" />
             </Center>
           </Tooltip>
           <Tooltip label="マイページ">
