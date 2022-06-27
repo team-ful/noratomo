@@ -1,7 +1,15 @@
-import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Spacer,
+  Heading,
+  Center,
+  Avatar,
+  Stack,
+} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
-import {RiAddBoxLine} from 'react-icons/ri';
+import {RiAddBoxLine, RiSearchLine} from 'react-icons/ri';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
@@ -20,26 +28,28 @@ const Header = () => {
         </Center>
         <Spacer />
         <Flex>
-          <Tooltip label="ホーム">
-            <Center ml=".5rem">
-              <IconHome size="25px" />
-            </Center>
-          </Tooltip>
-          <Tooltip label="募集を作成">
-            <Center ml=".5rem">
-              <RiAddBoxLine size="25px" />
-            </Center>
-          </Tooltip>
-          <Tooltip label="通知">
-            <Center ml=".5rem">
-              <NoticeExist size="25px" />
-            </Center>
-          </Tooltip>
-          <Tooltip label="メッセージ">
-            <Center ml=".5rem">
-              <IconChat size="25px" />
-            </Center>
-          </Tooltip>
+          <Box display={{base: 'none', sm: 'flex'}}>
+            <Tooltip label="ホーム">
+              <Center ml=".5rem">
+                <IconHome size="25px" />
+              </Center>
+            </Tooltip>
+            <Tooltip label="募集を作成">
+              <Center ml=".5rem">
+                <RiAddBoxLine size="25px" />
+              </Center>
+            </Tooltip>
+            <Tooltip label="通知">
+              <Center ml=".5rem">
+                <NoticeExist size="25px" />
+              </Center>
+            </Tooltip>
+            <Tooltip label="メッセージ">
+              <Center ml=".5rem">
+                <IconChat size="25px" />
+              </Center>
+            </Tooltip>
+          </Box>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
               <Avatar
@@ -51,6 +61,39 @@ const Header = () => {
           </Tooltip>
         </Flex>
       </Flex>
+      <Box
+        display={{base: 'flex', sm: 'none'}}
+        position="absolute"
+        left="50%"
+        transform="translateY(-50%) translateX(-50%)"
+        bottom=".5rem"
+      >
+        <Tooltip label="検索">
+          <Center>
+            <RiSearchLine size="25px" />
+          </Center>
+        </Tooltip>
+        <Tooltip label="ホーム">
+          <Center ml=".5rem">
+            <IconHome size="25px" />
+          </Center>
+        </Tooltip>
+        <Tooltip label="募集を作成">
+          <Center ml=".5rem">
+            <RiAddBoxLine size="25px" />
+          </Center>
+        </Tooltip>
+        <Tooltip label="通知">
+          <Center ml=".5rem">
+            <NoticeExist size="25px" />
+          </Center>
+        </Tooltip>
+        <Tooltip label="メッセージ">
+          <Center ml=".5rem">
+            <IconChat size="25px" />
+          </Center>
+        </Tooltip>
+      </Box>
     </Box>
   );
 };
