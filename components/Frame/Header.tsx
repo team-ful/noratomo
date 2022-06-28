@@ -1,12 +1,4 @@
-import {
-  Box,
-  Flex,
-  Spacer,
-  Heading,
-  Center,
-  Avatar,
-  Stack,
-} from '@chakra-ui/react';
+import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
 import {RiAddBoxLine, RiSearchLine} from 'react-icons/ri';
@@ -73,23 +65,27 @@ const Header = () => {
             <RiSearchLine size="25px" />
           </Center>
         </Tooltip>
+        <Spacer />
         <Tooltip label="ホーム">
-          <Center ml=".5rem">
+          <Center>
             <IconHome size="25px" />
           </Center>
         </Tooltip>
+        <Spacer />
         <Tooltip label="募集を作成">
-          <Center ml=".5rem">
+          <Center>
             <RiAddBoxLine size="25px" />
           </Center>
         </Tooltip>
+        <Spacer />
         <Tooltip label="通知">
-          <Center ml=".5rem">
+          <Center>
             <NoticeExist size="25px" />
           </Center>
         </Tooltip>
+        <Spacer />
         <Tooltip label="メッセージ">
-          <Center ml=".5rem">
+          <Center>
             <IconChat size="25px" />
           </Center>
         </Tooltip>
