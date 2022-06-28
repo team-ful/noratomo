@@ -45,50 +45,58 @@ const Header = () => {
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
               <Avatar
-                size="xs"
+                size={{base: 'sm', sm: 'sm'}}
                 src={user?.avatar_url}
-                icon={<Avater size="1.5rem" />}
+                icon={<Avater size="25px" />}
               />
             </Center>
           </Tooltip>
         </Flex>
       </Flex>
       <Box
-        display={{base: 'flex', sm: 'none'}}
-        position="absolute"
-        left="50%"
-        transform="translateY(-50%) translateX(-50%)"
-        bottom=".5rem"
+        position="fixed"
+        display={{base: 'block', sm: 'none'}}
+        top="0"
+        left="0"
+        w="100%"
       >
-        <Tooltip label="検索">
-          <Center>
-            <RiSearchLine size="25px" />
-          </Center>
-        </Tooltip>
-        <Spacer />
-        <Tooltip label="ホーム">
-          <Center>
-            <IconHome size="25px" />
-          </Center>
-        </Tooltip>
-        <Spacer />
-        <Tooltip label="募集を作成">
-          <Center>
-            <RiAddBoxLine size="25px" />
-          </Center>
-        </Tooltip>
-        <Spacer />
-        <Tooltip label="通知">
-          <Center>
-            <NoticeExist size="25px" />
-          </Center>
-        </Tooltip>
-        <Spacer />
-        <Tooltip label="メッセージ">
-          <Center>
-            <IconChat size="25px" />
-          </Center>
-        </Tooltip>
+        <Flex
+          position="relative"
+          left="0"
+          zIndex="10"
+          top="calc(100vh - 100px)"
+          mx="2rem"
+        >
+          <Tooltip label="検索">
+            <Center>
+              <RiSearchLine size="30px" />
+            </Center>
+          </Tooltip>
+          <Spacer />
+          <Tooltip label="ホーム">
+            <Center>
+              <IconHome size="30px" />
+            </Center>
+          </Tooltip>
+          <Spacer />
+          <Tooltip label="募集を作成">
+            <Center>
+              <RiAddBoxLine size="30px" />
+            </Center>
+          </Tooltip>
+          <Spacer />
+          <Tooltip label="通知">
+            <Center>
+              <NoticeExist size="30px" />
+            </Center>
+          </Tooltip>
+          <Spacer />
+          <Tooltip label="メッセージ">
+            <Center>
+              <IconChat size="30px" />
+            </Center>
+          </Tooltip>
+        </Flex>
       </Box>
     </Box>
   );
