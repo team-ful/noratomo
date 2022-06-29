@@ -1,14 +1,14 @@
 import mysql from 'mysql2/promise';
-import config from '../config';
+import config from '../../config';
+import {findCertByUserID} from '../../src/services/cert';
+import {findUserByUserID} from '../../src/services/user';
+import {createUserModel} from '../../src/tests/models';
+import {TestUser} from '../../src/tests/user';
 import {
   CreateAccountByPassword,
   CreateAccountBySSO,
-} from '../src/createAccount';
-import {findCertByUserID} from '../src/services/cert';
-import {findUserByUserID} from '../src/services/user';
-import {createUserModel} from '../src/tests/models';
-import {TestUser} from '../src/tests/user';
-import {randomText} from '../src/utils/random';
+} from '../../src/user/createAccount';
+import {randomText} from '../../src/utils/random';
 
 describe('cateiruSSO', () => {
   let db: mysql.Connection;

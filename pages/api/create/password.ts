@@ -1,6 +1,6 @@
 import Base from '../../../src/base/base';
 import {handlerWrapper} from '../../../src/base/handlerWrapper';
-import {CreateAccountByPassword} from '../../../src/createAccount';
+import {CreateAccountByPassword} from '../../../src/user/createAccount';
 
 /**
  * パスワードを使用してアカウントを新規作成する
