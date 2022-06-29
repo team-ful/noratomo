@@ -1,8 +1,8 @@
 import {ApiError} from 'next/dist/server/api-utils';
 import Base from '../../../../src/base/base';
 import {handlerWrapper} from '../../../../src/base/handlerWrapper';
-import {CreateAccountBySSO} from '../../../../src/createAccount';
 import {JWT} from '../../../../src/oauth/cateirusso/jwt';
+import {CreateAccountBySSO} from '../../../../src/user/createAccount';
 
 /**
  * Cateiru SSOのログインリンクへリダイレクトする

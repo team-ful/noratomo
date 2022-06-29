@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql, {RowDataPacket} from 'mysql2/promise';
 import config from '../../config';
 import {Gender} from '../../src/models/common';
 import {setCert} from '../../src/services/cert';
@@ -13,6 +13,7 @@ import {
   createUserPW,
   findUserByUserNameAndMail,
   updateUser,
+  deleteUserByID,
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
 import {TestUser} from '../../src/tests/user';
@@ -466,5 +467,19 @@ describe('updateUser', () => {
         user_name: user2.user?.user_name || '',
       });
     }).rejects.toThrow();
+  });
+
+  test('idから削除できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    await deleteUserByID(db, user.user?.id || NaN);
+
+    const [rows] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM user WHERE id = ?',
+      user.user?.id || NaN
+    );
+
+    expect(rows.length).toBe(0);
   });
 });

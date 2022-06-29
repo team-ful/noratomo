@@ -316,3 +316,15 @@ export async function updateUser(
 
   await db.query(query.text, query.values);
 }
+
+/**
+ * userを削除する
+ *
+ * @param {Connection} db - database
+ * @param {number} id - ユーザID
+ */
+export async function deleteUserByID(db: Connection, id: number) {
+  const query = sql.delete('user').where('id', id).toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
+}
