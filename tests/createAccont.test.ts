@@ -44,16 +44,19 @@ describe('cateiruSSO', () => {
   });
 
   test('すでにログインしている場合はそのままユーザを返す', async () => {
-    const user = new TestUser();
+    const user = new TestUser({
+      avatar_url: randomText(10),
+      display_name: randomText(10),
+    });
     await user.create(db);
     await user.loginFromCateiruSSO(db);
 
     const data = {
-      name: 'テスト',
-      preferred_username: 'testtest',
+      name: user.user?.display_name,
+      preferred_username: user.user?.user_name,
       email: user.user?.mail,
       role: '',
-      picture: 'https://example.com',
+      picture: user.user?.avatar_url,
       id: user.cateiruSSOId,
     };
 
@@ -63,7 +66,38 @@ describe('cateiruSSO', () => {
 
     const dbUser = await findUserByUserID(db, user.user?.id || NaN);
 
+    expect(user.user).toEqual(dbUser);
     expect(dbUser).toEqual(loginUser);
+  });
+
+  test('更新するものがある場合は更新する', async () => {
+    const user = new TestUser({
+      avatar_url: randomText(10),
+      display_name: randomText(10),
+      is_admin: false,
+    });
+    await user.create(db);
+    await user.loginFromCateiruSSO(db);
+
+    const data = {
+      name: user.user?.display_name,
+      preferred_username: randomText(10), // 変更
+      email: user.user?.mail,
+      role: 'noratomo', // 追加
+      picture: randomText(10),
+      id: user.cateiruSSOId,
+    };
+
+    const ca = new CreateAccountBySSO(db, data);
+
+    const loginUser = await ca.login();
+
+    const dbUser = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(user.user).not.toEqual(dbUser);
+    expect(dbUser).toEqual(loginUser);
+
+    expect(dbUser.is_admin).toBeTruthy();
   });
 });
 
