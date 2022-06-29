@@ -1,5 +1,6 @@
 import mysql, {RowDataPacket} from 'mysql2/promise';
 import config from '../../config';
+import {Gender} from '../../src/models/common';
 import {setCert} from '../../src/services/cert';
 import {
   findUserByUserID,
@@ -336,6 +337,25 @@ describe('updateUser', () => {
     await db.end();
   });
 
+  test('メールアドレスを更新できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newMail = `${randomText(10)}@example.com`;
+
+    await updateUser(db, u.id, {
+      mail: newMail,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.mail).not.toBe(u.mail);
+    expect(u1.id).toBe(u.id);
+  });
+
   test('display_nameを更新できる', async () => {
     const user = new TestUser();
     await user.create(db);
@@ -352,6 +372,84 @@ describe('updateUser', () => {
 
     expect(u1).not.toEqual(u);
     expect(u1.display_name).not.toBe(u.display_name);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('user_nameを更新できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newUserName = randomText(10);
+
+    await updateUser(db, u.id, {
+      user_name: newUserName,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.user_name).not.toBe(u.user_name);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('genderを更新できる', async () => {
+    const user = new TestUser({gender: Gender.Male});
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u.gender).toBe(Gender.Male);
+
+    const newGender = Gender.Female;
+
+    await updateUser(db, u.id, {
+      gender: newGender,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.gender).not.toBe(u.gender);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('is_adminを更新できる', async () => {
+    const user = new TestUser({is_admin: false});
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newAdmin = true;
+
+    await updateUser(db, u.id, {
+      is_admin: newAdmin,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.is_admin).not.toBe(u.is_admin);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('avatarURLを更新できる', async () => {
+    const user = new TestUser({avatar_url: randomText(10)});
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newAvatarUrl = randomText(10);
+
+    await updateUser(db, u.id, {
+      avatar_url: newAvatarUrl,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.avatar_url).not.toBe(u.avatar_url);
     expect(u1.id).toBe(u.id);
   });
 

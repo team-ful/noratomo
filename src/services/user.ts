@@ -4,6 +4,17 @@ import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
 import {Gender} from '../models/common';
 import User, {UserModel} from '../models/user';
 
+export interface UpdateOption {
+  display_name?: string | null;
+  mail?: string;
+  profile?: string | null;
+  user_name?: string;
+  age?: number;
+  gender?: Gender;
+  is_admin?: boolean;
+  avatar_url?: string;
+}
+
 /**
  * UserIDからユーザ情報を取得する
  *
@@ -291,25 +302,12 @@ export async function findUserByUserNameAndMail(
  *
  * @param {Connection} db - database
  * @param {number} id - ユーザID
- * @param {{}} option - option
- * @param {string | null} option.display_name - display name
- * @param {string} option.mail - メールアドレス
- * @param {string | null} option.profile - profile
- * @param {string} option.user_name - user name
- * @param {number} option.age - 年齢
- * @param {Gender} option.gender - 性別
+ * @param {UpdateOption} option - options
  */
 export async function updateUser(
   db: Connection,
   id: number,
-  option: {
-    display_name?: string | null;
-    mail?: string;
-    profile?: string | null;
-    user_name?: string;
-    age?: number;
-    gender?: Gender;
-  }
+  option: UpdateOption
 ) {
   const query = sql
     .update('user', option)

@@ -19,7 +19,9 @@ async function handler(base: Base<void>) {
 
   const code = base.getQuery('code');
   if (typeof code === 'undefined') {
-    throw new ApiError(400, 'code is not found');
+    // キャンセルしたりエラーだったりした場合はログインしないでホームにリダイレクトさせてしまう
+    base.res.redirect('/');
+    return;
   }
   const jwt = new JWT(code);
 
