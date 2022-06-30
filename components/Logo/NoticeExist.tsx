@@ -1,4 +1,4 @@
-import {Box, Stack, Tooltip, Center} from '@chakra-ui/react';
+import {Box, VStack, Tooltip, Center} from '@chakra-ui/react';
 
 const NoticeExist = ({
   size,
@@ -11,7 +11,7 @@ const NoticeExist = ({
 }) => {
   return (
     <Tooltip label={label}>
-      <Stack width={size} spacing={0}>
+      <VStack width={size} spacing={0}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           xmlSpace="preserve"
@@ -71,7 +71,7 @@ const NoticeExist = ({
             {iName}
           </Box>
         </Center>
-      </Stack>
+      </VStack>
     </Tooltip>
   );
 };

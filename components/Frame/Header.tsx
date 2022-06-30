@@ -9,10 +9,10 @@ import {
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
-import {RiAddBoxLine, RiSearchLine} from 'react-icons/ri';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
+import IconPost from '../Logo/IconPost';
 import IconSearch from '../Logo/IconSearch';
 import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
@@ -30,26 +30,21 @@ const Header = () => {
         <Spacer />
         <Flex>
           <Box display={{base: 'none', sm: 'flex'}}>
-            <Tooltip label="ホーム">
-              <Center ml=".5rem">
-                <IconHome size="25px" label={''} />
-              </Center>
-            </Tooltip>
-            <Tooltip label="募集を作成">
-              <Center ml=".5rem">
-                <RiAddBoxLine size="25px" />
-              </Center>
-            </Tooltip>
-            <Tooltip label="通知">
-              <Center ml=".5rem">
-                <NoticeExist size="25px" />
-              </Center>
-            </Tooltip>
-            <Tooltip label="メッセージ">
-              <Center ml=".5rem">
-                <IconChat size="25px" />
-              </Center>
-            </Tooltip>
+            <Center m=".5rem">
+              <IconHome size="25px" label="ホーム" />
+            </Center>
+
+            <Center m=".5rem">
+              <IconPost size="25px" label="募集する" />
+            </Center>
+
+            <Center m=".5rem">
+              <NoticeExist size="25px" label="通知" />
+            </Center>
+
+            <Center m=".5rem">
+              <IconChat size="25px" label="チャット" />
+            </Center>
           </Box>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
@@ -89,11 +84,9 @@ const Header = () => {
             <IconHome size="35px" iName="ホーム" />
           </Center>
 
-          <Tooltip label="募集を作成">
-            <Center>
-              <RiAddBoxLine size="35px" />
-            </Center>
-          </Tooltip>
+          <Center>
+            <IconPost size="35px" iName="募集する" />
+          </Center>
 
           <Center>
             <NoticeExist size="35px" iName="通知" />

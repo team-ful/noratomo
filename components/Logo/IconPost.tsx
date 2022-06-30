@@ -1,7 +1,7 @@
 import {Box, Center, VStack, Tooltip} from '@chakra-ui/react';
-import {RiSearchLine} from 'react-icons/ri';
+import {RiAddBoxLine} from 'react-icons/ri';
 
-const IconSearch = ({
+const IconPost = ({
   size,
   label,
   iName,
@@ -13,9 +13,9 @@ const IconSearch = ({
   return (
     <Tooltip label={label}>
       <VStack width={size} spacing={0}>
-        <RiSearchLine size="35px" />
+        <RiAddBoxLine size="35px" />
         <Center>
-          <Box fontSize=".5rem" color="gray">
+          <Box fontSize=".5rem" color="gray" whiteSpace="nowrap">
             {iName}
           </Box>
         </Center>
@@ -23,4 +23,4 @@ const IconSearch = ({
     </Tooltip>
   );
 };
-export default IconSearch;
+export default IconPost;

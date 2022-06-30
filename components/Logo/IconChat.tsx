@@ -41,7 +41,7 @@ const IconChat = ({
           </g>
         </svg>
         <Center>
-          <Box fontSize=".5rem" color="gray">
+          <Box fontSize=".5rem" color="gray" whiteSpace="nowrap">
             {iName}
           </Box>
         </Center>
