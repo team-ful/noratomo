@@ -1,4 +1,12 @@
-import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Spacer,
+  Heading,
+  Center,
+  Avatar,
+  SimpleGrid,
+} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
 import {RiAddBoxLine, RiSearchLine} from 'react-icons/ri';
@@ -60,12 +68,17 @@ const Header = () => {
         left="0"
         w="100%"
       >
-        <Flex
+        <SimpleGrid
+          columns={9}
           position="relative"
           left="0"
           zIndex="10"
           top="calc(100vh - 100px)"
           mx="2rem"
+          p="10px"
+          borderRadius="15px"
+          bg="#ffffff"
+          boxShadow="-5px 5px 14px #969696"
         >
           <Tooltip label="検索">
             <Center>
@@ -96,7 +109,7 @@ const Header = () => {
               <IconChat size="30px" />
             </Center>
           </Tooltip>
-        </Flex>
+        </SimpleGrid>
       </Box>
     </Box>
   );
