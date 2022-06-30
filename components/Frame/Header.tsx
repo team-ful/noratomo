@@ -73,11 +73,11 @@ const Header = () => {
           position="relative"
           left="0"
           zIndex="10"
-          top="calc(100vh - 100px)"
+          top="calc(100vh - 70px)"
           mx="2rem"
           p="10px"
-          borderRadius="15px"
-          bg="#ffffff"
+          borderRadius="50px"
+          bg="white"
           boxShadow="-5px 5px 14px #969696"
         >
           <Tooltip label="検索">
