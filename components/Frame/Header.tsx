@@ -13,6 +13,7 @@ import {RiAddBoxLine, RiSearchLine} from 'react-icons/ri';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
+import IconSearch from '../Logo/IconSearch';
 import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
 
@@ -73,42 +74,34 @@ const Header = () => {
           position="relative"
           left="0"
           zIndex="10"
-          top="calc(100vh - 70px)"
-          mx="2rem"
-          p="10px"
+          top="calc(100vh - 80px)"
+          mx="1rem"
+          p="5px"
           borderRadius="50px"
           bg="white"
           boxShadow="-5px 5px 14px #d4d4d4"
         >
-          <Tooltip label="検索">
-            <Center>
-              <RiSearchLine size="30px" />
-            </Center>
-          </Tooltip>
+          <Center>
+            <IconSearch size="35px" iName="検索" />
+          </Center>
 
-          <Tooltip label="ホーム">
-            <Center>
-              <IconHome size="30px" iName="ホーム" />
-            </Center>
-          </Tooltip>
+          <Center>
+            <IconHome size="35px" iName="ホーム" />
+          </Center>
 
           <Tooltip label="募集を作成">
             <Center>
-              <RiAddBoxLine size="30px" />
+              <RiAddBoxLine size="35px" />
             </Center>
           </Tooltip>
 
-          <Tooltip label="通知">
-            <Center>
-              <NoticeExist size="30px" />
-            </Center>
-          </Tooltip>
+          <Center>
+            <NoticeExist size="35px" iName="通知" />
+          </Center>
 
-          <Tooltip label="メッセージ">
-            <Center>
-              <IconChat size="30px" />
-            </Center>
-          </Tooltip>
+          <Center>
+            <IconChat size="35px" iName="チャット" />
+          </Center>
         </SimpleGrid>
       </Box>
     </Box>

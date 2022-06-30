@@ -1,4 +1,4 @@
-import {Box, Stack, Tooltip} from '@chakra-ui/react';
+import {Box, Center, Stack, Tooltip} from '@chakra-ui/react';
 
 const IconHome = ({
   size,
@@ -43,9 +43,11 @@ const IconHome = ({
             <path d="M5.6 5.5v1.3m2.8-.6v1.4" className="st0" />
           </g>
         </svg>
-        <Box fontSize="5px" color="gray" marginTop="0px">
-          {iName}
-        </Box>
+        <Center>
+          <Box fontSize=".5rem" color="gray">
+            {iName}
+          </Box>
+        </Center>
       </Stack>
     </Tooltip>
   );
