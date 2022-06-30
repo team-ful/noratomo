@@ -31,7 +31,7 @@ const Header = () => {
           <Box display={{base: 'none', sm: 'flex'}}>
             <Tooltip label="ホーム">
               <Center ml=".5rem">
-                <IconHome size="25px" />
+                <IconHome size="25px" label={''} />
               </Center>
             </Tooltip>
             <Tooltip label="募集を作成">
@@ -69,7 +69,7 @@ const Header = () => {
         w="100%"
       >
         <SimpleGrid
-          columns={9}
+          columns={5}
           position="relative"
           left="0"
           zIndex="10"
@@ -78,32 +78,32 @@ const Header = () => {
           p="10px"
           borderRadius="50px"
           bg="white"
-          boxShadow="-5px 5px 14px #969696"
+          boxShadow="-5px 5px 14px #d4d4d4"
         >
           <Tooltip label="検索">
             <Center>
               <RiSearchLine size="30px" />
             </Center>
           </Tooltip>
-          <Spacer />
+
           <Tooltip label="ホーム">
             <Center>
-              <IconHome size="30px" />
+              <IconHome size="30px" iName="ホーム" />
             </Center>
           </Tooltip>
-          <Spacer />
+
           <Tooltip label="募集を作成">
             <Center>
               <RiAddBoxLine size="30px" />
             </Center>
           </Tooltip>
-          <Spacer />
+
           <Tooltip label="通知">
             <Center>
               <NoticeExist size="30px" />
             </Center>
           </Tooltip>
-          <Spacer />
+
           <Tooltip label="メッセージ">
             <Center>
               <IconChat size="30px" />
