@@ -99,16 +99,7 @@ const Header = () => {
         >
           <Center>
             <MenuButton
-              icon={<IconSearch size="25px" />}
-              label="検索"
-              isTooltip={false}
-              href="/"
-            />
-          </Center>
-
-          <Center>
-            <MenuButton
-              icon={<IconHome size="25px" />}
+              icon={<IconHome size="23px" />}
               label="ホーム"
               isTooltip={false}
               href="/"
@@ -117,7 +108,16 @@ const Header = () => {
 
           <Center>
             <MenuButton
-              icon={<IconPost size="25px" />}
+              icon={<IconSearch size="23px" />}
+              label="検索"
+              isTooltip={false}
+              href="/"
+            />
+          </Center>
+
+          <Center>
+            <MenuButton
+              icon={<IconPost size="23px" />}
               label="募集する"
               isTooltip={false}
               href="/"
@@ -126,7 +126,7 @@ const Header = () => {
 
           <Center>
             <MenuButton
-              icon={<NoticeExist size="25px" />}
+              icon={<NoticeExist size="23px" />}
               label="通知"
               isTooltip={false}
               href="/"
@@ -135,7 +135,7 @@ const Header = () => {
 
           <Center>
             <MenuButton
-              icon={<IconChat size="25px" />}
+              icon={<IconChat size="23px" />}
               label="チャット"
               isTooltip={false}
               href="/"
