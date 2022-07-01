@@ -1,10 +1,20 @@
-import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Spacer,
+  Heading,
+  Center,
+  Avatar,
+  SimpleGrid,
+} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
-import {RiAddBoxLine} from 'react-icons/ri';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
+import IconPost from '../Logo/IconPost';
+import IconSearch from '../Logo/IconSearch';
+import MenuButton from '../Logo/MenuButton';
 import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
 
@@ -20,37 +30,119 @@ const Header = () => {
         </Center>
         <Spacer />
         <Flex>
-          <Tooltip label="メッセージ">
-            <Center ml=".5rem">
-              <IconChat size="25px" />
+          <Box display={{base: 'none', sm: 'flex'}}>
+            <Center m=".5rem">
+              <MenuButton
+                icon={<IconHome size="25px" />}
+                label="ホーム"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
-          </Tooltip>
-          <Tooltip label="通知">
-            <Center ml=".5rem">
-              <NoticeExist size="25px" />
+
+            <Center m=".5rem">
+              <MenuButton
+                icon={<IconPost size="25px" />}
+                label="募集する"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
-          </Tooltip>
-          <Tooltip label="募集を作成">
-            <Center ml=".5rem">
-              <RiAddBoxLine size="25px" />
+
+            <Center m=".5rem">
+              <MenuButton
+                icon={<NoticeExist size="25px" />}
+                label="通知"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
-          </Tooltip>
-          <Tooltip label="ホーム">
-            <Center ml=".5rem">
-              <IconHome size="25px" />
+
+            <Center m=".5rem">
+              <MenuButton
+                icon={<IconChat size="25px" />}
+                label="チャット"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
-          </Tooltip>
+          </Box>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
               <Avatar
-                size="xs"
+                size={{base: 'sm', sm: 'sm'}}
                 src={user?.avatar_url}
-                icon={<Avater size="1.5rem" />}
+                icon={<Avater size="25px" />}
               />
             </Center>
           </Tooltip>
         </Flex>
       </Flex>
+      <Box
+        position="fixed"
+        display={{base: 'block', sm: 'none'}}
+        top="0"
+        left="0"
+        w="100%"
+      >
+        <SimpleGrid
+          columns={5}
+          position="relative"
+          left="0"
+          zIndex="10"
+          top="calc(100vh - 80px)"
+          mx="1rem"
+          p="5px"
+          borderRadius="50px"
+          bg="white"
+          boxShadow="-5px 5px 14px #dedede"
+        >
+          <Center>
+            <MenuButton
+              icon={<IconHome size="23px" />}
+              label="ホーム"
+              isTooltip={false}
+              href="/"
+            />
+          </Center>
+
+          <Center>
+            <MenuButton
+              icon={<IconSearch size="23px" />}
+              label="検索"
+              isTooltip={false}
+              href="/"
+            />
+          </Center>
+
+          <Center>
+            <MenuButton
+              icon={<IconPost size="23px" />}
+              label="募集する"
+              isTooltip={false}
+              href="/"
+            />
+          </Center>
+
+          <Center>
+            <MenuButton
+              icon={<NoticeExist size="23px" />}
+              label="通知"
+              isTooltip={false}
+              href="/"
+            />
+          </Center>
+
+          <Center>
+            <MenuButton
+              icon={<IconChat size="23px" />}
+              label="チャット"
+              isTooltip={false}
+              href="/"
+            />
+          </Center>
+        </SimpleGrid>
+      </Box>
     </Box>
   );
 };

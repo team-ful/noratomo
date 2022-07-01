@@ -6,7 +6,12 @@ import Header from './Header';
 export const Frame: React.FC<{children: React.ReactNode}> = ({children}) => {
   return (
     <Center>
-      <Flex flexDirection="column" minHeight="100vh" maxWidth="1000px">
+      <Flex
+        flexDirection="column"
+        minHeight="100vh"
+        maxWidth="1000px"
+        minWidth={{base: '96%', sm: 'auto'}}
+      >
         <Box>
           <Header />
           {children}
