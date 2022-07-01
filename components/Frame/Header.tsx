@@ -90,12 +90,16 @@ const Header = () => {
           position="relative"
           left="0"
           zIndex="10"
-          top="calc(100vh - 80px)"
           mx="1rem"
           p="5px"
           borderRadius="50px"
           bg="white"
           boxShadow="-5px 5px 14px #dedede"
+          top="calc(100vh - 80px)"
+          css={{
+            // iPhoneだとdvhじゃないとツールバーが画面の外に出てしまうため重ねて定義する
+            top: 'calc(100dvh - 80px)',
+          }}
         >
           <Center>
             <MenuButton
