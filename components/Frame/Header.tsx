@@ -117,7 +117,7 @@ const Header = () => {
 
           <Center>
             <MenuButton
-              icon={<IconPost size="23px" />}
+              icon={<IconPost size="26px" />}
               label="募集する"
               isTooltip={false}
               href="/"
