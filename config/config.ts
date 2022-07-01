@@ -16,9 +16,21 @@ export interface Config {
   cateiruSSOClientSecret: string;
 
   // session cookie
+  sessionTokenLen: number;
   sessionCookieName: string;
   sessionPeriodDay: number;
   sessionCookieOptions: () => CookieSerializeOptions;
+
+  // refresh cookie
+  refreshTokenLen: number;
+  refreshCookieName: string;
+  refreshPeriodDay: number;
+  refreshCookieOptions: () => CookieSerializeOptions;
+
+  // other information cookies
+  // ログイン状態判定などに使用する
+  otherCookieName: string;
+  otherCookieOptions: () => CookieSerializeOptions;
 
   // DB
   db: ConnectionOptions;

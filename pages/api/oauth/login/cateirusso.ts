@@ -1,8 +1,8 @@
 import {ApiError} from 'next/dist/server/api-utils';
 import Base from '../../../../src/base/base';
 import {handlerWrapper} from '../../../../src/base/handlerWrapper';
-import {CreateAccountBySSO} from '../../../../src/createAccount';
 import {JWT} from '../../../../src/oauth/cateirusso/jwt';
+import {CreateAccountBySSO} from '../../../../src/user/createAccount';
 
 /**
  * Cateiru SSOのログインリンクへリダイレクトする
@@ -19,7 +19,9 @@ async function handler(base: Base<void>) {
 
   const code = base.getQuery('code');
   if (typeof code === 'undefined') {
-    throw new ApiError(400, 'code is not found');
+    // キャンセルしたりエラーだったりした場合はログインしないでホームにリダイレクトさせてしまう
+    base.res.redirect('/');
+    return;
   }
   const jwt = new JWT(code);
 
@@ -30,6 +32,8 @@ async function handler(base: Base<void>) {
   const user = await ca.login();
 
   await base.newLogin(user);
+
+  base.res.redirect('/hello');
 }
 
 export default handlerWrapper(handler, 'GET');

@@ -1,17 +1,24 @@
 import {URL} from 'url';
 import {Config} from '../config';
 
+const DB_SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
+
 const config: Config = {
   environment: 'production',
 
-  host: new URL('http://localhost:3000'),
+  host: new URL('https://noratomo.tdu.app'),
 
-  cateiruSSOEndpoint: new URL('http://localhost:3000'),
-  cateiruSSOTokenEndpoint: new URL('http://localhost:3000'),
-  cateiruSSOPublicKeyEndpoint: new URL('http://localhost:3000'),
-  cateiruSSOClientSecret: '',
-  cateiruSSOClientId: '',
+  cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
+  cateiruSSOTokenEndpoint: new URL(
+    'https://api.sso.cateiru.com/v1/oauth/token'
+  ),
+  cateiruSSOPublicKeyEndpoint: new URL(
+    'https://api.sso.cateiru.com/v1/oauth/jwt/key'
+  ),
+  cateiruSSOClientSecret: process.env.CATEIRU_SSO_CLIENT_SECRET || '',
+  cateiruSSOClientId: process.env.CATEIRU_SSO_CLIENT_ID || '',
 
+  sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
   sessionPeriodDay: 7,
   sessionCookieOptions: () => {
@@ -19,21 +26,55 @@ const config: Config = {
     date.setDate(date.getDate() + config.sessionPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: 'noratomo.tdu.app',
       expires: date,
-      maxAge: config.sessionPeriodDay * 24,
+      maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
-      secure: false, // TODO: httpsにしてtrueにしたい
-      httpOnly: false, // クライアント側でcookieを読みたいためfalse
+      secure: true,
+      httpOnly: true,
+      path: '/',
+    };
+  },
+
+  refreshTokenLen: 128,
+  refreshCookieName: 'noratomo-refresh',
+  refreshPeriodDay: 30,
+  refreshCookieOptions: () => {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + config.refreshPeriodDay);
+
+    return {
+      domain: 'noratomo.tdu.app',
+      expires: date,
+      maxAge: config.refreshPeriodDay * 86400,
+      sameSite: 'strict',
+      secure: true,
+      httpOnly: true,
+      path: '/',
+    };
+  },
+
+  otherCookieName: 'noratomo-options',
+  otherCookieOptions: () => {
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + config.refreshPeriodDay);
+
+    return {
+      domain: 'noratomo.tdu.app',
+      expires: date,
+      maxAge: config.refreshPeriodDay * 86400,
+      sameSite: 'strict',
+      secure: true,
+      httpOnly: false,
       path: '/',
     };
   },
 
   db: {
-    host: 'db',
-    user: 'docker',
-    password: 'docker',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: 'noratomo',
+    socketPath: `${DB_SOCKET_PATH}/${process.env.INSTANCE_CONNECTION_NAME}`,
   },
 };
 

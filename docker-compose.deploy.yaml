@@ -8,4 +8,7 @@ services:
     ports:
       - 3000:3000
     environment:
+      PORT: 3000
       NODE_ENV: production
+      CATEIRU_SSO_CLIENT_ID: hogehoge
+      CATEIRU_SSO_CLIENT_SECRET: hogehoge

@@ -4,6 +4,7 @@ import Router from 'next/router';
 import nprogress from 'nprogress';
 import {RecoilRoot} from 'recoil';
 import {Frame} from '../components/Frame/Frame';
+import Me from '../components/Session/Me';
 import theme from '../utils/theme';
 
 import 'nprogress/nprogress.css';
@@ -27,6 +28,7 @@ const MyApp = ({Component, pageProps}: AppProps) => {
     <>
       <RecoilRoot>
         <ChakraProvider theme={theme}>
+          <Me />
           <Frame>
             <Component {...pageProps} />
           </Frame>

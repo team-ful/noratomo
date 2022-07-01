@@ -23,6 +23,7 @@ export const handlerWrapper =
     }
 
     await base.end();
+    res.status(base.status);
     res.end();
   };
 
@@ -48,5 +49,6 @@ export const authHandlerWrapper =
     }
 
     await authBase.end();
+    res.status(authBase.status);
     res.end();
   };

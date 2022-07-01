@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import argon2 from 'argon2';
 import {serialize} from 'cookie';
 import {Connection} from 'mysql2/promise';
@@ -9,6 +8,7 @@ import User, {UserModel} from '../models/user';
 import {setCert} from '../services/cert';
 import {createSession} from '../services/session';
 import {createTestUser} from '../services/user';
+import {randomText} from '../utils/random';
 import {createUserModel} from './models';
 import {createCertModel} from './models';
 
@@ -35,7 +35,7 @@ export class TestUser {
 
     this.certModel = createCertModel({
       user_id: this.user?.id,
-      cateiru_sso_id: randomBytes(32).toString('hex'),
+      cateiru_sso_id: randomText(32),
     });
 
     await setCert(db, this.certModel);
@@ -46,7 +46,7 @@ export class TestUser {
       throw new Error('user is undefined');
     }
 
-    this.password = randomBytes(32).toString('hex');
+    this.password = randomText(32);
 
     this.certModel = createCertModel({
       user_id: this.user?.id,
@@ -86,5 +86,17 @@ export class TestUser {
     }
 
     return serialize(config.sessionCookieName, this.session.session_token);
+  }
+
+  get refreshCookie() {
+    if (!this.session || typeof this.session.refresh_token === 'undefined') {
+      throw new Error('no session');
+    }
+
+    return serialize(config.refreshCookieName, this.session.refresh_token);
+  }
+
+  get cookie() {
+    return `${this.sessionCookie}; ${this.refreshCookie}`;
   }
 }

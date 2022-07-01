@@ -1,10 +1,10 @@
-import {randomBytes} from 'crypto';
 import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../../config';
 import createPasswordHandler from '../../../../pages/api/create/password';
 import {findUserBySessionToken} from '../../../../src/services/user';
 import {createUserModel} from '../../../../src/tests/models';
+import {randomText} from '../../../../src/utils/random';
 
 describe('create', () => {
   let db: mysql.Connection;
@@ -22,7 +22,7 @@ describe('create', () => {
     expect.hasAssertions();
 
     const user = createUserModel({age: 20});
-    const password = randomBytes(50).toString('hex');
+    const password = randomText(50);
 
     await testApiHandler({
       handler: createPasswordHandler,
@@ -54,7 +54,7 @@ describe('create', () => {
     expect.hasAssertions();
 
     const user = createUserModel({age: 20});
-    const password = randomBytes(100).toString('hex');
+    const password = randomText(100);
 
     await testApiHandler({
       handler: createPasswordHandler,
@@ -78,7 +78,7 @@ describe('create', () => {
     expect.hasAssertions();
 
     const user = createUserModel({age: 20});
-    const password = randomBytes(100).toString('hex');
+    const password = randomText(100);
 
     await testApiHandler({
       handler: createPasswordHandler,

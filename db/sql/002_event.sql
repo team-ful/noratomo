@@ -4,3 +4,10 @@ CREATE EVENT IF NOT EXISTS clear_session
     COMMENT 'clear sessions table'
     DO
         DELETE FROM session WHERE period_date < NOW();
+
+CREATE EVENT IF NOT EXISTS clear_refresh_session
+    ON SCHEDULE
+        EVERY 1 HOUR
+    COMMENT 'clear refresh sessions table'
+    DO
+        DELETE FROM refresh WHERE period_date < NOW();

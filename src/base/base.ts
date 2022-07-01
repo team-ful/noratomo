@@ -32,6 +32,8 @@ class Base<T> {
   public req: NextApiRequest;
   public res: NextApiResponse;
 
+  public status: number;
+
   private _db?: Connection;
 
   private contentType: ParsedMediaType;
@@ -39,6 +41,9 @@ class Base<T> {
   private userAgent: UserAgent;
   private cookies: string[];
   private postBody?: ParsedUrlQuery;
+
+  protected sessionToken?: string;
+  protected refreshToken?: string;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     this.req = req;
@@ -49,6 +54,10 @@ class Base<T> {
     this.userAgent = this.parseUA();
 
     this.cookies = [];
+
+    // デフォルトは200を返す
+    // ApiErrorでthrowした場合は別
+    this.status = 200;
   }
 
   /**
@@ -360,10 +369,31 @@ class Base<T> {
   public async newLogin(user: User) {
     const session = await createSession(await this.db(), user.id);
 
+    if (typeof session.refresh_token === 'undefined') {
+      throw new ApiError(500, 'refresh_token is empty');
+    }
+
+    this.sessionToken = session.session_token;
+    this.refreshToken = session.refresh_token;
+
     this.setCookie(
       config.sessionCookieName,
       session.session_token,
       config.sessionCookieOptions()
+    );
+
+    this.setCookie(
+      config.refreshCookieName,
+      session.refresh_token,
+      config.refreshCookieOptions()
+    );
+
+    const options = 'true';
+
+    this.setCookie(
+      config.otherCookieName,
+      options,
+      config.otherCookieOptions()
     );
   }
 

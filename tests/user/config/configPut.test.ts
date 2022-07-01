@@ -1,4 +1,3 @@
-import {randomBytes} from 'crypto';
 import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../config';
@@ -8,6 +7,7 @@ import {findUserByUserID} from '../../../src/services/user';
 import {createUserModel} from '../../../src/tests/models';
 import {TestUser} from '../../../src/tests/user';
 import {setConfigHandler} from '../../../src/user/config/configPut';
+import {randomText} from '../../../src/utils/random';
 
 describe('更新', () => {
   let db: mysql.Connection;
@@ -27,8 +27,8 @@ describe('更新', () => {
     await u.addSession(db);
 
     const newUser = createUserModel({
-      display_name: randomBytes(10).toString('hex'),
-      profile: randomBytes(20).toString('hex'),
+      display_name: randomText(10),
+      profile: randomText(20),
       age: 100,
       gender: Gender.Female,
     });
@@ -41,7 +41,7 @@ describe('更新', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: u.sessionCookie,
+          cookie: u.cookie,
           'content-type': 'application/x-www-form-urlencoded',
         };
       },
@@ -72,7 +72,7 @@ describe('更新', () => {
     await u.addSession(db);
 
     const newUser = createUserModel({
-      profile: randomBytes(20).toString('hex'),
+      profile: randomText(20),
     });
 
     expect.hasAssertions();
@@ -83,7 +83,7 @@ describe('更新', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: u.sessionCookie,
+          cookie: u.cookie,
           'content-type': 'application/x-www-form-urlencoded',
         };
       },

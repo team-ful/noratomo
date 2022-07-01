@@ -2,18 +2,20 @@ import argon2 from 'argon2';
 import {JwtPayload} from 'jsonwebtoken';
 import {Connection} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
-import {Gender, gender as pg} from './models/common';
-import {CertModel} from './models/cret';
-import User from './models/user';
-import {setCert} from './services/cert';
+import {Gender, gender as pg} from './../models/common';
+import {CertModel} from './../models/cret';
+import User from './../models/user';
+import {setCert} from './../services/cert';
 import {
   createUserPW,
   createUserSSO,
   findUserByCateiruSSO,
   findUserByUserID,
   findUserByUserNameAndMail,
-} from './services/user';
-import * as check from './syntax/check';
+  UpdateOption,
+  updateUser,
+} from './../services/user';
+import * as check from './../syntax/check';
 
 export class CreateAccountBySSO {
   private displayName: string;
@@ -47,10 +49,37 @@ export class CreateAccountBySSO {
     const user = await findUserByCateiruSSO(this.db, this.ssoId);
 
     if (user) {
-      return user;
+      return await this.update(user.id);
     }
 
     return await this.createUser();
+  }
+
+  /**
+   * ユーザを更新する
+   *
+   * @param {number} id - user id
+   * @returns {Promise<User>} - user
+   */
+  private async update(id: number): Promise<User> {
+    const option: UpdateOption = {};
+
+    if (this.displayName) {
+      option['display_name'] = this.displayName;
+    }
+    if (this.mail) {
+      option['mail'] = this.mail;
+    }
+    if (this.isAdmin) {
+      option['is_admin'] = this.isAdmin;
+    }
+    if (this.avatarURL) {
+      option['avatar_url'] = this.avatarURL;
+    }
+
+    await updateUser(this.db, id, option);
+
+    return await findUserByUserID(this.db, id);
   }
 
   /**

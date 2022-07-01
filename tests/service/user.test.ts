@@ -1,6 +1,6 @@
-import {randomBytes} from 'crypto';
-import mysql from 'mysql2/promise';
+import mysql, {RowDataPacket} from 'mysql2/promise';
 import config from '../../config';
+import {Gender} from '../../src/models/common';
 import {setCert} from '../../src/services/cert';
 import {
   findUserByUserID,
@@ -13,9 +13,11 @@ import {
   createUserPW,
   findUserByUserNameAndMail,
   updateUser,
+  deleteUserByID,
 } from '../../src/services/user';
 import {createCertModel, createUserModel} from '../../src/tests/models';
 import {TestUser} from '../../src/tests/user';
+import {randomText} from '../../src/utils/random';
 
 describe('getUser', () => {
   let connection: mysql.Connection;
@@ -116,9 +118,7 @@ describe('findUserByCateiruSSO', () => {
   });
 
   test('certが存在しない場合はnullが返る', async () => {
-    expect(
-      await findUserByCateiruSSO(connection, randomBytes(32).toString('hex'))
-    ).toBeNull();
+    expect(await findUserByCateiruSSO(connection, randomText(32))).toBeNull();
   });
 
   test('ssoが存在する場合は返る', async () => {
@@ -127,7 +127,7 @@ describe('findUserByCateiruSSO', () => {
 
     const cert = createCertModel({
       user_id: user.id,
-      cateiru_sso_id: randomBytes(32).toString('hex'),
+      cateiru_sso_id: randomText(32),
     });
     await setCert(connection, cert);
 
@@ -171,10 +171,7 @@ describe('findUserBySessionToken', () => {
     const user = new TestUser();
     await user.create(connection);
 
-    const dbUser = await findUserBySessionToken(
-      connection,
-      randomBytes(128).toString('hex')
-    );
+    const dbUser = await findUserBySessionToken(connection, randomText(128));
 
     expect(dbUser).toBeNull();
   });
@@ -207,10 +204,7 @@ describe('findUserByMail', () => {
     const user = new TestUser();
     await user.create(connection);
 
-    const dbUser = await findUserByMail(
-      connection,
-      randomBytes(128).toString('hex')
-    );
+    const dbUser = await findUserByMail(connection, randomText(128));
 
     expect(dbUser).toBeNull();
   });
@@ -246,10 +240,7 @@ describe('findUserByUserName', () => {
     const user = new TestUser();
     await user.create(connection);
 
-    const dbUser = await findUserByUserName(
-      connection,
-      randomBytes(128).toString('hex')
-    );
+    const dbUser = await findUserByUserName(connection, randomText(128));
 
     expect(dbUser).toBeNull();
   });
@@ -346,6 +337,25 @@ describe('updateUser', () => {
     await db.end();
   });
 
+  test('メールアドレスを更新できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newMail = `${randomText(10)}@example.com`;
+
+    await updateUser(db, u.id, {
+      mail: newMail,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.mail).not.toBe(u.mail);
+    expect(u1.id).toBe(u.id);
+  });
+
   test('display_nameを更新できる', async () => {
     const user = new TestUser();
     await user.create(db);
@@ -365,6 +375,84 @@ describe('updateUser', () => {
     expect(u1.id).toBe(u.id);
   });
 
+  test('user_nameを更新できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newUserName = randomText(10);
+
+    await updateUser(db, u.id, {
+      user_name: newUserName,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.user_name).not.toBe(u.user_name);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('genderを更新できる', async () => {
+    const user = new TestUser({gender: Gender.Male});
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u.gender).toBe(Gender.Male);
+
+    const newGender = Gender.Female;
+
+    await updateUser(db, u.id, {
+      gender: newGender,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.gender).not.toBe(u.gender);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('is_adminを更新できる', async () => {
+    const user = new TestUser({is_admin: false});
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newAdmin = true;
+
+    await updateUser(db, u.id, {
+      is_admin: newAdmin,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.is_admin).not.toBe(u.is_admin);
+    expect(u1.id).toBe(u.id);
+  });
+
+  test('avatarURLを更新できる', async () => {
+    const user = new TestUser({avatar_url: randomText(10)});
+    await user.create(db);
+
+    const u = await findUserByUserID(db, user.user?.id || NaN);
+
+    const newAvatarUrl = randomText(10);
+
+    await updateUser(db, u.id, {
+      avatar_url: newAvatarUrl,
+    });
+
+    const u1 = await findUserByUserID(db, user.user?.id || NaN);
+
+    expect(u1).not.toEqual(u);
+    expect(u1.avatar_url).not.toBe(u.avatar_url);
+    expect(u1.id).toBe(u.id);
+  });
+
   test('同じuserNameで更新するとエラー', async () => {
     const user = new TestUser();
     await user.create(db);
@@ -379,5 +467,19 @@ describe('updateUser', () => {
         user_name: user2.user?.user_name || '',
       });
     }).rejects.toThrow();
+  });
+
+  test('idから削除できる', async () => {
+    const user = new TestUser();
+    await user.create(db);
+
+    await deleteUserByID(db, user.user?.id || NaN);
+
+    const [rows] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM user WHERE id = ?',
+      user.user?.id || NaN
+    );
+
+    expect(rows.length).toBe(0);
   });
 });

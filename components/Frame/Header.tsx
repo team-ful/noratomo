@@ -1,11 +1,15 @@
 import {Box, Flex, Spacer, Heading, Center, Avatar} from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
-import {BsBoxSeam} from 'react-icons/bs';
-import {IoChatbubbleOutline} from 'react-icons/io5';
+import {Tooltip} from '@chakra-ui/react';
 import {RiAddBoxLine} from 'react-icons/ri';
-import {TbHeartHandshake} from 'react-icons/tb';
+import Avater from '../Logo/Avater';
+import IconChat from '../Logo/IconChat';
+import IconHome from '../Logo/IconHome';
+import NoticeExist from '../Logo/NoticeExist';
+import useUser from '../Session/useUser';
 
 const Header = () => {
+  const user = useUser();
   return (
     <Box width="100%" height="2.5rem">
       <Flex height="100%">
@@ -16,21 +20,35 @@ const Header = () => {
         </Center>
         <Spacer />
         <Flex>
-          <Center ml=".5rem">
-            <IoChatbubbleOutline size="26px" />
-          </Center>
-          <Center ml=".5rem">
-            <TbHeartHandshake size="27px" />
-          </Center>
-          <Center ml=".5rem">
-            <RiAddBoxLine size="27px" />
-          </Center>
-          <Center ml=".5rem">
-            <BsBoxSeam size="27px" />
-          </Center>
-          <Center mr=".5rem" ml=".5rem">
-            <Avatar size="sm" />
-          </Center>
+          <Tooltip label="メッセージ">
+            <Center ml=".5rem">
+              <IconChat size="25px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="通知">
+            <Center ml=".5rem">
+              <NoticeExist size="25px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="募集を作成">
+            <Center ml=".5rem">
+              <RiAddBoxLine size="25px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="ホーム">
+            <Center ml=".5rem">
+              <IconHome size="25px" />
+            </Center>
+          </Tooltip>
+          <Tooltip label="マイページ">
+            <Center mr=".5rem" ml=".5rem">
+              <Avatar
+                size="xs"
+                src={user?.avatar_url}
+                icon={<Avater size="1.5rem" />}
+              />
+            </Center>
+          </Tooltip>
         </Flex>
       </Flex>
     </Box>

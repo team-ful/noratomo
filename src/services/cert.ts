@@ -1,4 +1,4 @@
-import {select, insert} from 'mysql-bricks';
+import sql, {select, insert} from 'mysql-bricks';
 import type {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
 import Cert, {CertModel} from '../models/cret';
@@ -49,4 +49,19 @@ export async function findCertByUserID(
   }
 
   return new Cert(row[0] as CertModel);
+}
+
+/**
+ * Certを削除する
+ *
+ * @param {Connection} db - database
+ * @param {number} userId - User ID
+ */
+export async function deleteCertById(db: Connection, userId: number) {
+  const query = sql
+    .delete('cert')
+    .where('user_id', userId)
+    .toParams({placeholder: '?'});
+
+  await db.query(query.text, query.values);
 }
