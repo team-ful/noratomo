@@ -1,26 +1,11 @@
-import {Box, Center, VStack, Tooltip} from '@chakra-ui/react';
+import {Box} from '@chakra-ui/react';
 import {RiAddBoxLine} from 'react-icons/ri';
 
-const IconPost = ({
-  size,
-  label,
-  iName,
-}: {
-  size: string;
-  label?: string;
-  iName?: string;
-}) => {
+const IconPost = ({size}: {size: string}) => {
   return (
-    <Tooltip label={label}>
-      <VStack width={size} spacing={0}>
-        <RiAddBoxLine size="35px" />
-        <Center>
-          <Box fontSize=".5rem" color="gray" whiteSpace="nowrap">
-            {iName}
-          </Box>
-        </Center>
-      </VStack>
-    </Tooltip>
+    <Box w={size}>
+      <RiAddBoxLine size="35px" />
+    </Box>
   );
 };
 export default IconPost;
