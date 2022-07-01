@@ -14,6 +14,7 @@ import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
 import IconPost from '../Logo/IconPost';
 import IconSearch from '../Logo/IconSearch';
+import MenuButton from '../Logo/MenuButton';
 import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
 
@@ -31,19 +32,39 @@ const Header = () => {
         <Flex>
           <Box display={{base: 'none', sm: 'flex'}}>
             <Center m=".5rem">
-              <IconHome size="25px" label="ホーム" />
+              <MenuButton
+                icon={<IconHome size="25px" />}
+                label="ホーム"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
 
             <Center m=".5rem">
-              <IconPost size="25px" label="募集する" />
+              <MenuButton
+                icon={<IconPost size="25px" />}
+                label="募集する"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
 
             <Center m=".5rem">
-              <NoticeExist size="25px" label="通知" />
+              <MenuButton
+                icon={<NoticeExist size="25px" />}
+                label="通知"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
 
             <Center m=".5rem">
-              <IconChat size="25px" label="チャット" />
+              <MenuButton
+                icon={<IconChat size="25px" />}
+                label="チャット"
+                isTooltip={true}
+                href="/"
+              />
             </Center>
           </Box>
           <Tooltip label="マイページ">
@@ -74,26 +95,51 @@ const Header = () => {
           p="5px"
           borderRadius="50px"
           bg="white"
-          boxShadow="-5px 5px 14px #d4d4d4"
+          boxShadow="-5px 5px 14px #dedede"
         >
           <Center>
-            <IconSearch size="35px" iName="検索" />
+            <MenuButton
+              icon={<IconSearch size="25px" />}
+              label="検索"
+              isTooltip={false}
+              href="/"
+            />
           </Center>
 
           <Center>
-            <IconHome size="35px" iName="ホーム" />
+            <MenuButton
+              icon={<IconHome size="25px" />}
+              label="ホーム"
+              isTooltip={false}
+              href="/"
+            />
           </Center>
 
           <Center>
-            <IconPost size="35px" iName="募集する" />
+            <MenuButton
+              icon={<IconPost size="25px" />}
+              label="募集する"
+              isTooltip={false}
+              href="/"
+            />
           </Center>
 
           <Center>
-            <NoticeExist size="35px" iName="通知" />
+            <MenuButton
+              icon={<NoticeExist size="25px" />}
+              label="通知"
+              isTooltip={false}
+              href="/"
+            />
           </Center>
 
           <Center>
-            <IconChat size="35px" iName="チャット" />
+            <MenuButton
+              icon={<IconChat size="25px" />}
+              label="チャット"
+              isTooltip={false}
+              href="/"
+            />
           </Center>
         </SimpleGrid>
       </Box>
