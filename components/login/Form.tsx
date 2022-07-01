@@ -52,17 +52,9 @@ const LoginForm = () => {
   };
 
   return (
-    <>
-      <Center mt={{base: '2rem', md: '3rem'}}>
-        <Box
-          width={{base: 'auto', md: '400px'}}
-          height="600px"
-          border={{base: 'none', md: '2px solid #CBD5E0'}}
-          borderRadius={{base: 'none', md: '20px'}}
-        >
-          <Center height="100%">
-            <Box width={{base: '95vw', md: '380px'}}>
-              <Heading textAlign="center" mt="2rem">
+          <Center>
+            <Box mt="2rem" w={{base: '96%', md: '500px'}}>
+              <Heading textAlign="center" mb="1rem">
                 ログイン
               </Heading>
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,7 +96,7 @@ const LoginForm = () => {
                   <Link>パスワードを忘れましたか？</Link>
                 </NextLink>
                 <Button
-                  colorScheme="green"
+                  colorScheme="blue"
                   width="100%"
                   mt="1.5rem"
                   type="submit"
@@ -123,9 +115,6 @@ const LoginForm = () => {
               </Center>
             </Box>
           </Center>
-        </Box>
-      </Center>
-    </>
   );
 };
 
