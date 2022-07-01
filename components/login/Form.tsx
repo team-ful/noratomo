@@ -9,6 +9,7 @@ import {
   Heading,
   Link,
   Divider,
+  useToast,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import {useRouter} from 'next/router';
@@ -27,6 +28,7 @@ const LoginForm = () => {
     formState: {errors},
   } = useForm<LoginInputs>();
   const router = useRouter();
+  const toast = useToast();
   const [load, setLoad] = React.useState(false);
 
   const onSubmit: SubmitHandler<LoginInputs> = data => {
@@ -37,7 +39,9 @@ const LoginForm = () => {
         headers: {
           'content-type': 'application/x-www-form-urlencoded',
         },
-        body: `user=${data.user}&password=${data.password}`,
+        body: `user=${encodeURIComponent(
+          data.user
+        )}&password=${encodeURIComponent(data.password)}`,
       });
 
       setLoad(false);
@@ -45,6 +49,11 @@ const LoginForm = () => {
       // TODO: ログインできないときになにかしたい
       if (res.ok) {
         router.push('/hello');
+      } else {
+        toast({
+          title: await res.text(),
+          status: 'error',
+        });
       }
     };
 
