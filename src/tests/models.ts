@@ -99,7 +99,7 @@ export const createLoginHistoryModel = (
     os: options?.os || 'Windows',
     is_phone: options?.is_phone || false,
     is_tablet: options?.is_tablet || false,
-    is_desktop: options?.is_desktop || false,
+    is_desktop: options?.is_desktop || true,
     blowser_name: options?.blowser_name || 'Chrome',
     login_date: options?.login_date || loginDate,
   };
