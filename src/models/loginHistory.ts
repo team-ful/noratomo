@@ -9,7 +9,7 @@ export interface LoginHistoryModel {
   is_phone: boolean | null;
   is_tablet: boolean | null;
   is_desktop: boolean | null;
-  blowser_name: string | null;
+  browser_name: string | null;
   login_date: Date;
 }
 
@@ -22,7 +22,7 @@ class LoginHistory implements LoginHistoryModel {
   readonly is_phone: boolean | null;
   readonly is_tablet: boolean | null;
   readonly is_desktop: boolean | null;
-  readonly blowser_name: string | null;
+  readonly browser_name: string | null;
   readonly login_date: Date;
 
   constructor(init: {[key: string]: any}) {
@@ -37,7 +37,7 @@ class LoginHistory implements LoginHistoryModel {
     this.is_desktop = init.is_desktop;
     this.is_tablet = init.is_tablet;
 
-    this.blowser_name = init.blowser_name;
+    this.browser_name = init.browser_name;
     this.login_date = new Date(init.login_date);
   }
 

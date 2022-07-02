@@ -24,7 +24,7 @@ export async function findLoginHistoriesByUserID(
       'is_phone',
       'is_tablet',
       'is_desktop',
-      'blowser_name',
+      'browser_name',
       'login_date',
     ])
     .from('login_history')
@@ -74,7 +74,7 @@ export async function createLoginHistory(
       is_phone: isPhone,
       is_tablet: isTablet,
       is_desktop: isDesktop,
-      blowser_name: browserName,
+      browser_name: browserName,
       login_date: sql('NOW()'),
     })
     .toParams({placeholder: '?'});

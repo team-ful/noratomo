@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `login_history` (
     `is_phone` BOOLEAN,
     `is_tablet` BOOLEAN,
     `is_desktop` BOOLEAN,
-    `blowser_name` VARCHAR(256),
+    `browser_name` VARCHAR(256),
     `login_date` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
 );

@@ -75,7 +75,7 @@ export class TestUser {
       d.is_phone || false,
       d.is_tablet || false,
       d.is_desktop || false,
-      d.blowser_name || 'Chrome'
+      d.browser_name || 'Chrome'
     );
   }
 
