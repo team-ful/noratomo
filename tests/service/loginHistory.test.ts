@@ -114,7 +114,7 @@ describe('findLoginHistoriesByUserID', () => {
       device_name,
       os,
       login_date
-    ) VALUES (?, INET_ATON(?), ?, ?, NOW())`,
+    ) VALUES (?, INET6_ATON(?), ?, ?, NOW())`,
       [d.user_id, d.ip_address, d.device_name, d.os]
     );
 
