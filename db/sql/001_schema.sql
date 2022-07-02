@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `cert` (
 CREATE TABLE IF NOT EXISTS `login_history` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
-    `ip_address` INT(10) UNSIGNED NOT NULL,
+    `ip_address` VARBINARY(16) NOT NULL,
     `device_name` VARCHAR(256),
     `os` VARCHAR(256),
     `is_phone` BOOLEAN,
