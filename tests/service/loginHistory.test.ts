@@ -59,11 +59,36 @@ describe('createLoginHistory', () => {
     );
 
     const [rows] = await db.query<RowDataPacket[]>(
-      'SELECT INET_NTOA(ip_address) FROM login_history WHERE id = ?',
+      'SELECT INET6_NTOA(ip_address) FROM login_history WHERE id = ?',
       id
     );
 
-    expect(rows[0]['INET_NTOA(ip_address)']).toBe(d.ip_address);
+    expect(rows[0]['INET6_NTOA(ip_address)']).toBe(d.ip_address);
+  });
+
+  test('IPv6のIPアドレスが正しく保存されている', async () => {
+    const d = createLoginHistoryModel({
+      ip_address: '2001:db8:ffff:ffff:ffff:ffff:ffff:ffff',
+    });
+
+    const id = await createLoginHistory(
+      db,
+      d.user_id,
+      d.ip_address,
+      d.device_name || Device.Desktop,
+      d.os || '',
+      d.is_phone || false,
+      d.is_tablet || false,
+      d.is_desktop || false,
+      d.blowser_name || ''
+    );
+
+    const [rows] = await db.query<RowDataPacket[]>(
+      'SELECT INET6_NTOA(ip_address) FROM login_history WHERE id = ?',
+      id
+    );
+
+    expect(rows[0]['INET6_NTOA(ip_address)']).toBe(d.ip_address);
   });
 });
 

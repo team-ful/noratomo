@@ -17,8 +17,8 @@ export async function findLoginHistoriesByUserID(
     .select([
       'id',
       'user_id',
-      // IPアドレスは`INET_ATON`使っている
-      sql('INET_NTOA(ip_address)'),
+      // IPアドレスは`INET6_ATON`使っている
+      sql('INET6_NTOA(ip_address)'),
       'device_name',
       'os',
       'is_phone',
@@ -68,7 +68,7 @@ export async function createLoginHistory(
   const query = sql
     .insert('login_history', {
       user_id: userID,
-      ip_address: sql('INET_ATON(?)', ip),
+      ip_address: sql('INET6_ATON(?)', ip),
       device_name: deviceName,
       os: os,
       is_phone: isPhone,

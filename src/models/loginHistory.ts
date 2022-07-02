@@ -29,7 +29,7 @@ class LoginHistory implements LoginHistoryModel {
     this.id = init.id;
     this.user_id = init.user_id;
 
-    this.ip_address = init["INET_NTOA(ip_address)"];
+    this.ip_address = init["INET6_NTOA(ip_address)"];
     this.device_name = this.parseDevice(init.device_name as string | null);
     this.os = init.os;
 
