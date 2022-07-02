@@ -25,11 +25,11 @@ class LoginHistory implements LoginHistoryModel {
   readonly blowser_name: string | null;
   readonly login_date: Date;
 
-  constructor(init: LoginHistoryModel) {
+  constructor(init: {[key: string]: any}) {
     this.id = init.id;
     this.user_id = init.user_id;
 
-    this.ip_address = init.ip_address;
+    this.ip_address = init["INET_NTOA(ip_address)"];
     this.device_name = this.parseDevice(init.device_name as string | null);
     this.os = init.os;
 
