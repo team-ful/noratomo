@@ -2,14 +2,16 @@ import argon2 from 'argon2';
 import {serialize} from 'cookie';
 import {Connection} from 'mysql2/promise';
 import config from '../../config';
+import {Device} from '../base/base';
 import {CertModel} from '../models/cret';
 import {Session} from '../models/session';
 import User, {UserModel} from '../models/user';
 import {setCert} from '../services/cert';
+import {createLoginHistory} from '../services/loginHistory';
 import {createSession} from '../services/session';
 import {createTestUser} from '../services/user';
 import {randomText} from '../utils/random';
-import {createUserModel} from './models';
+import {createLoginHistoryModel, createUserModel} from './models';
 import {createCertModel} from './models';
 
 export class TestUser {
@@ -62,6 +64,19 @@ export class TestUser {
     }
 
     this.session = await createSession(db, this.user.id);
+
+    const d = createLoginHistoryModel();
+    await createLoginHistory(
+      db,
+      this.user.id,
+      d.ip_address,
+      d.device_name || Device.Desktop,
+      d.os || '',
+      d.is_phone || false,
+      d.is_tablet || false,
+      d.is_desktop || false,
+      d.browser_name || 'Chrome'
+    );
   }
 
   get cateiruSSOId() {

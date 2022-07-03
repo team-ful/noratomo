@@ -6,6 +6,7 @@ import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
 import Base, {Device} from '../../src/base/base';
 import {handlerWrapper} from '../../src/base/handlerWrapper';
+import {findLoginHistoriesByUserID} from '../../src/services/loginHistory';
 import {findSessionTokenByRefreshToken} from '../../src/services/session';
 import {findUserBySessionToken} from '../../src/services/user';
 import {TestUser} from '../../src/tests/user';
@@ -629,6 +630,17 @@ describe('newLogin', () => {
         );
 
         expect(sessionToken).toBe(session);
+
+        const loginHistory = await findLoginHistoriesByUserID(
+          connection,
+          user?.id || NaN
+        );
+
+        expect(loginHistory).not.toBeNull();
+        if (loginHistory) {
+          expect(loginHistory.length).toBe(2); // TestUserでログイン履歴を保存しているため2
+          expect(loginHistory[0].device_name).toBe(Device.Desktop);
+        }
       },
     });
   });

@@ -10,6 +10,7 @@ import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
 import User from '../models/user';
+import {createLoginHistory} from '../services/loginHistory';
 import {createSession} from '../services/session';
 
 export enum Device {
@@ -373,6 +374,8 @@ class Base<T> {
       throw new ApiError(500, 'refresh_token is empty');
     }
 
+    await this.saveLoginHistory(user.id);
+
     this.sessionToken = session.session_token;
     this.refreshToken = session.refresh_token;
 
@@ -394,6 +397,32 @@ class Base<T> {
       config.otherCookieName,
       options,
       config.otherCookieOptions()
+    );
+  }
+
+  /**
+   * ログイン履歴を保存する
+   *
+   * @param {number} userID - ユーザID
+   */
+  private async saveLoginHistory(userID: number) {
+    const deviceName = this.getDevice();
+    const os = this.getPlatform();
+    const isPhone = deviceName === Device.Mobile;
+    const isTablet = deviceName === Device.Tablet;
+    const isDesktop = deviceName === Device.Desktop;
+    const browserName = this.getVender();
+
+    await createLoginHistory(
+      await this.db(),
+      userID,
+      this.ip,
+      deviceName,
+      os,
+      isPhone,
+      isTablet,
+      isDesktop,
+      browserName
     );
   }
 

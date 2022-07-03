@@ -4,6 +4,7 @@ import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../config';
 import AuthedBase from '../../src/base/authedBase';
 import {authHandlerWrapper} from '../../src/base/handlerWrapper';
+import {findLoginHistoriesByUserID} from '../../src/services/loginHistory';
 import {TestUser} from '../../src/tests/user';
 import {randomText} from '../../src/utils/random';
 
@@ -29,6 +30,11 @@ describe('login', () => {
   test('session-token, refresh-tokenどちらのcookieも設定されている場合、認証される', async () => {
     expect.hasAssertions();
 
+    const beforeLoginHistory = await findLoginHistoriesByUserID(
+      db,
+      user.user?.id || NaN
+    );
+
     const handler = async (base: AuthedBase<void>) => {
       const user = base.user;
 
@@ -48,12 +54,25 @@ describe('login', () => {
       test: async ({fetch}) => {
         const res = await fetch();
         expect(res.status).toBe(200);
+
+        const loginHistory = await findLoginHistoriesByUserID(
+          db,
+          user.user?.id || NaN
+        );
+
+        expect(loginHistory).not.toBeNull();
+        expect(loginHistory?.length).toBe(beforeLoginHistory?.length);
       },
     });
   });
 
   test('session-token cookieが設定されている場合、それを使用して認証される', async () => {
     expect.hasAssertions();
+
+    const beforeLoginHistory = await findLoginHistoriesByUserID(
+      db,
+      user.user?.id || NaN
+    );
 
     const handler = async (base: AuthedBase<void>) => {
       const user = base.user;
@@ -75,12 +94,25 @@ describe('login', () => {
       test: async ({fetch}) => {
         const res = await fetch();
         expect(res.status).toBe(200);
+
+        const loginHistory = await findLoginHistoriesByUserID(
+          db,
+          user.user?.id || NaN
+        );
+
+        expect(loginHistory).not.toBeNull();
+        expect(loginHistory?.length).toBe(beforeLoginHistory?.length);
       },
     });
   });
 
   test('refresh-token cookieが設定されている場合、それを使用して認証される', async () => {
     expect.hasAssertions();
+
+    const beforeLoginHistory = await findLoginHistoriesByUserID(
+      db,
+      user.user?.id || NaN
+    );
 
     const handler = async (base: AuthedBase<void>) => {
       const user = base.user;
@@ -119,12 +151,25 @@ describe('login', () => {
 
         expect(sessionToken).not.toBe(user.session?.session_token);
         expect(refreshToken).not.toBe(user.session?.refresh_token);
+
+        const loginHistory = await findLoginHistoriesByUserID(
+          db,
+          user.user?.id || NaN
+        );
+
+        expect(loginHistory).not.toBeNull();
+        expect(loginHistory?.length).not.toBe(beforeLoginHistory?.length);
       },
     });
   });
 
   test('session-token cookieが不正な場合はrefresh-tokenを使用してログインする', async () => {
     expect.hasAssertions();
+
+    const beforeLoginHistory = await findLoginHistoriesByUserID(
+      db,
+      user.user?.id || NaN
+    );
 
     const handler = async (base: AuthedBase<void>) => {
       const user = base.user;
@@ -167,6 +212,14 @@ describe('login', () => {
 
         expect(sessionToken).not.toBe(user.session?.session_token);
         expect(refreshToken).not.toBe(user.session?.refresh_token);
+
+        const loginHistory = await findLoginHistoriesByUserID(
+          db,
+          user.user?.id || NaN
+        );
+
+        expect(loginHistory).not.toBeNull();
+        expect(loginHistory?.length).not.toBe(beforeLoginHistory?.length);
       },
     });
   });
