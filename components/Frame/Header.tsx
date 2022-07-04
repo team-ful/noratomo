@@ -70,19 +70,19 @@ const Header = () => {
               />
             </Center>
           </Box>
-          <NextLink passHref ref={SettingForm} href={'/Setting'}>
-            <Link>
-              <Tooltip label="マイページ">
-                <Center mr=".5rem" ml=".5rem">
+          <Tooltip label="マイページ">
+            <Center mr=".5rem" ml=".5rem">
+              <NextLink passHref href={'/setting'}>
+                <Link>
                   <Avatar
                     size={{base: 'sm', sm: 'sm'}}
                     src={user?.avatar_url}
                     icon={<Avater size="25px" />}
                   />
-                </Center>
-              </Tooltip>
-            </Link>
-          </NextLink>
+                </Link>
+              </NextLink>
+            </Center>
+          </Tooltip>
         </Flex>
       </Flex>
       <Box
