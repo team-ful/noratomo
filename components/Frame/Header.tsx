@@ -6,9 +6,12 @@ import {
   Center,
   Avatar,
   SimpleGrid,
+  Link,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
+import NextLink from 'next/link';
+import SettingForm from '../FormSetting/SettingForm';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
@@ -67,15 +70,19 @@ const Header = () => {
               />
             </Center>
           </Box>
-          <Tooltip label="マイページ">
-            <Center mr=".5rem" ml=".5rem">
-              <Avatar
-                size={{base: 'sm', sm: 'sm'}}
-                src={user?.avatar_url}
-                icon={<Avater size="25px" />}
-              />
-            </Center>
-          </Tooltip>
+          <NextLink passHref ref={SettingForm} href={'/Setting'}>
+            <Link>
+              <Tooltip label="マイページ">
+                <Center mr=".5rem" ml=".5rem">
+                  <Avatar
+                    size={{base: 'sm', sm: 'sm'}}
+                    src={user?.avatar_url}
+                    icon={<Avater size="25px" />}
+                  />
+                </Center>
+              </Tooltip>
+            </Link>
+          </NextLink>
         </Flex>
       </Flex>
       <Box

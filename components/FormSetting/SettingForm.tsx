@@ -15,7 +15,7 @@ import {
   Switch,
 } from '@chakra-ui/react';
 
-const Config = () => {
+const SettingForm = () => {
   return (
     <form>
       <FormControl>
@@ -73,4 +73,4 @@ const Config = () => {
   );
 };
 
-export default Config;
+export default SettingForm;
