@@ -12,7 +12,7 @@ class Cert implements CertModel {
   readonly password: string | null;
   readonly cateiru_sso_id: string | null;
 
-  constructor(init: DefaultObject) {
+  constructor(init: DefaultObject | CertModel) {
     this.user_id = init.user_id as number;
     this.password = init.password as string | null;
     this.cateiru_sso_id = init.cateiru_sso_id as string | null;

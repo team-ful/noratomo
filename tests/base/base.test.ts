@@ -1,6 +1,5 @@
 import {URL} from 'url';
 import {serialize} from 'cookie';
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
@@ -9,6 +8,7 @@ import {handlerWrapper} from '../../src/base/handlerWrapper';
 import {findLoginHistoriesByUserID} from '../../src/services/loginHistory';
 import {findSessionTokenByRefreshToken} from '../../src/services/session';
 import {findUserBySessionToken} from '../../src/services/user';
+import TestBase from '../../src/tests/base';
 import {TestUser} from '../../src/tests/user';
 
 describe('getQuery', () => {
@@ -571,15 +571,14 @@ describe('cookie', () => {
 });
 
 describe('newLogin', () => {
-  let connection: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    connection = await mysql.createConnection(config.db);
-    await connection.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await connection.end();
+    await base.end();
   });
 
   test('新規でログインするとtokenがcookieにセットされる', async () => {
@@ -607,8 +606,6 @@ describe('newLogin', () => {
         const res = await fetch();
         expect(res.status).toBe(200);
 
-        console.log(res.cookies);
-
         let session = '';
         let refresh = '';
 
@@ -620,19 +617,19 @@ describe('newLogin', () => {
           }
         }
 
-        const user = await findUserBySessionToken(connection, session);
+        const user = await findUserBySessionToken(base.db, session);
 
         expect(user?.id).toBe(userId);
 
         const sessionToken = await findSessionTokenByRefreshToken(
-          connection,
+          base.db,
           refresh
         );
 
         expect(sessionToken).toBe(session);
 
         const loginHistory = await findLoginHistoriesByUserID(
-          connection,
+          base.db,
           user?.id || NaN
         );
 

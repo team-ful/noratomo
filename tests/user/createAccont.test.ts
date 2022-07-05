@@ -1,9 +1,7 @@
-import mysql from 'mysql2/promise';
-import config from '../../config';
 import {findCertByUserID} from '../../src/services/cert';
 import {findUserByUserID} from '../../src/services/user';
+import TestBase from '../../src/tests/base';
 import {createUserModel} from '../../src/tests/models';
-import {TestUser} from '../../src/tests/user';
 import {
   CreateAccountByPassword,
   CreateAccountBySSO,
@@ -11,15 +9,14 @@ import {
 import {randomText} from '../../src/utils/random';
 
 describe('cateiruSSO', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('新規作成', async () => {
@@ -34,22 +31,21 @@ describe('cateiruSSO', () => {
       id: randomText(32),
     };
 
-    const ca = new CreateAccountBySSO(db, data);
+    const ca = new CreateAccountBySSO(base.db, data);
 
     const user = await ca.login();
 
-    const dbUser = await findUserByUserID(db, user.id);
+    const dbUser = await findUserByUserID(base.db, user.id);
 
     expect(dbUser).toEqual(user);
   });
 
   test('すでにログインしている場合はそのままユーザを返す', async () => {
-    const user = new TestUser({
+    const user = await base.newUser({
       avatar_url: randomText(10),
       display_name: randomText(10),
     });
-    await user.create(db);
-    await user.loginFromCateiruSSO(db);
+    await user.loginFromCateiruSSO(base.db);
 
     const data = {
       name: user.user?.display_name,
@@ -60,24 +56,23 @@ describe('cateiruSSO', () => {
       id: user.cateiruSSOId,
     };
 
-    const ca = new CreateAccountBySSO(db, data);
+    const ca = new CreateAccountBySSO(base.db, data);
 
     const loginUser = await ca.login();
 
-    const dbUser = await findUserByUserID(db, user.user?.id || NaN);
+    const dbUser = await findUserByUserID(base.db, user.user?.id || NaN);
 
     expect(user.user).toEqual(dbUser);
     expect(dbUser).toEqual(loginUser);
   });
 
   test('更新するものがある場合は更新する', async () => {
-    const user = new TestUser({
+    const user = await base.newUser({
       avatar_url: randomText(10),
       display_name: randomText(10),
       is_admin: false,
     });
-    await user.create(db);
-    await user.loginFromCateiruSSO(db);
+    await user.loginFromCateiruSSO(base.db);
 
     const data = {
       name: user.user?.display_name,
@@ -88,11 +83,11 @@ describe('cateiruSSO', () => {
       id: user.cateiruSSOId,
     };
 
-    const ca = new CreateAccountBySSO(db, data);
+    const ca = new CreateAccountBySSO(base.db, data);
 
     const loginUser = await ca.login();
 
-    const dbUser = await findUserByUserID(db, user.user?.id || NaN);
+    const dbUser = await findUserByUserID(base.db, user.user?.id || NaN);
 
     expect(user.user).not.toEqual(dbUser);
     expect(dbUser).toEqual(loginUser);
@@ -102,15 +97,14 @@ describe('cateiruSSO', () => {
 });
 
 describe('CreateAccountByPassword', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('新規作成', async () => {
@@ -125,22 +119,21 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    await ca.check(db);
+    await ca.check(base.db);
 
-    const user = await ca.create(db);
+    const user = await ca.create(base.db);
 
-    const dbUser = await findUserByUserID(db, user.id);
+    const dbUser = await findUserByUserID(base.db, user.id);
 
     expect(dbUser).toEqual(user);
 
-    const cert = await findCertByUserID(db, user.id);
+    const cert = await findCertByUserID(base.db, user.id);
 
     expect(cert.equalPassword(password)).toBeTruthy();
   });
 
   test('すでにメールアドレスが存在している場合はチェックが失敗する', async () => {
-    const user = new TestUser();
-    await user.create(db);
+    const user = await base.newUser();
 
     const mail = user.user?.mail || '';
     const dummy = createUserModel();
@@ -155,13 +148,12 @@ describe('CreateAccountByPassword', () => {
     );
 
     expect(async () => {
-      await ca.check(db);
+      await ca.check(base.db);
     }).rejects.toThrow('user is already exists');
   });
 
   test('すでにユーザ名が存在する場合はチェックが失敗する', async () => {
-    const user = new TestUser();
-    await user.create(db);
+    const user = await base.newUser();
 
     const userName = user.user?.user_name || '';
     const dummy = createUserModel();
@@ -176,7 +168,7 @@ describe('CreateAccountByPassword', () => {
     );
 
     expect(async () => {
-      await ca.check(db);
+      await ca.check(base.db);
     }).rejects.toThrow('user is already exists');
   });
 

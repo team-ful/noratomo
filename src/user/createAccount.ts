@@ -2,6 +2,7 @@ import argon2 from 'argon2';
 import {JwtPayload} from 'jsonwebtoken';
 import {Connection} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
+import DBOperator from '../db/operator';
 import {Gender, gender as pg} from './../models/common';
 import {CertModel} from './../models/cret';
 import User from './../models/user';
@@ -25,9 +26,9 @@ export class CreateAccountBySSO {
   private avatarURL: string;
   private ssoId: string;
 
-  private db: Connection;
+  private db: DBOperator;
 
-  constructor(db: Connection, data: JwtPayload) {
+  constructor(db: DBOperator, data: JwtPayload) {
     this.displayName = data['name'];
     this.userName = data['preferred_username'];
     this.mail = data['email'];
@@ -142,9 +143,9 @@ export class CreateAccountByPassword {
   /**
    * フォーマットが正しいか、ユーザ名やメールアドレスがすでに存在していないかどうかをチェックする
    *
-   * @param {Connection} db - database
+   * @param {DBOperator} db - database
    */
-  public async check(db: Connection) {
+  public async check(db: DBOperator) {
     check.checkUserName(this.userName);
     check.checkMail(this.mail);
     check.checkAge(this.age);
@@ -163,7 +164,7 @@ export class CreateAccountByPassword {
    * @param {Connection} db - database
    * @returns {User} - ユーザ
    */
-  public async create(db: Connection): Promise<User> {
+  public async create(db: DBOperator): Promise<User> {
     const userID = await createUserPW(
       db,
       this.mail,

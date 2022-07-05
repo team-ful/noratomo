@@ -12,6 +12,8 @@ export interface LoginHistoryModel {
   is_desktop: boolean | null;
   browser_name: string | null;
   login_date: Date;
+
+  'INET6_NTOA(ip_address)'?: string;
 }
 
 class LoginHistory implements LoginHistoryModel {
@@ -26,7 +28,7 @@ class LoginHistory implements LoginHistoryModel {
   readonly browser_name: string | null;
   readonly login_date: Date;
 
-  constructor(init: DefaultObject) {
+  constructor(init: DefaultObject | LoginHistoryModel) {
     this.id = init.id as number;
     this.user_id = init.user_id as number;
 

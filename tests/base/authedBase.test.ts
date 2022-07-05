@@ -1,38 +1,35 @@
 import {serialize} from 'cookie';
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../config';
 import AuthedBase from '../../src/base/authedBase';
 import {authHandlerWrapper} from '../../src/base/handlerWrapper';
 import {findLoginHistoriesByUserID} from '../../src/services/loginHistory';
+import TestBase from '../../src/tests/base';
 import {TestUser} from '../../src/tests/user';
 import {randomText} from '../../src/utils/random';
 
 describe('login', () => {
-  let db: mysql.Connection;
-  const user = new TestUser();
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
-
-    await user.create(db);
+    await base.connection();
+    await base.newUser();
   });
 
   beforeEach(async () => {
-    await user.addSession(db);
+    await base.users[0].addSession(base.db);
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('session-token, refresh-tokenどちらのcookieも設定されている場合、認証される', async () => {
     expect.hasAssertions();
 
     const beforeLoginHistory = await findLoginHistoriesByUserID(
-      db,
-      user.user?.id || NaN
+      base.db,
+      base.users[0].user?.id || NaN
     );
 
     const handler = async (base: AuthedBase<void>) => {
@@ -48,7 +45,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.cookie,
+          cookie: base.users[0].cookie,
         };
       },
       test: async ({fetch}) => {
@@ -56,8 +53,8 @@ describe('login', () => {
         expect(res.status).toBe(200);
 
         const loginHistory = await findLoginHistoriesByUserID(
-          db,
-          user.user?.id || NaN
+          base.db,
+          base.users[0].user?.id || NaN
         );
 
         expect(loginHistory).not.toBeNull();
@@ -70,8 +67,8 @@ describe('login', () => {
     expect.hasAssertions();
 
     const beforeLoginHistory = await findLoginHistoriesByUserID(
-      db,
-      user.user?.id || NaN
+      base.db,
+      base.users[0].user?.id || NaN
     );
 
     const handler = async (base: AuthedBase<void>) => {
@@ -87,7 +84,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.sessionCookie,
+          cookie: base.users[0].sessionCookie,
         };
       },
 
@@ -96,8 +93,8 @@ describe('login', () => {
         expect(res.status).toBe(200);
 
         const loginHistory = await findLoginHistoriesByUserID(
-          db,
-          user.user?.id || NaN
+          base.db,
+          base.users[0].user?.id || NaN
         );
 
         expect(loginHistory).not.toBeNull();
@@ -110,8 +107,8 @@ describe('login', () => {
     expect.hasAssertions();
 
     const beforeLoginHistory = await findLoginHistoriesByUserID(
-      db,
-      user.user?.id || NaN
+      base.db,
+      base.users[0].user?.id || NaN
     );
 
     const handler = async (base: AuthedBase<void>) => {
@@ -127,7 +124,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.refreshCookie,
+          cookie: base.users[0].refreshCookie,
         };
       },
       test: async ({fetch}) => {
@@ -149,12 +146,12 @@ describe('login', () => {
         expect(sessionToken).not.toBe('');
         expect(refreshToken).not.toBe('');
 
-        expect(sessionToken).not.toBe(user.session?.session_token);
-        expect(refreshToken).not.toBe(user.session?.refresh_token);
+        expect(sessionToken).not.toBe(base.users[0].session?.session_token);
+        expect(refreshToken).not.toBe(base.users[0].session?.refresh_token);
 
         const loginHistory = await findLoginHistoriesByUserID(
-          db,
-          user.user?.id || NaN
+          base.db,
+          base.users[0].user?.id || NaN
         );
 
         expect(loginHistory).not.toBeNull();
@@ -167,8 +164,8 @@ describe('login', () => {
     expect.hasAssertions();
 
     const beforeLoginHistory = await findLoginHistoriesByUserID(
-      db,
-      user.user?.id || NaN
+      base.db,
+      base.users[0].user?.id || NaN
     );
 
     const handler = async (base: AuthedBase<void>) => {
@@ -184,7 +181,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: `${user.refreshCookie}; ${serialize(
+          cookie: `${base.users[0].refreshCookie}; ${serialize(
             config.sessionCookieName,
             randomText(128),
             config.sessionCookieOptions()
@@ -210,12 +207,12 @@ describe('login', () => {
         expect(sessionToken).not.toBe('');
         expect(refreshToken).not.toBe('');
 
-        expect(sessionToken).not.toBe(user.session?.session_token);
-        expect(refreshToken).not.toBe(user.session?.refresh_token);
+        expect(sessionToken).not.toBe(base.users[0].session?.session_token);
+        expect(refreshToken).not.toBe(base.users[0].session?.refresh_token);
 
         const loginHistory = await findLoginHistoriesByUserID(
-          db,
-          user.user?.id || NaN
+          base.db,
+          base.users[0].user?.id || NaN
         );
 
         expect(loginHistory).not.toBeNull();
@@ -309,7 +306,7 @@ describe('login', () => {
       handler: h,
       requestPatcher: async req => {
         req.headers = {
-          cookie: user.cookie,
+          cookie: base.users[0].cookie,
         };
       },
       test: async ({fetch}) => {
@@ -329,8 +326,8 @@ describe('login', () => {
     const h = authHandlerWrapper(handler, 'GET');
 
     const user = new TestUser({is_admin: true});
-    await user.create(db);
-    await user.addSession(db);
+    await user.create(base.db);
+    await user.addSession(base.db);
 
     await testApiHandler({
       handler: h,
@@ -356,8 +353,8 @@ describe('login', () => {
     const h = authHandlerWrapper(handler, 'GET');
 
     const user = new TestUser();
-    await user.create(db);
-    await user.addSession(db);
+    await user.create(base.db);
+    await user.addSession(base.db);
 
     await testApiHandler({
       handler: h,

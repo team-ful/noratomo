@@ -1,4 +1,3 @@
-import {ApiError} from 'next/dist/server/api-utils';
 import Base from '../../../../src/base/base';
 import {handlerWrapper} from '../../../../src/base/handlerWrapper';
 import {JWT} from '../../../../src/oauth/cateirusso/jwt';

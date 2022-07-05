@@ -1,30 +1,26 @@
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
-import config from '../../../config';
 import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
 import {Gender} from '../../../src/models/common';
 import {findUserByUserID} from '../../../src/services/user';
+import TestBase from '../../../src/tests/base';
 import {createUserModel} from '../../../src/tests/models';
-import {TestUser} from '../../../src/tests/user';
 import {setConfigHandler} from '../../../src/user/config/configPut';
 import {randomText} from '../../../src/utils/random';
 
 describe('更新', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('すべて更新できる', async () => {
-    const u = new TestUser();
-    await u.create(db);
-    await u.addSession(db);
+    const u = await base.newUser();
+    await u.addSession(base.db);
 
     const newUser = createUserModel({
       display_name: randomText(10),
@@ -54,7 +50,7 @@ describe('更新', () => {
         expect(res.status).toBe(200);
 
         // チェックする
-        const uu = await findUserByUserID(db, u.user?.id || NaN);
+        const uu = await findUserByUserID(base.db, u.user?.id || NaN);
 
         expect(uu.id).toBe(u.user?.id);
         expect(uu.display_name).toBe(newUser.display_name);
@@ -67,9 +63,8 @@ describe('更新', () => {
   });
 
   test('1つ更新できる', async () => {
-    const u = new TestUser();
-    await u.create(db);
-    await u.addSession(db);
+    const u = await base.newUser();
+    await u.addSession(base.db);
 
     const newUser = createUserModel({
       profile: randomText(20),
@@ -96,7 +91,7 @@ describe('更新', () => {
         expect(res.status).toBe(200);
 
         // チェックする
-        const uu = await findUserByUserID(db, u.user?.id || NaN);
+        const uu = await findUserByUserID(base.db, u.user?.id || NaN);
 
         expect(uu.id).toBe(u.user?.id);
         expect(uu.display_name).toBe(u.user?.display_name);

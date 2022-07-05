@@ -1,30 +1,29 @@
-import mysql, {RowDataPacket} from 'mysql2/promise';
-import config from '../../config';
+import {RowDataPacket} from 'mysql2/promise';
 import {Device} from '../../src/base/base';
 import {
   createLoginHistory,
   deleteLoginHistoryByUserID,
   findLoginHistoriesByUserID,
 } from '../../src/services/loginHistory';
+import TestBase from '../../src/tests/base';
 import {createLoginHistoryModel, createUserID} from '../../src/tests/models';
 
 describe('createLoginHistory', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('作成できる', async () => {
     const d = createLoginHistoryModel();
 
     const id = await createLoginHistory(
-      db,
+      base.db,
       d.user_id,
       d.ip_address,
       d.device_name || Device.Desktop,
@@ -35,7 +34,7 @@ describe('createLoginHistory', () => {
       d.browser_name || ''
     );
 
-    const [rows] = await db.query<RowDataPacket[]>(
+    const rows = await base.db.test<RowDataPacket[]>(
       'SELECT COUNT(*) FROM login_history WHERE id = ?',
       id
     );
@@ -47,7 +46,7 @@ describe('createLoginHistory', () => {
     const d = createLoginHistoryModel();
 
     const id = await createLoginHistory(
-      db,
+      base.db,
       d.user_id,
       d.ip_address,
       d.device_name || Device.Desktop,
@@ -58,7 +57,7 @@ describe('createLoginHistory', () => {
       d.browser_name || ''
     );
 
-    const [rows] = await db.query<RowDataPacket[]>(
+    const rows = await base.db.test<RowDataPacket[]>(
       'SELECT INET6_NTOA(ip_address) FROM login_history WHERE id = ?',
       id
     );
@@ -72,7 +71,7 @@ describe('createLoginHistory', () => {
     });
 
     const id = await createLoginHistory(
-      db,
+      base.db,
       d.user_id,
       d.ip_address,
       d.device_name || Device.Desktop,
@@ -83,7 +82,7 @@ describe('createLoginHistory', () => {
       d.browser_name || ''
     );
 
-    const [rows] = await db.query<RowDataPacket[]>(
+    const rows = await base.db.test<RowDataPacket[]>(
       'SELECT INET6_NTOA(ip_address) FROM login_history WHERE id = ?',
       id
     );
@@ -93,21 +92,20 @@ describe('createLoginHistory', () => {
 });
 
 describe('findLoginHistoriesByUserID', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('取得できる', async () => {
     const d = createLoginHistoryModel();
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO login_history (
       user_id,
       ip_address,
@@ -118,7 +116,7 @@ describe('findLoginHistoriesByUserID', () => {
       [d.user_id, d.ip_address, d.device_name, d.os]
     );
 
-    const history = await findLoginHistoriesByUserID(db, d.user_id);
+    const history = await findLoginHistoriesByUserID(base.db, d.user_id);
 
     expect(history).not.toBeNull();
     expect(history?.length).toBe(1);
@@ -131,15 +129,14 @@ describe('findLoginHistoriesByUserID', () => {
 });
 
 describe('deleteLoginHistoryByUserID', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('削除できる', async () => {
@@ -149,7 +146,7 @@ describe('deleteLoginHistoryByUserID', () => {
     for (let i = 0; 3 > i; i++) {
       const d = createLoginHistoryModel({user_id: userID});
 
-      await db.query(
+      await base.db.test(
         `INSERT INTO login_history (
         user_id,
         ip_address,
@@ -161,16 +158,16 @@ describe('deleteLoginHistoryByUserID', () => {
       );
     }
 
-    let [rows] = await db.query<RowDataPacket[]>(
+    let rows = await base.db.test<RowDataPacket[]>(
       'SELECT COUNT(*) FROM login_history WHERE user_id = ?',
       userID
     );
 
     expect(rows[0]['COUNT(*)']).toBe(3);
 
-    await deleteLoginHistoryByUserID(db, userID);
+    await deleteLoginHistoryByUserID(base.db, userID);
 
-    [rows] = await db.query<RowDataPacket[]>(
+    rows = await base.db.test<RowDataPacket[]>(
       'SELECT COUNT(*) FROM login_history WHERE user_id = ?',
       userID
     );

@@ -29,15 +29,15 @@ export class NoraQuestion implements NoraQuestionModel {
   readonly current_answer_index: number;
   readonly score: number;
 
-  constructor(init: DefaultObject) {
+  constructor(init: DefaultObject | NoraQuestionModel) {
     this.id = init.id as number;
     this.question_title = init.question_title as string;
 
-    // if (typeof init.answers === 'object') {
-    //   this.answers = init.answers;
-    // } else {
-    this.answers = JSON.parse(init.answers as string) as NoraQuestionSelect[];
-    // }
+    if (typeof init.answers === 'object') {
+      this.answers = init.answers as NoraQuestionSelect[];
+    } else {
+      this.answers = JSON.parse(init.answers as string) as NoraQuestionSelect[];
+    }
 
     this.current_answer_index = init.current_answer_index as number;
     this.score = init.score as number;

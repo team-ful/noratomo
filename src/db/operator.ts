@@ -14,7 +14,7 @@ export type QueryPacket =
   | ResultSetHeader;
 
 export interface DefaultObject {
-  [key: string]: string | Date | number | boolean | null;
+  [key: string]: string | Date | number | boolean | null | object;
 }
 
 export default class DBOperator {
@@ -64,12 +64,8 @@ export default class DBOperator {
    */
   public async multi<T extends Object = DefaultObject>(
     query: sql.SqlBricksParam
-  ): Promise<null | T[]> {
+  ): Promise<T[]> {
     const row = await this.runQuery<RowDataPacket[]>(query);
-
-    if (row.length === 0) {
-      return null;
-    }
 
     return row as T[];
   }
@@ -96,10 +92,24 @@ export default class DBOperator {
   }
 
   /**
+   * テスト用
+   *
+   * @param {string} text - query text
+   * @param {any} values - value
+   * @returns {QueryPacket} - result
+   */
+  public async test<T extends QueryPacket>(
+    text: string,
+    values: any
+  ): Promise<T> {
+    return this.runQuery<T>({text: text, values: values});
+  }
+
+  /**
    * DBを終了する
    *
    */
-  public async close() {
+  public async end() {
     await this.db.end();
   }
 }

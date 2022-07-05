@@ -1,6 +1,4 @@
 import sql from 'mysql-bricks';
-import {ResultSetHeader} from 'mysql2/promise';
-import {Pool, RowDataPacket} from 'mysql2/promise';
 import DBOperator from '../db/operator';
 import {Gender} from '../models/common';
 import User, {UserModel} from '../models/user';

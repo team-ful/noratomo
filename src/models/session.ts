@@ -17,7 +17,7 @@ export class Session implements SessionModel {
   // 上書き可能にしておく
   public refresh_token?: string;
 
-  constructor(row: DefaultObject) {
+  constructor(row: DefaultObject | SessionModel) {
     this.session_token = row.session_token as string;
     this.date = new Date(row.date as Date);
     this.period_date = new Date(row.period_date as Date);

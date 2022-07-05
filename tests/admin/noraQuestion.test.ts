@@ -1,19 +1,18 @@
 import {randomInt} from 'crypto';
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
-import config from '../../config';
 import {get, post, put, _delete} from '../../src/admin/noraQuestion';
 import {NoraQuestion, NoraQuestionModel} from '../../src/models/noraQuestion';
 import {
   createNoraQuestion,
   findNoraQuestionById,
 } from '../../src/services/noraQuestion';
+import TestBase from '../../src/tests/base';
 import {TestUser} from '../../src/tests/user';
 
 describe('noraQuestion', () => {
-  let db: mysql.Connection;
   const user = new TestUser({is_admin: true});
   const normalUser = new TestUser();
+  const base: TestBase = new TestBase();
 
   const dummyQuestion: NoraQuestionModel = {
     id: NaN,
@@ -33,25 +32,24 @@ describe('noraQuestion', () => {
   };
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
 
-    await user.create(db);
-    await user.addSession(db);
+    await user.create(base.db);
+    await user.addSession(base.db);
 
-    await normalUser.create(db);
-    await normalUser.addSession(db);
+    await normalUser.create(base.db);
+    await normalUser.addSession(base.db);
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('get', async () => {
     expect.hasAssertions();
 
     const question = await createNoraQuestion(
-      db,
+      base.db,
       dummyQuestion.question_title,
       dummyQuestion.answers,
       dummyQuestion.current_answer_index,
@@ -98,7 +96,7 @@ describe('noraQuestion', () => {
     // 3個追加する
     for (let i = 0; 3 > i; ++i) {
       await createNoraQuestion(
-        db,
+        base.db,
         dummyQuestion.question_title,
         dummyQuestion.answers,
         dummyQuestion.current_answer_index,
@@ -153,7 +151,7 @@ describe('noraQuestion', () => {
 
         const d = await res.json();
 
-        const q = findNoraQuestionById(db, d.id);
+        const q = findNoraQuestionById(base.db, d.id);
 
         expect(q).not.toBeNull();
       },
@@ -260,7 +258,7 @@ describe('noraQuestion', () => {
     expect.hasAssertions();
 
     const question = await createNoraQuestion(
-      db,
+      base.db,
       dummyQuestion.question_title,
       dummyQuestion.answers,
       dummyQuestion.current_answer_index,
@@ -293,7 +291,7 @@ describe('noraQuestion', () => {
         });
         expect(res.status).toBe(200);
 
-        const q = await findNoraQuestionById(db, question.id);
+        const q = await findNoraQuestionById(base.db, question.id);
 
         const _q = new NoraQuestion({
           id: question.id,
@@ -332,7 +330,7 @@ describe('noraQuestion', () => {
     expect.hasAssertions();
 
     const question = await createNoraQuestion(
-      db,
+      base.db,
       dummyQuestion.question_title,
       dummyQuestion.answers,
       dummyQuestion.current_answer_index,
@@ -363,7 +361,7 @@ describe('noraQuestion', () => {
         });
         expect(res.status).toBe(200);
 
-        const q = await findNoraQuestionById(db, question.id);
+        const q = await findNoraQuestionById(base.db, question.id);
 
         const _q = new NoraQuestion({
           id: question.id,
@@ -387,7 +385,7 @@ describe('noraQuestion', () => {
     expect.hasAssertions();
 
     const question = await createNoraQuestion(
-      db,
+      base.db,
       dummyQuestion.question_title,
       dummyQuestion.answers,
       dummyQuestion.current_answer_index,
@@ -408,7 +406,7 @@ describe('noraQuestion', () => {
         });
         expect(res.status).toBe(200);
 
-        const q = await findNoraQuestionById(db, question.id);
+        const q = await findNoraQuestionById(base.db, question.id);
 
         expect(q).toBeNull();
       },

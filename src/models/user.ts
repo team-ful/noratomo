@@ -61,7 +61,7 @@ class User implements UserModel {
   readonly join_date: Date;
   readonly avatar_url: string | null;
 
-  constructor(init: DefaultObject) {
+  constructor(init: DefaultObject | UserModel) {
     this.is_ban = init.is_ban as boolean;
     this.is_penalty = init.is_penalty as boolean;
     this.is_admin = init.is_admin as boolean;
