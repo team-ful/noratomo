@@ -1,3 +1,4 @@
+import {DefaultObject} from '../db/operator';
 import {gender, Gender} from './common';
 
 export interface UserModel {
@@ -60,22 +61,22 @@ class User implements UserModel {
   readonly join_date: Date;
   readonly avatar_url: string | null;
 
-  constructor(init: UserModel) {
-    this.is_ban = Boolean(init.is_ban);
-    this.is_penalty = Boolean(init.is_penalty);
-    this.is_admin = Boolean(init.is_admin);
+  constructor(init: DefaultObject) {
+    this.is_ban = init.is_ban as boolean;
+    this.is_penalty = init.is_penalty as boolean;
+    this.is_admin = init.is_admin as boolean;
 
     this.id = init.id as Required<number>;
-    this.display_name = init.display_name;
-    this.mail = init.mail;
-    this.profile = init.profile;
-    this.user_name = init.user_name;
-    this.age = init.age;
+    this.display_name = init.display_name as string | null;
+    this.mail = init.mail as string;
+    this.profile = init.profile as string | null;
+    this.user_name = init.user_name as string;
+    this.age = init.age as number | null;
 
     this.gender = gender(init.gender as number);
 
-    this.join_date = new Date(init.join_date);
-    this.avatar_url = init.avatar_url;
+    this.join_date = new Date(init.join_date as Date);
+    this.avatar_url = init.avatar_url as string | null;
   }
 
   /**
