@@ -40,6 +40,21 @@ export default class TestBase {
     return user;
   }
 
+  public async multiUser(
+    count: number,
+    options?: Partial<UserModel> | undefined
+  ): Promise<TestUser[]> {
+    const users: TestUser[] = [];
+
+    for (let i = 0; count > i; i++) {
+      users.push(new TestUser(options));
+    }
+
+    this.users = this.users.concat(users);
+
+    return users;
+  }
+
   public async end() {
     this.db.end();
   }
