@@ -1,16 +1,16 @@
 import sql from 'mysql-bricks';
-import {Connection, ResultSetHeader, RowDataPacket} from 'mysql2/promise';
 import {Device} from '../base/base';
+import DBOperator from '../db/operator';
 import LoginHistory from '../models/loginHistory';
 
 /**
  * ユーザー名からログイン履歴を取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} userID - user id
  */
 export async function findLoginHistoriesByUserID(
-  db: Connection,
+  db: DBOperator,
   userID: number
 ): Promise<LoginHistory[] | null> {
   const query = sql
@@ -31,7 +31,7 @@ export async function findLoginHistoriesByUserID(
     .where('user_id', userID)
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const rows = await db.multi(query);
 
   if (rows.length === 0) {
     return null;
@@ -43,7 +43,7 @@ export async function findLoginHistoriesByUserID(
 /**
  * ログイン履歴を追加する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} userID - ユーザーID
  * @param {string} ip - IP アドレス
  * @param {Device} deviceName - デバイス名
@@ -55,7 +55,7 @@ export async function findLoginHistoriesByUserID(
  * @returns {number} - ログイン履歴のID
  */
 export async function createLoginHistory(
-  db: Connection,
+  db: DBOperator,
   userID: number,
   ip: string,
   deviceName: Device,
@@ -79,19 +79,17 @@ export async function createLoginHistory(
     })
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
-
-  return rows.insertId;
+  return await db.insert(query);
 }
 
 /**
  * 指定したユーザIDのログイン履歴をすべて削除する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} userID - ユーザID
  */
 export async function deleteLoginHistoryByUserID(
-  db: Connection,
+  db: DBOperator,
   userID: number
 ) {
   const query = sql
@@ -99,5 +97,5 @@ export async function deleteLoginHistoryByUserID(
     .where('user_id', userID)
     .toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }

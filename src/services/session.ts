@@ -1,18 +1,18 @@
 import sql, {select, gte, insert, delete as sqlDelete} from 'mysql-bricks';
-import {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
-import {Session, SessionModel} from '../models/session';
+import DBOperator from '../db/operator';
+import {Session} from '../models/session';
 import {randomText} from '../utils/random';
 
 /**
  * Session TokenからSessionを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} token - session token
  */
 export async function findSessionBySessionToken(
-  db: Connection,
+  db: DBOperator,
   token: string
 ): Promise<Session | null> {
   const query = select('*')
@@ -22,23 +22,23 @@ export async function findSessionBySessionToken(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new Session(row[0] as SessionModel);
+  return new Session(row);
 }
 
 /**
  * Refresh tokenからSessionを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} token - refresh token
  */
 export async function findSessionByRefreshToken(
-  db: Connection,
+  db: DBOperator,
   token: string
 ): Promise<Session | null> {
   const query = select('*')
@@ -57,22 +57,22 @@ export async function findSessionByRefreshToken(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new Session(row[0] as SessionModel);
+  return new Session(row);
 }
 
 /**
  * refresh Tokenからrefreshを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} token - session token
  */
-export async function findRefreshByRefreshToken(db: Connection, token: string) {
+export async function findRefreshByRefreshToken(db: DBOperator, token: string) {
   const query = select('*')
     .from('refresh')
     .where({refresh_token: token})
@@ -80,23 +80,23 @@ export async function findRefreshByRefreshToken(db: Connection, token: string) {
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new Session(row[0] as SessionModel);
+  return new Session(row);
 }
 
 /**
  * refresh tokenからsession tokenを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} refreshToken - refresh token
  */
 export async function findSessionTokenByRefreshToken(
-  db: Connection,
+  db: DBOperator,
   refreshToken: string
 ): Promise<string | null> {
   const query = select('session_token')
@@ -106,24 +106,23 @@ export async function findSessionTokenByRefreshToken(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
-
-  return row[0].session_token;
+  return row.session_token as string | null;
 }
 
 /**
  * user idを指定してセッション情報を保存する
  * 有効期限は1週間
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} userId - user id
  */
 export async function createSession(
-  db: Connection,
+  db: DBOperator,
   userId: number
 ): Promise<Session> {
   const sessionToken = randomText(config.sessionTokenLen);
@@ -162,12 +161,12 @@ export async function createSession(
  * refreshTokenを使用してユーザ情報を取得します。
  * sessionTokenの有効期限が切れている前提であり、トークンを更新します。
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} refreshToken - refresh token
  * @param {number} userId - user id
  */
 export async function updateSessionTokenByRefreshToken(
-  db: Connection,
+  db: DBOperator,
   refreshToken: string,
   userId: number
 ) {
@@ -185,13 +184,13 @@ export async function updateSessionTokenByRefreshToken(
 /**
  * session tokenを指定して新しいレコードを作成する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} sessionToken - session token
  * @param {number} periodDay - 有効期限（日）
  * @param {number} userId - user id
  */
 export async function createSessionSpecifyToken(
-  db: Connection,
+  db: DBOperator,
   sessionToken: string,
   periodDay: number,
   userId: number
@@ -203,20 +202,20 @@ export async function createSessionSpecifyToken(
     user_id: userId,
   }).toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * refresh_tokenを指定して新しいレコードを作成する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} refreshToken - リフレッシュトークン
  * @param {string} sessionToken - session token
  * @param {number} periodDay - 有効期限（日）
  * @param {number} userId - user id
  */
 export async function createRefreshSpecifyToken(
-  db: Connection,
+  db: DBOperator,
   refreshToken: string,
   sessionToken: string,
   periodDay: number,
@@ -230,53 +229,53 @@ export async function createRefreshSpecifyToken(
     user_id: userId,
   }).toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * session tokenからSessionを削除
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} sessionToken - session token
  */
 export async function deleteSessionBySessionToken(
-  db: Connection,
+  db: DBOperator,
   sessionToken: string
 ) {
   const query = sqlDelete('session')
     .where({session_token: sessionToken})
     .toParams({placeholder: '?'});
-  await db.query<RowDataPacket[]>(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * refresh tokenからRefreshを削除
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} refreshToken - refresh token
  */
 export async function deleteRefreshByRefreshToken(
-  db: Connection,
+  db: DBOperator,
   refreshToken: string
 ) {
   const query = sqlDelete('refresh')
     .where({refresh_token: refreshToken})
     .toParams({placeholder: '?'});
-  await db.query<RowDataPacket[]>(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * session tokenからRefreshを削除
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} sessionToken - session token
  */
 export async function deleteRefreshBySessionToken(
-  db: Connection,
+  db: DBOperator,
   sessionToken: string
 ) {
   const query = sqlDelete('refresh')
     .where({session_token: sessionToken})
     .toParams({placeholder: '?'});
-  await db.query<RowDataPacket[]>(query.text, query.values);
+  await db.execute(query);
 }
