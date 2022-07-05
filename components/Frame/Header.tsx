@@ -11,7 +11,6 @@ import {
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
 import NextLink from 'next/link';
-import SettingForm from '../FormSetting/SettingForm';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';

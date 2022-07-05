@@ -14,13 +14,22 @@ import {
   Textarea,
   Switch,
   NumberInputField,
+  Avatar,
 } from '@chakra-ui/react';
+import Avater from '../Logo/Avater';
+import useUser from '../Session/useUser';
 
 const SettingForm = () => {
+  const user = useUser();
   return (
     <form>
       <FormControl>
         <FormLabel>アバター画像を変更</FormLabel>
+        <Avatar
+          size={{base: 'md', sm: 'md'}}
+          src={user?.avatar_url}
+          icon={<Avater size="25px" />}
+        />
         {/* アバター用の画像アップするやつ */}
       </FormControl>
 

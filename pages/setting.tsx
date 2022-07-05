@@ -6,7 +6,7 @@ import Require from '../components/Session/Require';
 const Setting: NextPage = () => {
   return (
     <Box>
-      <Require loginRequire={false} path="/">
+      <Require loginRequire={true} path="/">
         <SettingForm />
       </Require>
     </Box>
