@@ -1,8 +1,8 @@
 import argon2 from 'argon2';
 import {serialize} from 'cookie';
-import {Connection} from 'mysql2/promise';
 import config from '../../config';
 import {Device} from '../base/base';
+import DBOperator from '../db/operator';
 import {CertModel} from '../models/cret';
 import {Session} from '../models/session';
 import User, {UserModel} from '../models/user';
@@ -26,11 +26,11 @@ export class TestUser {
     this.userModel = createUserModel(options);
   }
 
-  public async create(db: Connection) {
+  public async create(db: DBOperator) {
     this.user = await createTestUser(db, this.userModel);
   }
 
-  public async loginFromCateiruSSO(db: Connection) {
+  public async loginFromCateiruSSO(db: DBOperator) {
     if (typeof this.user === 'undefined') {
       throw new Error('user is undefined');
     }
@@ -43,7 +43,7 @@ export class TestUser {
     await setCert(db, this.certModel);
   }
 
-  public async loginFromPassword(db: Connection) {
+  public async loginFromPassword(db: DBOperator) {
     if (typeof this.user === 'undefined') {
       throw new Error('user is undefined');
     }
@@ -58,7 +58,7 @@ export class TestUser {
     await setCert(db, this.certModel);
   }
 
-  public async addSession(db: Connection) {
+  public async addSession(db: DBOperator) {
     if (typeof this.user === 'undefined') {
       throw new Error('user is undefined');
     }
