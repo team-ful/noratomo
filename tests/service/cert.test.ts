@@ -1,23 +1,22 @@
-import mysql, {RowDataPacket} from 'mysql2/promise';
-import config from '../../config';
+import {RowDataPacket} from 'mysql2/promise';
 import {
   deleteCertById,
   findCertByUserID,
   setCert,
 } from '../../src/services/cert';
+import TestBase from '../../src/tests/base';
 import {createCertModel} from '../../src/tests/models';
 import {randomText} from '../../src/utils/random';
 
 describe('setCert', () => {
-  let connection: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    connection = await mysql.createConnection(config.db);
-    await connection.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await connection.end();
+    await base.end();
   });
 
   test('ssoだけ', async () => {
@@ -25,9 +24,9 @@ describe('setCert', () => {
 
     const certModel = createCertModel({cateiru_sso_id: ssoId});
 
-    await setCert(connection, certModel);
+    await setCert(base.db, certModel);
 
-    const cert = await findCertByUserID(connection, certModel.user_id);
+    const cert = await findCertByUserID(base.db, certModel.user_id);
 
     expect(cert.user_id).toBe(certModel.user_id);
     expect(cert.cateiru_sso_id).toBe(ssoId);
@@ -39,9 +38,9 @@ describe('setCert', () => {
 
     const certModel = createCertModel({password: pw});
 
-    await setCert(connection, certModel);
+    await setCert(base.db, certModel);
 
-    const cert = await findCertByUserID(connection, certModel.user_id);
+    const cert = await findCertByUserID(base.db, certModel.user_id);
 
     expect(cert.user_id).toBe(certModel.user_id);
     expect(cert.cateiru_sso_id).toBe(null);
@@ -54,9 +53,9 @@ describe('setCert', () => {
 
     const certModel = createCertModel({password: pw, cateiru_sso_id: ssoId});
 
-    await setCert(connection, certModel);
+    await setCert(base.db, certModel);
 
-    const cert = await findCertByUserID(connection, certModel.user_id);
+    const cert = await findCertByUserID(base.db, certModel.user_id);
 
     expect(cert.user_id).toBe(certModel.user_id);
     expect(cert.cateiru_sso_id).toBe(ssoId);
@@ -68,18 +67,18 @@ describe('setCert', () => {
 
     const certModel = createCertModel({password: pw});
 
-    await setCert(connection, certModel);
+    await setCert(base.db, certModel);
 
-    let [rows] = await connection.query<RowDataPacket[]>(
+    let rows = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM cert WHERE user_id = ?',
       certModel.user_id
     );
 
     expect(rows.length).toBe(1);
 
-    await deleteCertById(connection, certModel.user_id);
+    await deleteCertById(base.db, certModel.user_id);
 
-    [rows] = await connection.query<RowDataPacket[]>(
+    rows = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM cert WHERE user_id = ?',
       certModel.user_id
     );

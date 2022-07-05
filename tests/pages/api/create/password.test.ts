@@ -1,21 +1,20 @@
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../../config';
 import createPasswordHandler from '../../../../pages/api/create/password';
 import {findUserBySessionToken} from '../../../../src/services/user';
+import TestBase from '../../../../src/tests/base';
 import {createUserModel} from '../../../../src/tests/models';
 import {randomText} from '../../../../src/utils/random';
 
 describe('create', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('アカウントを作成する', async () => {
@@ -43,7 +42,7 @@ describe('create', () => {
 
         const session: string = res.cookies[0][config.sessionCookieName];
 
-        const u = await findUserBySessionToken(db, session);
+        const u = await findUserBySessionToken(base.db, session);
 
         expect(u?.user_name).toBe(user.user_name);
       },

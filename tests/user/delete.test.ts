@@ -1,39 +1,35 @@
-import mysql, {RowDataPacket} from 'mysql2/promise';
+import {RowDataPacket} from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
-import config from '../../config';
 import {findSessionTokenByRefreshToken} from '../../src/services/session';
-import {TestUser} from '../../src/tests/user';
+import TestBase from '../../src/tests/base';
 import deleteUserHandler from '../../src/user/delete';
 
 describe('アカウント削除', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('削除できる', async () => {
     expect.hasAssertions();
 
-    const user = new TestUser();
+    const user = await base.newUser();
+    await user.loginFromPassword(base.db);
+    await user.addSession(base.db);
 
-    await user.create(db);
-    await user.loginFromPassword(db);
-    await user.addSession(db);
-
-    const [userRows] = await db.query<RowDataPacket[]>(
+    const userRows = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM user WHERE id = ?',
       user.user?.id
     );
 
     expect(userRows.length).toBe(1);
 
-    const [certRows] = await db.query<RowDataPacket[]>(
+    const certRows = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM cert WHERE user_id = ?',
       user.user?.id
     );
@@ -41,7 +37,7 @@ describe('アカウント削除', () => {
     expect(certRows.length).toBe(1);
 
     const session = await findSessionTokenByRefreshToken(
-      db,
+      base.db,
       user.session?.refresh_token || ''
     );
 
@@ -59,14 +55,14 @@ describe('アカウント削除', () => {
 
         expect(res.status).toBe(200);
 
-        const [userRows] = await db.query<RowDataPacket[]>(
+        const userRows = await base.db.test<RowDataPacket[]>(
           'SELECT * FROM user WHERE id = ?',
           user.user?.id
         );
 
         expect(userRows.length).toBe(0);
 
-        const [certRows] = await db.query<RowDataPacket[]>(
+        const certRows = await base.db.test<RowDataPacket[]>(
           'SELECT * FROM cert WHERE user_id = ?',
           user.user?.id
         );
@@ -74,7 +70,7 @@ describe('アカウント削除', () => {
         expect(certRows.length).toBe(0);
 
         const session = await findSessionTokenByRefreshToken(
-          db,
+          base.db,
           user.session?.refresh_token || ''
         );
 

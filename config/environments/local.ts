@@ -1,10 +1,12 @@
 import {URL} from 'url';
 import {Config} from '../config';
 
+const LOCAL_URL = process.env.URL || 'localhost';
+
 const config: Config = {
   environment: 'local',
 
-  host: new URL('http://localhost:3000'),
+  host: new URL(`http://${LOCAL_URL}:3000`),
 
   // テスト用であるため公開している
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
@@ -26,7 +28,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.sessionPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: LOCAL_URL,
       expires: date,
       maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
@@ -44,7 +46,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: LOCAL_URL,
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
@@ -60,7 +62,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: LOCAL_URL,
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',

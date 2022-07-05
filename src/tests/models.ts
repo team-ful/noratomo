@@ -109,5 +109,6 @@ export const createLoginHistoryModel = (
     is_desktop: options?.is_desktop || true,
     browser_name: options?.browser_name || 'Chrome',
     login_date: options?.login_date || loginDate,
+    'INET6_NTOA(ip_address)': options?.ip_address || '203.0.113.0', // 203.0.113.0はテスト用のIPアドレス
   };
 };

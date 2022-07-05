@@ -1,4 +1,5 @@
 import {Device} from '../base/base';
+import {DefaultObject} from '../db/operator';
 
 export interface LoginHistoryModel {
   id: number;
@@ -11,6 +12,8 @@ export interface LoginHistoryModel {
   is_desktop: boolean | null;
   browser_name: string | null;
   login_date: Date;
+
+  'INET6_NTOA(ip_address)'?: string;
 }
 
 class LoginHistory implements LoginHistoryModel {
@@ -25,20 +28,20 @@ class LoginHistory implements LoginHistoryModel {
   readonly browser_name: string | null;
   readonly login_date: Date;
 
-  constructor(init: {[key: string]: any}) {
-    this.id = init.id;
-    this.user_id = init.user_id;
+  constructor(init: DefaultObject | LoginHistoryModel) {
+    this.id = init.id as number;
+    this.user_id = init.user_id as number;
 
-    this.ip_address = init['INET6_NTOA(ip_address)'];
+    this.ip_address = init['INET6_NTOA(ip_address)'] as string;
     this.device_name = this.parseDevice(init.device_name as string | null);
-    this.os = init.os;
+    this.os = init.os as string;
 
-    this.is_phone = init.is_phone;
-    this.is_desktop = init.is_desktop;
-    this.is_tablet = init.is_tablet;
+    this.is_phone = init.is_phone as boolean;
+    this.is_desktop = init.is_desktop as boolean;
+    this.is_tablet = init.is_tablet as boolean;
 
-    this.browser_name = init.browser_name;
-    this.login_date = new Date(init.login_date);
+    this.browser_name = init.browser_name as string;
+    this.login_date = new Date(init.login_date as Date);
   }
 
   private parseDevice(d: string | null): Device | null {

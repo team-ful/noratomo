@@ -1,32 +1,20 @@
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../../../config';
 import passwordLoginHandler from '../../../../pages/api/login/password';
-import User from '../../../../src/models/user';
 import {findUserBySessionToken} from '../../../../src/services/user';
-import {TestUser} from '../../../../src/tests/user';
+import TestBase from '../../../../src/tests/base';
 
 describe('パスワードでログイン', () => {
-  let db: mysql.Connection;
-  let user: User;
-  let password: string;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
 
-    const u = new TestUser();
-    await u.create(db);
-    await u.loginFromPassword(db);
-
-    password = u.password || '';
-    if (typeof u.user !== 'undefined') {
-      user = u.user;
-    }
+    await (await base.newUser()).loginFromPassword(base.db);
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('メールアドレスとパスワードでログインができる', async () => {
@@ -40,16 +28,16 @@ describe('パスワードでログイン', () => {
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
           },
-          body: `user=${user.mail}&password=${password}`,
+          body: `user=${base.users[0].user?.mail}&password=${base.users[0].password}`,
         });
 
         expect(res.status).toBe(200);
 
         const session: string = res.cookies[0][config.sessionCookieName];
 
-        const u = await findUserBySessionToken(db, session);
+        const u = await findUserBySessionToken(base.db, session);
 
-        expect(u?.id).toBe(user.id);
+        expect(u?.id).toBe(base.users[0].user?.id);
       },
     });
   });
@@ -65,16 +53,16 @@ describe('パスワードでログイン', () => {
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
           },
-          body: `user=${user.user_name}&password=${password}`,
+          body: `user=${base.users[0].user?.user_name}&password=${base.users[0].password}`,
         });
 
         expect(res.status).toBe(200);
 
         const session: string = res.cookies[0][config.sessionCookieName];
 
-        const u = await findUserBySessionToken(db, session);
+        const u = await findUserBySessionToken(base.db, session);
 
-        expect(u?.id).toBe(user.id);
+        expect(u?.id).toBe(base.users[0].user?.id);
       },
     });
   });
@@ -90,7 +78,7 @@ describe('パスワードでログイン', () => {
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
           },
-          body: `user=${user.user_name}`,
+          body: `user=${base.users[0].user?.user_name}`,
         });
 
         expect(res.status).toBe(400);

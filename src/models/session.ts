@@ -1,3 +1,5 @@
+import {DefaultObject} from '../db/operator';
+
 export interface SessionModel {
   session_token: string;
   refresh_token?: string;
@@ -15,14 +17,14 @@ export class Session implements SessionModel {
   // 上書き可能にしておく
   public refresh_token?: string;
 
-  constructor(row: SessionModel) {
-    this.session_token = row.session_token;
-    this.date = new Date(row.date);
-    this.period_date = new Date(row.period_date);
-    this.user_id = row.user_id;
+  constructor(row: DefaultObject | SessionModel) {
+    this.session_token = row.session_token as string;
+    this.date = new Date(row.date as Date);
+    this.period_date = new Date(row.period_date as Date);
+    this.user_id = row.user_id as number;
 
     if (row.refresh_token && row.refresh_token !== null) {
-      this.refresh_token = row.refresh_token;
+      this.refresh_token = row.refresh_token as string;
     }
   }
 

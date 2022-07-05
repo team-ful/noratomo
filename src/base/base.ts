@@ -4,11 +4,11 @@ import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import {serialize, CookieSerializeOptions} from 'cookie';
 import mysql from 'mysql2/promise';
-import {Connection} from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
+import DBOperator from '../db/operator';
 import User from '../models/user';
 import {createLoginHistory} from '../services/loginHistory';
 import {createSession} from '../services/session';
@@ -35,7 +35,7 @@ class Base<T> {
 
   public status: number;
 
-  private _db?: Connection;
+  private _db?: DBOperator;
 
   private contentType: ParsedMediaType;
   private ip: string;
@@ -64,7 +64,7 @@ class Base<T> {
   /**
    * DB Connectionを返す
    *
-   * @returns {mysql.Connection} DB Connection
+   * @returns {DBOperator} - DBOperator
    */
   public async db() {
     if (typeof this._db !== 'undefined') {
@@ -74,9 +74,9 @@ class Base<T> {
     const connection = await mysql.createConnection(config.db);
     await connection.connect();
 
-    this._db = connection;
+    this._db = new DBOperator(connection);
 
-    return connection;
+    return this._db;
   }
 
   public async end() {
