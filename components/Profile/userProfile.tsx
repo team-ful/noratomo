@@ -9,7 +9,6 @@ import {
   VStack,
   RadioGroup,
   Radio,
-  Button,
   NumberInput,
   NumberIncrementStepper,
   NumberDecrementStepper,
@@ -22,7 +21,7 @@ import {
 import Avater from '../Logo/Avater';
 import useUser from '../Session/useUser';
 
-const SettingForm = () => {
+const UserProfile = () => {
   const user = useUser();
   return (
     <VStack spacing="">
@@ -85,4 +84,4 @@ const SettingForm = () => {
   );
 };
 
-export default SettingForm;
+export default UserProfile;
