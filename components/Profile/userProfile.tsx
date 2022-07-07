@@ -1,87 +1,79 @@
 import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  InputLeftAddon,
-  InputGroup,
   HStack,
   VStack,
   RadioGroup,
   Radio,
-  NumberInput,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  NumberInputStepper,
   Textarea,
-  NumberInputField,
   Avatar,
   Text,
+  Button,
+  Box,
+  Spacer,
 } from '@chakra-ui/react';
 import Avater from '../Logo/Avater';
 import useUser from '../Session/useUser';
 
-const UserProfile = () => {
+const Profile = () => {
   const user = useUser();
   return (
-    <VStack spacing="">
+    <VStack width="100%" marginTop="20px">
       <Text fontSize="md">プロフィール・ユーザー情報を編集</Text>
-      <form>
-        <FormControl>
+
+      <HStack>
+        <Box>
           <Avatar
-            size={{base: 'md', sm: 'md'}}
+            size={{base: 'lg', sm: 'md'}}
             src={user?.avatar_url}
             icon={<Avater size="25px" />}
           />
-          {/* アバター用の画像アップするやつ */}
-        </FormControl>
+        </Box>
+        <Spacer w="20px" />
+        <VStack>
+          <h2>ユーザー名(表示名)</h2>
+          <p>{user?.user_name}</p>
+        </VStack>
+      </HStack>
 
-        <FormControl>
-          <FormLabel>ユーザー名(表示名)</FormLabel>
-          <InputGroup>
-            <InputLeftAddon>@</InputLeftAddon>
-            <Input type="" value={user?.user_name} />
-          </InputGroup>
-          <FormHelperText>他の利用者に表示される名前です。</FormHelperText>
-        </FormControl>
-        <FormControl>
-          <FormLabel>メールアドレス</FormLabel>
-          <Input id="" type="" value={user?.mail} />
-          <FormHelperText></FormHelperText>
-        </FormControl>
+      <HStack width="50%">
+        <h2 text-align="right">メールアドレス</h2>
+        <Spacer />
+        <p>{user?.mail}</p>
+      </HStack>
 
-        <FormControl>
-          <FormLabel>年齢</FormLabel>
-          <NumberInput max={100} min={18}>
-            <NumberInputField id="" value={user?.age} />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </FormControl>
+      <HStack width="50%">
+        <h2 text-align="right">年齢</h2>
+        <Spacer />
+        <p>{user?.age}歳</p>
+      </HStack>
 
-        <FormControl>
-          <FormLabel>性別</FormLabel>
+      <HStack width="50%">
+        <h2 text-align="right">性別</h2>
+        <Spacer />
+        <HStack spacing="24px">
           <RadioGroup value={user?.gender}>
-            <HStack spacing="24px">
+            <HStack direction="column">
               <Radio value="1">男性</Radio>
               <Radio value="2">女性</Radio>
               <Radio value="3">その他</Radio>
             </HStack>
           </RadioGroup>
-        </FormControl>
+        </HStack>
+      </HStack>
+      <HStack width="50%">
+        <h2 text-align="right">プロフィール</h2>
+        <Spacer />
+        <Textarea
+          w="60%"
+          placeholder="あなたのプロフィールを入力しましょう"
+          value={user?.profile}
+        />
+      </HStack>
 
-        <FormControl>
-          <FormLabel>プロフィール</FormLabel>
-          <Textarea
-            placeholder="あなたのプロフィールを入力しましょう"
-            value={user?.profile}
-          />
-        </FormControl>
-      </form>
+      <Button colorScheme="teal" variant="outline">
+        プロフィール・ユーザー情報を変更する
+      </Button>
     </VStack>
   );
 };
 
-export default UserProfile;
+export default Profile;

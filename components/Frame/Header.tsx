@@ -71,7 +71,7 @@ const Header = () => {
           </Box>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
-              <NextLink passHref href={'/setting'}>
+              <NextLink passHref href={'/profile'}>
                 <Link>
                   <Avatar
                     size={{base: 'sm', sm: 'sm'}}
