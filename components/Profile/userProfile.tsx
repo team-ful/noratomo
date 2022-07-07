@@ -12,10 +12,13 @@ import {
   Link,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import {useSetRecoilState} from 'recoil';
+import {UserState} from '../../utils/atom';
 import Avater from '../Logo/Avater';
 import useUser from '../Session/useUser';
 
 const Profile = () => {
+  const setUser = useSetRecoilState(UserState);
   const user = useUser();
   return (
     <VStack width="100%" marginTop="20px">
@@ -24,7 +27,7 @@ const Profile = () => {
       <HStack>
         <Box>
           <Avatar
-            size={{base: 'lg', sm: 'md'}}
+            size={{base: 'md', sm: 'md'}}
             src={user?.avatar_url}
             icon={<Avater size="25px" />}
           />
@@ -32,7 +35,9 @@ const Profile = () => {
         <Spacer w="20px" />
         <VStack>
           <h2>ユーザー名(表示名)</h2>
-          <p>{user?.user_name}</p>
+          <p>
+            {user?.user_name} ( {user?.display_name})
+          </p>
         </VStack>
       </HStack>
 
