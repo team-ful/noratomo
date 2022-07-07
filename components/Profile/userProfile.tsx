@@ -9,7 +9,9 @@ import {
   Button,
   Box,
   Spacer,
+  Link,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
 import Avater from '../Logo/Avater';
 import useUser from '../Session/useUser';
 
@@ -69,9 +71,13 @@ const Profile = () => {
         />
       </HStack>
 
-      <Button colorScheme="teal" variant="outline">
-        プロフィール・ユーザー情報を変更する
-      </Button>
+      <NextLink passHref href={'/setting'}>
+        <Link>
+          <Button colorScheme="teal" variant="outline">
+            プロフィール・ユーザー情報を変更する
+          </Button>
+        </Link>
+      </NextLink>
     </VStack>
   );
 };
