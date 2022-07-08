@@ -69,11 +69,11 @@ const Profile = () => {
       <HStack width="50%">
         <h2 text-align="right">プロフィール</h2>
         <Spacer />
-        <Textarea
+        {/* <Textarea
           w="60%"
           placeholder="あなたのプロフィールを入力しましょう"
           value={user?.profile}
-        />
+        /> */}
       </HStack>
 
       <NextLink passHref href={'/setting'}>

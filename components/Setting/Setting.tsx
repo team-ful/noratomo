@@ -21,6 +21,7 @@ import {
   FormErrorMessage,
   useToast,
 } from '@chakra-ui/react';
+import router from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
@@ -75,11 +76,10 @@ const SettingForm = () => {
 
     for (const b in body) {
       formattedBody.push(`${b}=${encodeURIComponent(body[b])}`);
-      //#質問
-      newUser[b as keyof User] = body[b];
+      // newUser[b as keyof User] = body[b];
     }
 
-    const res = await fetch('', {
+    const res = await fetch('/api/user/config', {
       method: 'PUT',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -92,7 +92,8 @@ const SettingForm = () => {
         title: '更新しました',
         status: 'info',
       });
-      setUser(newUser);
+
+      // setUser(newUser);
     } else {
       toast({
         title: await res.text(),
@@ -107,17 +108,17 @@ const SettingForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={Boolean(errors.user_name)}>
           <FormLabel htmlFor="user_name">ユーザーネーム</FormLabel>
-          <InputGroup
-            id="user_name"
-            placeholder="user_name"
-            {...register('user_name', {
-              required: 'ナナシさんはダメです',
-              minLength: {value: 3, message: '最低4文字以上にして下さい'},
-              maxLength: {value: 16, message: '最大で16字までにして下さい'},
-            })}
-          >
+          <InputGroup>
             <InputLeftAddon>@</InputLeftAddon>
-            <Input />
+            <Input
+              id="user_name"
+              placeholder="user_name"
+              {...register('user_name', {
+                required: 'ナナシさんはダメです',
+                minLength: {value: 3, message: '最低4文字以上にして下さい'},
+                maxLength: {value: 16, message: '最大で16字までにして下さい'},
+              })}
+            />
           </InputGroup>
           <FormHelperText>他の利用者に表示される名前です。</FormHelperText>
           <FormErrorMessage>
@@ -125,7 +126,7 @@ const SettingForm = () => {
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl isInvalid={Boolean(errors.mail)}>
+        {/* <FormControl isInvalid={Boolean(errors.mail)}>
           <FormLabel htmlFor="mail">メールアドレス</FormLabel>
           <Input
             id="mail"
@@ -142,7 +143,7 @@ const SettingForm = () => {
           <FormErrorMessage>
             {errors.mail && errors.mail.message}
           </FormErrorMessage>
-        </FormControl>
+        </FormControl> */}
 
         <FormControl isInvalid={Boolean(errors.age)}>
           <FormLabel htmlFor="age">年齢</FormLabel>
@@ -169,8 +170,11 @@ const SettingForm = () => {
 
         <FormControl isInvalid={Boolean(errors.gender)}>
           <FormLabel>性別</FormLabel>
-          <RadioGroup id="gender">
+          <RadioGroup id="gender" defaultValue={user?.gender.toString()}>
             <HStack spacing="24px">
+              <Radio value="0" isDisabled>
+                初期
+              </Radio>
               <Radio value="1">男性</Radio>
               <Radio value="2">女性</Radio>
               <Radio value="3">その他</Radio>
@@ -181,7 +185,7 @@ const SettingForm = () => {
           </FormErrorMessage>
         </FormControl>
 
-        {/* <FormControl >
+        {/* <FormControl>
           <FormLabel>プロフィール</FormLabel>
           <Textarea
             placeholder="あなたのプロフィールを入力しましょう"
