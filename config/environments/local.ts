@@ -22,15 +22,10 @@ const config: Config = {
 
   sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
-  sessionPeriodDay: 7,
+  sessionPeriodDay: 1,
   sessionCookieOptions: () => {
-    const date = new Date(Date.now());
-    date.setDate(date.getDate() + config.sessionPeriodDay);
-
     return {
       domain: LOCAL_URL,
-      expires: date,
-      maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
       secure: false, // テスト用であるためfalse
       httpOnly: true,
