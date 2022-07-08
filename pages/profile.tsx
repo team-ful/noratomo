@@ -3,7 +3,7 @@ import type {NextPage} from 'next';
 import Profile from '../components/Profile/UserProfile';
 import Require from '../components/Session/Require';
 
-const Setting: NextPage = () => {
+const UserProfile: NextPage = () => {
   return (
     <Box>
       <Require loginRequire={true} path="/">
@@ -13,4 +13,4 @@ const Setting: NextPage = () => {
   );
 };
 
-export default Setting;
+export default UserProfile;

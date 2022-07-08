@@ -68,7 +68,7 @@ const Profile = () => {
       </HStack>
       <HStack width="50%">
         <h2 text-align="right">プロフィール</h2>
-        <Spacer />
+
         {/* <Textarea
           w="60%"
           placeholder="あなたのプロフィールを入力しましょう"
