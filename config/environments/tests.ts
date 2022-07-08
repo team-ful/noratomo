@@ -74,6 +74,11 @@ const config: Config = {
     password: 'docker',
     database: 'test',
   },
+
+  // Cloud Storage
+  storageHost: 'http://gcs:4443',
+  publicStorageHost: new URL('http://localhost:4443'),
+  bucketName: 'noratomotest',
 };
 
 export default config;

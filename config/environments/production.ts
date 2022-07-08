@@ -76,6 +76,11 @@ const config: Config = {
     database: 'noratomo',
     socketPath: `${DB_SOCKET_PATH}/${process.env.INSTANCE_CONNECTION_NAME}`,
   },
+
+  // Cloud Storage
+  storageHost: process.env.STORAGE_URL || '',
+  publicStorageHost: new URL(' https://storage.googleapis.com'),
+  bucketName: 'noratomo',
 };
 
 export default config;

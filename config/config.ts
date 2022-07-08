@@ -34,4 +34,9 @@ export interface Config {
 
   // DB
   db: ConnectionOptions;
+
+  // Cloud Storage
+  storageHost: string;
+  publicStorageHost: URL;
+  bucketName: string;
 }
