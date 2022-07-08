@@ -3,6 +3,7 @@ import {URL} from 'url';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import {serialize, CookieSerializeOptions} from 'cookie';
+import formidable from 'formidable';
 import mysql from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
@@ -42,6 +43,10 @@ class Base<T> {
   private userAgent: UserAgent;
   private cookies: string[];
   private postBody?: ParsedUrlQuery;
+  private multipartForm?: {
+    fields: formidable.Fields;
+    files: formidable.Files;
+  };
 
   protected sessionToken?: string;
   protected refreshToken?: string;
@@ -148,6 +153,95 @@ class Base<T> {
   }
 
   /**
+   * content-type: multipart-form-data からフォームデータを取得する
+   *
+   * @param {string} key - key
+   * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
+   * @returns {formidable.File} - file data
+   */
+  public async getPostFormFields(key: string, require: true): Promise<string>;
+  public async getPostFormFields(key: string): Promise<string | undefined>;
+  public async getPostFormFields(
+    key: string,
+    require = false
+  ): Promise<string | undefined> {
+    if (typeof this.multipartForm === 'undefined') {
+      await this.parseMultipartForm();
+    }
+
+    const field = this.multipartForm?.fields[key];
+
+    if (typeof field === 'undefined') {
+      if (require) {
+        throw new ApiError(400, `Illegal form value ${key}`);
+      }
+      return undefined;
+    }
+
+    if (typeof field === 'string') {
+      return field;
+    }
+
+    return field[0];
+  }
+
+  /**
+   *  content-type: multipart-form-data からファイルデータを取得する
+   *
+   * @param {string} key - key
+   * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
+   * @returns {formidable.File} - file data
+   */
+  public async getPostFormFiles(
+    key: string,
+    require: true
+  ): Promise<formidable.File>;
+  public async getPostFormFiles(
+    key: string
+  ): Promise<formidable.File | undefined>;
+  public async getPostFormFiles(
+    key: string,
+    require = false
+  ): Promise<formidable.File | undefined> {
+    if (typeof this.multipartForm === 'undefined') {
+      await this.parseMultipartForm();
+    }
+
+    const files = this.multipartForm?.files[key];
+
+    if (typeof files === 'undefined') {
+      if (require) {
+        throw new ApiError(400, `Illegal form value ${key}`);
+      }
+      return undefined;
+    }
+
+    if (Array.isArray(files)) {
+      return files[0];
+    }
+
+    return files;
+  }
+
+  /**
+   * content-type: multipart-form-data をパースする
+   */
+  private async parseMultipartForm() {
+    if (!this.checkContentType('multipart/form-data')) {
+      throw new ApiError(400, 'no multipart/form-data');
+    }
+
+    const form = new formidable.IncomingForm();
+
+    form.parse(this.req, async (err, fields, files) => {
+      if (err) {
+        new ApiError(400, err);
+      }
+      this.multipartForm = {fields, files};
+    });
+  }
+
+  /**
    * Content-Type: application/json
    * のデータを取得する
    *
@@ -173,7 +267,7 @@ class Base<T> {
    * @returns {boolean} - 引数のcontent-typeと同じであればtrue、違えばfalse
    */
   public checkContentType(contentType: string): boolean {
-    return this.contentType.type === contentType.toLowerCase();
+    return contentType.toLowerCase().includes(this.contentType.type);
   }
 
   /**

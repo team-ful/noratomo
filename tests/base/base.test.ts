@@ -1,5 +1,7 @@
 import {URL} from 'url';
 import {serialize} from 'cookie';
+import FormData from 'form-data';
+import {PageConfig} from 'next';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
@@ -127,6 +129,161 @@ describe('getPostURLForm', () => {
         });
 
         expect(res.status).toBe(200);
+      },
+    });
+  });
+});
+
+describe('getPostFormFields', () => {
+  test('取得できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      const form = await base.getPostFormFields('hoge');
+      expect(form).toBe('fooo');
+
+      const noExistForm = await base.getPostFormFields('testaaaaa');
+      expect(noExistForm).toBeUndefined();
+
+      expect(base.getPostFormFields('testaaaaa', true)).rejects.toThrow(
+        'Illegal form value testaaaaa'
+      );
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    form.append('hoge', 'fooo');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        // console.log(await res.text());
+
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('content-typeが違う場合はエラー', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      await base.getPostFormFields('hoge');
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    form.append('hoge', 'fooo');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(400);
+      },
+    });
+  });
+});
+
+describe('getPostFormFiles', () => {
+  test('取得できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      // const form = await base.getPostFormFiles('hoge');
+      // expect(form).toBe('fooo');
+
+      const noExistForm = await base.getPostFormFiles('testaaaaa');
+      expect(noExistForm).toBeUndefined();
+
+      expect(base.getPostFormFiles('testaaaaa', true)).rejects.toThrow(
+        'Illegal form value testaaaaa'
+      );
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    // const image = new File();
+    // form.append('im', image);
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        // console.log(await res.text());
+
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('content-typeが違う場合はエラー', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      await base.getPostFormFiles('hoge');
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    form.append('hoge', 'fooo');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(400);
       },
     });
   });
