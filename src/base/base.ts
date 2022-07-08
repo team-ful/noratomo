@@ -114,9 +114,9 @@ class Base<T> {
    * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
    * @returns {string} - クエリの値
    */
-  public getPostForm(key: string, require: true): string;
-  public getPostForm(key: string): string | undefined;
-  public getPostForm(key: string, require = false): string | undefined {
+  public getPostURLForm(key: string, require: true): string;
+  public getPostURLForm(key: string): string | undefined;
+  public getPostURLForm(key: string, require = false): string | undefined {
     let p: ParsedUrlQuery;
 
     if (typeof this.postBody === 'undefined') {

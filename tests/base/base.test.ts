@@ -68,21 +68,21 @@ describe('getQuery', () => {
   });
 });
 
-describe('getPostForm', () => {
+describe('getPostURLForm', () => {
   const query = 'test=hoge';
 
-  test('getPostFormで取得できる', async () => {
+  test('getPostURLFormで取得できる', async () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      const form = base.getPostForm('test');
+      const form = base.getPostURLForm('test');
       expect(form).toBe('hoge');
 
-      const noExistForm = base.getPostForm('testaaaaa');
+      const noExistForm = base.getPostURLForm('testaaaaa');
       expect(noExistForm).toBeUndefined();
 
       expect(() => {
-        base.getPostForm('testaaaaa', true);
+        base.getPostURLForm('testaaaaa', true);
       }).toThrow('Illegal form value testaaaaa');
     };
 
@@ -108,7 +108,7 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(() => base.getPostForm('test')).toThrow(
+      expect(() => base.getPostURLForm('test')).toThrow(
         new ApiError(400, 'no application/x-www-form-urlencoded')
       );
     };

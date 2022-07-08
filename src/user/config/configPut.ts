@@ -10,11 +10,11 @@ import * as check from '../../syntax/check';
  * @param {AuthedBase} base - base
  */
 export async function setConfigHandler(base: AuthedBase<void>) {
-  const displayName = base.getPostForm('display_name');
-  const profile = base.getPostForm('profile');
-  const userName = base.getPostForm('user_name');
-  const age = base.getPostForm('age');
-  const gender = base.getPostForm('gender');
+  const displayName = base.getPostURLForm('display_name');
+  const profile = base.getPostURLForm('profile');
+  const userName = base.getPostURLForm('user_name');
+  const age = base.getPostURLForm('age');
+  const gender = base.getPostURLForm('gender');
 
   const option: {[key: string]: string | number | null} = {};
 
