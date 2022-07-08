@@ -25,8 +25,7 @@ import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
 import {UserState} from '../../utils/atom';
-//#質問
-import {user} from '../../utils';
+import {User} from '../../utils/types';
 
 type SettingInputs = {
   user_name: string;
@@ -43,7 +42,7 @@ const SettingForm = () => {
     formState: {errors, isSubmitSuccessful},
   } = useForm<SettingInputs>();
 
-  const [user, serUser] = useRecoilState(UserState);
+  const [user, setUser] = useRecoilState(UserState);
   const toast = useToast();
   // const [load, setLoad] = React.useState(false);
 
@@ -77,7 +76,7 @@ const SettingForm = () => {
     for (const b in body) {
       formattedBody.push(`${b}=${encodeURIComponent(body[b])}`);
       //#質問
-      newUser[b as keyof User] =
+      newUser[b as keyof User] = body[b];
     }
 
     const res = await fetch('', {
@@ -93,6 +92,7 @@ const SettingForm = () => {
         title: '更新しました',
         status: 'info',
       });
+      setUser(newUser);
     } else {
       toast({
         title: await res.text(),
@@ -169,7 +169,7 @@ const SettingForm = () => {
 
         <FormControl isInvalid={Boolean(errors.gender)}>
           <FormLabel>性別</FormLabel>
-          <RadioGroup id="gender"   >
+          <RadioGroup id="gender">
             <HStack spacing="24px">
               <Radio value="1">男性</Radio>
               <Radio value="2">女性</Radio>
