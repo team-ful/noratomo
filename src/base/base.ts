@@ -209,6 +209,8 @@ class Base<T> {
 
     const files = this.multipartForm?.files[key];
 
+    console.log(files);
+
     if (typeof files === 'undefined') {
       if (require) {
         throw new ApiError(400, `Illegal form value ${key}`);
@@ -233,11 +235,13 @@ class Base<T> {
 
     const form = new formidable.IncomingForm();
 
-    form.parse(this.req, async (err, fields, files) => {
-      if (err) {
-        new ApiError(400, err);
-      }
-      this.multipartForm = {fields, files};
+    this.multipartForm = await new Promise((resolve, reject) => {
+      form.parse(this.req, (err, fields, files) => {
+        if (err) {
+          reject(err);
+        }
+        resolve({fields, files});
+      });
     });
   }
 

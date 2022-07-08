@@ -1,3 +1,4 @@
+import fs from 'fs';
 import {URL} from 'url';
 import {serialize} from 'cookie';
 import FormData from 'form-data';
@@ -216,8 +217,11 @@ describe('getPostFormFiles', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      // const form = await base.getPostFormFiles('hoge');
-      // expect(form).toBe('fooo');
+      const image = await base.getPostFormFiles('file');
+      expect(image?.mimetype).toBe('image/png');
+
+      const form = await base.getPostFormFields('file');
+      expect(form).toBeUndefined();
 
       const noExistForm = await base.getPostFormFiles('testaaaaa');
       expect(noExistForm).toBeUndefined();
@@ -235,9 +239,13 @@ describe('getPostFormFiles', () => {
       },
     };
 
+    const buffer = fs.readFileSync('tests/base/sample.png');
     const form = new FormData();
-    // const image = new File();
-    // form.append('im', image);
+    form.append('file', buffer, {
+      filename: 'sample.png',
+      contentType: 'image/png',
+      knownLength: buffer.length,
+    });
 
     await testApiHandler({
       handler: h,
