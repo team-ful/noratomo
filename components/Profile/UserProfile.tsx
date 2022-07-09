@@ -57,7 +57,7 @@ const Profile = () => {
         <h2 text-align="right">性別</h2>
         <Spacer />
         <HStack spacing="24px">
-          <RadioGroup value={user?.gender}>
+          <RadioGroup value={user?.gender.toString()}>
             <HStack direction="column">
               <Radio value="1">男性</Radio>
               <Radio value="2">女性</Radio>
@@ -68,12 +68,8 @@ const Profile = () => {
       </HStack>
       <HStack width="50%">
         <h2 text-align="right">プロフィール</h2>
-
-        {/* <Textarea
-          w="60%"
-          placeholder="あなたのプロフィールを入力しましょう"
-          value={user?.profile}
-        /> */}
+        <Spacer />
+        <Text>{user?.profile}</Text>
       </HStack>
 
       <NextLink passHref href={'/setting'}>

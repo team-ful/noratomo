@@ -20,6 +20,8 @@ import {
   Text,
   FormErrorMessage,
   useToast,
+  Select,
+  Tabs,
 } from '@chakra-ui/react';
 import router from 'next/router';
 import React from 'react';
@@ -31,6 +33,7 @@ import {User} from '../../utils/types';
 type SettingInputs = {
   user_name: string;
   mail: string;
+  profile: string;
   age: number;
   gender: number;
 };
@@ -45,12 +48,12 @@ const SettingForm = () => {
 
   const [user, setUser] = useRecoilState(UserState);
   const toast = useToast();
-  // const [load, setLoad] = React.useState(false);
 
   React.useEffect(() => {
     if (user) {
       setValue('user_name', user.user_name);
       setValue('mail', user.mail);
+      setValue('profile', user.profile);
       setValue('age', user.age);
       setValue('gender', user.gender);
     }
@@ -66,6 +69,9 @@ const SettingForm = () => {
     }
     if (user?.mail !== data.mail) {
       body.mail = data.mail;
+    }
+    if (user?.profile !== data.profile) {
+      body.profile = data.profile;
     }
     if (user?.age !== data.age) {
       body.age = data.age;
@@ -169,31 +175,38 @@ const SettingForm = () => {
         </FormControl>
 
         <FormControl isInvalid={Boolean(errors.gender)}>
-          <FormLabel>性別</FormLabel>
-          <RadioGroup id="gender" defaultValue={user?.gender.toString()}>
-            <HStack spacing="24px">
-              <Radio value="0" isDisabled>
-                初期
-              </Radio>
-              <Radio value="1">男性</Radio>
-              <Radio value="2">女性</Radio>
-              <Radio value="3">その他</Radio>
-            </HStack>
-          </RadioGroup>
+          <FormLabel htmlFor="gender">性別</FormLabel>
+          <Select
+            placeholder="性別を選択"
+            id="gender"
+            {...register('gender', {
+              required: '性別を入力してください',
+            })}
+          >
+            <option value="1">男性</option>
+            <option value="2">女性</option>
+            <option value="3">その他</option>
+          </Select>
           <FormErrorMessage>
             {errors.gender && errors.gender.message}
           </FormErrorMessage>
         </FormControl>
 
-        {/* <FormControl>
-          <FormLabel>プロフィール</FormLabel>
+        <FormControl isInvalid={Boolean(errors.gender)}>
+          <FormLabel htmlFor="profile">プロフィール</FormLabel>
           <Textarea
             placeholder="あなたのプロフィールを入力しましょう"
-            value={user?.profile}
+            id="profile"
+            {...register('profile', {
+              required: 'あなたを表現してみましょう',
+            })}
           />
+          <FormErrorMessage>
+            {errors.profile && errors.profile.message}
+          </FormErrorMessage>
         </FormControl>
 
-        <FormControl>
+        {/* <FormControl>
           <FormLabel>新しいパスワードを設定</FormLabel>
           <Input id="" type="" placeholder="新しいパスワードを入力" />
           <p>以前のパスワード：{}</p>
