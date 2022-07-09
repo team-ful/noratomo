@@ -7,8 +7,6 @@ import {
   InputGroup,
   HStack,
   VStack,
-  RadioGroup,
-  Radio,
   Button,
   NumberInput,
   NumberIncrementStepper,
@@ -21,7 +19,12 @@ import {
   FormErrorMessage,
   useToast,
   Select,
+  Tab,
+  TabList,
   Tabs,
+  Box,
+  TabPanels,
+  TabPanel,
 } from '@chakra-ui/react';
 import router from 'next/router';
 import React from 'react';
@@ -109,123 +112,151 @@ const SettingForm = () => {
   };
 
   return (
-    <VStack spacing="">
-      <Text fontSize="md">プロフィール・ユーザー情報を編集</Text>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={Boolean(errors.user_name)}>
-          <FormLabel htmlFor="user_name">ユーザーネーム</FormLabel>
-          <InputGroup>
-            <InputLeftAddon>@</InputLeftAddon>
-            <Input
-              id="user_name"
-              placeholder="user_name"
-              {...register('user_name', {
-                required: 'ナナシさんはダメです',
-                minLength: {value: 3, message: '最低4文字以上にして下さい'},
-                maxLength: {value: 16, message: '最大で16字までにして下さい'},
-              })}
-            />
-          </InputGroup>
-          <FormHelperText>他の利用者に表示される名前です。</FormHelperText>
-          <FormErrorMessage>
-            {errors.user_name && errors.user_name.message}
-          </FormErrorMessage>
-        </FormControl>
+    <Box>
+      <Tabs>
+        <TabList>
+          <Tab>プロフィール</Tab>
+          <Tab>パスワード</Tab>
+          <Tab>メールアドレス</Tab>
+          <Tab>通知</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <VStack spacing="">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <FormControl isInvalid={Boolean(errors.user_name)}>
+                  <FormLabel htmlFor="user_name">ユーザーネーム</FormLabel>
+                  <InputGroup>
+                    <InputLeftAddon>@</InputLeftAddon>
+                    <Input
+                      id="user_name"
+                      placeholder="user_name"
+                      {...register('user_name', {
+                        required: 'ナナシさんはダメです',
+                        minLength: {
+                          value: 3,
+                          message: '最低4文字以上にして下さい',
+                        },
+                        maxLength: {
+                          value: 16,
+                          message: '最大で16字までにして下さい',
+                        },
+                      })}
+                    />
+                  </InputGroup>
+                  <FormHelperText>
+                    他の利用者に表示される名前です。
+                  </FormHelperText>
+                  <FormErrorMessage>
+                    {errors.user_name && errors.user_name.message}
+                  </FormErrorMessage>
+                </FormControl>
 
-        {/* <FormControl isInvalid={Boolean(errors.mail)}>
-          <FormLabel htmlFor="mail">メールアドレス</FormLabel>
-          <Input
-            id="mail"
-            placeholder="mail"
-            {...register('mail', {
-              required: '有効なアドレスを登録して下さい。',
-              pattern:
-                /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
-            })}
-          />
-          <FormHelperText>
-            ドットはアドレスの頭と尻尾に使用できず、連続で使用できません。
-          </FormHelperText>
-          <FormErrorMessage>
-            {errors.mail && errors.mail.message}
-          </FormErrorMessage>
-        </FormControl> */}
+                <FormControl isInvalid={Boolean(errors.age)}>
+                  <FormLabel htmlFor="age">年齢</FormLabel>
+                  <NumberInput>
+                    <NumberInputField
+                      id="age"
+                      placeholder="age"
+                      type="number"
+                      {...register('age', {
+                        required: '18から100歳の範囲で入力して下さい',
+                        min: 18,
+                        max: 100,
+                      })}
+                    />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <FormErrorMessage>
+                    {errors.age && errors.age.message}
+                  </FormErrorMessage>
+                </FormControl>
 
-        <FormControl isInvalid={Boolean(errors.age)}>
-          <FormLabel htmlFor="age">年齢</FormLabel>
-          <NumberInput>
-            <NumberInputField
-              id="age"
-              placeholder="age"
-              type="number"
-              {...register('age', {
-                required: '18から100歳の範囲で入力して下さい',
-                min: 18,
-                max: 100,
-              })}
-            />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <FormErrorMessage>
-            {errors.age && errors.age.message}
-          </FormErrorMessage>
-        </FormControl>
+                <FormControl isInvalid={Boolean(errors.gender)}>
+                  <FormLabel htmlFor="gender">性別</FormLabel>
+                  <Select
+                    placeholder="性別を選択"
+                    id="gender"
+                    {...register('gender', {
+                      required: '性別を入力してください',
+                    })}
+                  >
+                    <option value="1">男性</option>
+                    <option value="2">女性</option>
+                    <option value="3">その他</option>
+                  </Select>
+                  <FormErrorMessage>
+                    {errors.gender && errors.gender.message}
+                  </FormErrorMessage>
+                </FormControl>
 
-        <FormControl isInvalid={Boolean(errors.gender)}>
-          <FormLabel htmlFor="gender">性別</FormLabel>
-          <Select
-            placeholder="性別を選択"
-            id="gender"
-            {...register('gender', {
-              required: '性別を入力してください',
-            })}
-          >
-            <option value="1">男性</option>
-            <option value="2">女性</option>
-            <option value="3">その他</option>
-          </Select>
-          <FormErrorMessage>
-            {errors.gender && errors.gender.message}
-          </FormErrorMessage>
-        </FormControl>
+                <FormControl isInvalid={Boolean(errors.gender)}>
+                  <FormLabel htmlFor="profile">プロフィール</FormLabel>
+                  <Textarea
+                    placeholder="あなたのプロフィールを入力しましょう"
+                    id="profile"
+                    {...register('profile', {
+                      required: 'あなたを表現してみましょう',
+                      maxLength: {
+                        value: 128,
+                        message: '128文字まで表現して下さい',
+                      },
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {errors.profile && errors.profile.message}
+                  </FormErrorMessage>
+                </FormControl>
 
-        <FormControl isInvalid={Boolean(errors.gender)}>
-          <FormLabel htmlFor="profile">プロフィール</FormLabel>
-          <Textarea
-            placeholder="あなたのプロフィールを入力しましょう"
-            id="profile"
-            {...register('profile', {
-              required: 'あなたを表現してみましょう',
-            })}
-          />
-          <FormErrorMessage>
-            {errors.profile && errors.profile.message}
-          </FormErrorMessage>
-        </FormControl>
-
-        {/* <FormControl>
+                <Button isLoading={isSubmitSuccessful} type="submit">
+                  これで設定する
+                </Button>
+              </form>
+            </VStack>
+          </TabPanel>
+          <TabPanel>
+            {/* <FormControl>
           <FormLabel>新しいパスワードを設定</FormLabel>
           <Input id="" type="" placeholder="新しいパスワードを入力" />
           <p>以前のパスワード：{}</p>
-        </FormControl>
-
-        <FormControl display="flex" alignItems="center">
-          <FormLabel>ページ内での通知を有効にする</FormLabel>
-          <Switch id="" />
-        </FormControl>
-        <FormControl display="flex" alignItems="center">
-          <FormLabel>メール通知を有効にする</FormLabel>
-          <Switch id="" />
-        </FormControl> */}
-
-        <Button isLoading={isSubmitSuccessful} type="submit">
-          これで設定する
-        </Button>
-      </form>
-    </VStack>
+          </FormControl>*/}
+          </TabPanel>
+          <TabPanel>
+            {/* <FormControl isInvalid={Boolean(errors.mail)}>
+            <FormLabel htmlFor="mail">メールアドレス</FormLabel>
+            <Input
+            id="mail"
+            placeholder="mail"
+            {...register('mail', {
+            required: '有効なアドレスを登録して下さい。',
+            pattern:
+            /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
+            })}
+            />
+            <FormHelperText>
+            ドットはアドレスの頭と尻尾に使用できず、連続で使用できません。
+            </FormHelperText>
+            <FormErrorMessage>
+            {errors.mail && errors.mail.message}
+            </FormErrorMessage>
+            </FormControl> */}
+          </TabPanel>
+          <TabPanel>
+            {/*<FormControl display="flex" alignItems="center">
+            <FormLabel>ページ内での通知を有効にする</FormLabel>
+            <Switch id="" />
+            </FormControl>
+            <FormControl display="flex" alignItems="center">
+            <FormLabel>メール通知を有効にする</FormLabel>
+            <Switch id="" />
+            </FormControl> */}
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Box>
   );
 };
 
