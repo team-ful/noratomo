@@ -69,7 +69,7 @@ const Profile = () => {
       <HStack width="50%">
         <h2 text-align="right">プロフィール</h2>
         <Spacer />
-        <Text>{user?.profile}</Text>
+        <Text maxW="50%">{user?.profile}</Text>
       </HStack>
 
       <NextLink passHref href={'/setting'}>

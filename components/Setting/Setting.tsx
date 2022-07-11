@@ -6,7 +6,7 @@ import {
   InputLeftAddon,
   InputGroup,
   HStack,
-  VStack,
+  Stack,
   Button,
   NumberInput,
   NumberIncrementStepper,
@@ -50,7 +50,7 @@ const SettingForm = () => {
     register,
     handleSubmit,
     setValue,
-    formState: {errors, isSubmitSuccessful},
+    formState: {errors, isSubmitSuccessful, isValid, isDirty},
   } = useForm<SettingInputs>();
 
   const [user, setUser] = useRecoilState(UserState);
@@ -69,7 +69,7 @@ const SettingForm = () => {
   const onSubmit: SubmitHandler<SettingInputs> = async data => {
     const body: {[key: string]: string | number} = {};
     const formattedBody: string[] = [];
-    const newUser = user;
+    // const newUser = user;
 
     if (user?.user_name !== data.user_name) {
       body.user_name = data.user_name;
@@ -115,12 +115,12 @@ const SettingForm = () => {
   };
 
   return (
-    <Center>
+    <Center w="100%" h="100%">
       <Box>
         <Heading textAlign="center" mb="1rem">
           設定
         </Heading>
-        <Tabs colorScheme="orange">
+        <Tabs colorScheme="orange" maxW="448px">
           <TabList>
             <Tab>プロフィール</Tab>
             <Tab>パスワード</Tab>
@@ -132,10 +132,10 @@ const SettingForm = () => {
               <Heading size="lg" textAlign="center" mb="1rem">
                 プロフィール変更
               </Heading>
-
+              {/* プロフィールの変更 */}
               <form onSubmit={handleSubmit(onSubmit)}>
-                <VStack>
-                  <Box w="100%" mt="1rem">
+                <Stack>
+                  <Box>
                     <FormControl isInvalid={Boolean(errors.user_name)}>
                       <FormLabel htmlFor="user_name" fontSize="lg">
                         現在のユーザー名を変更
@@ -173,7 +173,7 @@ const SettingForm = () => {
                     </FormControl>
                   </Box>
                   <Spacer />
-                  <Box w="100%">
+                  <Box>
                     <FormControl isInvalid={Boolean(errors.gender)}>
                       <FormLabel htmlFor="profile" textAlign="center">
                         コメント(BIO)
@@ -195,114 +195,160 @@ const SettingForm = () => {
                       </FormErrorMessage>
                     </FormControl>
                   </Box>
-                  <VStack alignContent="center">
-                    <Box mt="1rem" w="100%">
-                      <FormControl isInvalid={Boolean(errors.age)} w="100px">
-                        <FormLabel htmlFor="age" textAlign="center">
-                          年齢
-                        </FormLabel>
-                        <NumberInput>
-                          <NumberInputField
-                            id="age"
-                            placeholder="age"
-                            type="number"
-                            {...register('age', {
-                              required: '18から100歳の範囲で入力して下さい',
-                              min: 18,
-                              max: 100,
-                            })}
-                          />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                        <FormErrorMessage>
-                          {errors.age && errors.age.message}
-                        </FormErrorMessage>
-                      </FormControl>
-                    </Box>
-                    <Spacer />
-                    <Box w="100%">
-                      <FormControl isInvalid={Boolean(errors.gender)} w="100px">
-                        <FormLabel htmlFor="gender" textAlign="center">
-                          性別
-                        </FormLabel>
-                        <Select
-                          placeholder="性別を選択"
-                          id="gender"
-                          {...register('gender', {
-                            required: '性別を入力してください',
-                          })}
+                  <Spacer />
+                  <Box>
+                    <HStack>
+                      <Box>
+                        <FormControl isInvalid={Boolean(errors.age)} w="100px">
+                          <FormLabel htmlFor="age" textAlign="center">
+                            年齢
+                          </FormLabel>
+                          <NumberInput>
+                            <NumberInputField
+                              id="age"
+                              placeholder="age"
+                              type="number"
+                              {...register('age', {
+                                required: '18から100歳の範囲で入力して下さい',
+                                min: 18,
+                                max: 100,
+                              })}
+                            />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                          <FormErrorMessage>
+                            {errors.age && errors.age.message}
+                          </FormErrorMessage>
+                        </FormControl>
+                      </Box>
+                      <Spacer />
+                      <Box>
+                        <FormControl
+                          isInvalid={Boolean(errors.gender)}
+                          w="160px"
                         >
-                          <option value="1">男性</option>
-                          <option value="2">女性</option>
-                          <option value="3">その他</option>
-                        </Select>
-                        <FormErrorMessage>
-                          {errors.gender && errors.gender.message}
-                        </FormErrorMessage>
-                      </FormControl>
-                    </Box>
-                  </VStack>
-                  <Button
-                    isLoading={isSubmitSuccessful}
-                    type="submit"
-                    size="lg"
-                  >
-                    保存
-                  </Button>
-                </VStack>
+                          <FormLabel htmlFor="gender" textAlign="center">
+                            性別
+                          </FormLabel>
+                          <Select
+                            placeholder="性別を選択"
+                            id="gender"
+                            {...register('gender', {
+                              required: '性別を入力してください',
+                            })}
+                          >
+                            <option value="1">男性</option>
+                            <option value="2">女性</option>
+                            <option value="3">その他</option>
+                          </Select>
+                          <FormErrorMessage>
+                            {errors.gender && errors.gender.message}
+                          </FormErrorMessage>
+                        </FormControl>
+                      </Box>
+                    </HStack>
+                  </Box>
+                </Stack>
+                <Button
+                  disabled={!isValid && !isDirty}
+                  isLoading={isSubmitSuccessful}
+                  type="submit"
+                  size="lg"
+                  marginTop="2rem"
+                >
+                  保存
+                </Button>
               </form>
             </TabPanel>
-
+            {/* パスワードの変更 */}
             <TabPanel>
               <Heading textAlign="center" mb="1rem" size="lg">
                 パスワードパスワード変更
               </Heading>
-              {/* <FormControl>
-          <FormLabel>新しいパスワードを設定</FormLabel>
-          <Input id="" type="" placeholder="新しいパスワードを入力" />
-          <p>以前のパスワード：{}</p>
-          </FormControl>*/}
-            </TabPanel>
+              <form>
+                <FormControl mb="1rem" isDisabled>
+                  <FormLabel>
+                    認証のため現在のパスワードを入力して下さい
+                  </FormLabel>
+                  <Input id="" type="" placeholder="現在のパスワードを入力" />
+                </FormControl>
 
+                <FormControl mb="1rem" isDisabled>
+                  <FormLabel>新しいパスワードを設定</FormLabel>
+                  <Input id="" type="" placeholder="新しいパスワードを入力" />
+                </FormControl>
+                <Button
+                  disabled={!isValid && !isDirty}
+                  isLoading={isSubmitSuccessful}
+                  type="submit"
+                  size="lg"
+                >
+                  保存
+                </Button>
+              </form>
+            </TabPanel>
+            {/* アドレスの変更 */}
             <TabPanel>
               <Heading textAlign="center" mb="1rem" size="lg">
                 メールアドレス変更
               </Heading>
-              {/* <FormControl isInvalid={Boolean(errors.mail)}>
-            <FormLabel htmlFor="mail">メールアドレス</FormLabel>
-            <Input
-            id="mail"
-            placeholder="mail"
-            {...register('mail', {
-            required: '有効なアドレスを登録して下さい。',
-            pattern:
-            /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
-            })}
-            />
-            <FormHelperText>
-            ドットはアドレスの頭と尻尾に使用できず、連続で使用できません。
-            </FormHelperText>
-            <FormErrorMessage>
-            {errors.mail && errors.mail.message}
-            </FormErrorMessage>
-            </FormControl> */}
+              <form>
+                <FormControl isInvalid={Boolean(errors.mail)} isDisabled>
+                  <FormLabel htmlFor="mail">メールアドレス</FormLabel>
+                  <Input
+                    id="mail"
+                    placeholder="mail"
+                    {...register('mail', {
+                      required: '有効なアドレスを登録して下さい。',
+                      pattern:
+                        /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
+                    })}
+                  />
+                  <FormHelperText>
+                    ドットはアドレスの頭と尻尾に使用できず、連続で使用できません。
+                  </FormHelperText>
+                  <FormErrorMessage>
+                    {errors.mail && errors.mail.message}
+                  </FormErrorMessage>
+                </FormControl>
+                <Button
+                  disabled={!isValid && !isDirty}
+                  isLoading={isSubmitSuccessful}
+                  type="submit"
+                  size="lg"
+                  mt="1rem"
+                >
+                  保存
+                </Button>
+              </form>
             </TabPanel>
 
             <TabPanel>
               <Heading textAlign="center" mb="1rem" size="lg">
                 通知
               </Heading>
-              {/*<FormControl display="flex" alignItems="center">
-            <FormLabel>ページ内での通知を有効にする</FormLabel>
-            <Switch id="" />
-            </FormControl>
-            <FormControl display="flex" alignItems="center">
-            <FormLabel>メール通知を有効にする</FormLabel>
-            <Switch id="" />
-            </FormControl> */}
+              <form>
+                <FormControl display="flex" alignItems="center" isDisabled>
+                  <FormLabel>ページ内での通知を有効にする</FormLabel>
+                  <Switch id="" />
+                </FormControl>
+                <FormControl display="flex" alignItems="center" isDisabled>
+                  <FormLabel>メール通知を有効にする</FormLabel>
+                  <Switch id="" />
+                </FormControl>
+                <Button
+                  disabled={!isValid && !isDirty}
+                  isLoading={isSubmitSuccessful}
+                  type="submit"
+                  size="lg"
+                  mt="1rem"
+                >
+                  保存
+                </Button>
+              </form>
             </TabPanel>
           </TabPanels>
         </Tabs>
