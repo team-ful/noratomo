@@ -15,14 +15,12 @@ import {
   Textarea,
   Switch,
   NumberInputField,
-  Text,
   FormErrorMessage,
   useToast,
   Select,
   Tab,
   TabList,
   Tabs,
-  Flex,
   TabPanels,
   TabPanel,
   Heading,
@@ -30,7 +28,7 @@ import {
   Center,
   Box,
 } from '@chakra-ui/react';
-import router from 'next/router';
+
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
@@ -50,7 +48,7 @@ const SettingForm = () => {
     register,
     handleSubmit,
     setValue,
-    formState: {errors, isSubmitSuccessful, isValid, isDirty},
+    formState: {errors, isSubmitting, isValid, isDirty},
   } = useForm<SettingInputs>();
 
   const [user, setUser] = useRecoilState(UserState);
@@ -254,7 +252,7 @@ const SettingForm = () => {
                 </Stack>
                 <Button
                   disabled={!isValid && !isDirty}
-                  isLoading={isSubmitSuccessful}
+                  isLoading={isSubmitting}
                   type="submit"
                   size="lg"
                   marginTop="2rem"
@@ -282,7 +280,7 @@ const SettingForm = () => {
                 </FormControl>
                 <Button
                   disabled={!isValid && !isDirty}
-                  isLoading={isSubmitSuccessful}
+                  isLoading={isSubmitting}
                   type="submit"
                   size="lg"
                 >
@@ -316,7 +314,7 @@ const SettingForm = () => {
                 </FormControl>
                 <Button
                   disabled={!isValid && !isDirty}
-                  isLoading={isSubmitSuccessful}
+                  isLoading={isSubmitting}
                   type="submit"
                   size="lg"
                   mt="1rem"
@@ -341,7 +339,7 @@ const SettingForm = () => {
                 </FormControl>
                 <Button
                   disabled={!isValid && !isDirty}
-                  isLoading={isSubmitSuccessful}
+                  isLoading={isSubmitting}
                   type="submit"
                   size="lg"
                   mt="1rem"
