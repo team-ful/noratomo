@@ -38,3 +38,5 @@ db/data/**
 !db/data/.gitkeep
 
 .env
+.data/
+.storage/
