@@ -1,4 +1,5 @@
 import {URL} from 'url';
+import type {StorageOptions} from '@google-cloud/storage';
 import {ConnectionOptions} from 'mysql2';
 import {CookieSerializeOptions} from 'next/dist/server/web/types';
 
@@ -36,7 +37,7 @@ export interface Config {
   db: ConnectionOptions;
 
   // Cloud Storage
-  storageHost: string;
+  storageOptions?: StorageOptions;
   publicStorageHost: URL;
   bucketName: string;
 }

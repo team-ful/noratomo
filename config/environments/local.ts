@@ -75,7 +75,10 @@ const config: Config = {
   },
 
   // Cloud Storage
-  storageHost: 'http://gcs:4443',
+  storageOptions: {
+    apiEndpoint: 'http://localhost:4443',
+    projectId: 'local',
+  },
   publicStorageHost: new URL(`http://${LOCAL_URL}:4443`),
   bucketName: 'noratomo',
 };

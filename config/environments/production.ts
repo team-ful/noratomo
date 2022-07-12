@@ -73,7 +73,6 @@ const config: Config = {
   },
 
   // Cloud Storage
-  storageHost: process.env.STORAGE_URL || '',
   publicStorageHost: new URL(' https://storage.googleapis.com'),
   bucketName: 'noratomo',
 };
