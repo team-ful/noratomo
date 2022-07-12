@@ -28,7 +28,8 @@ services:
     ports:
       - 4443:4443
     volumes:
-      - ./.data:/data/cateiru-sso:cached
+      - ./.data:/data/noratomo:cached
+      - ./.storage:/storage/noratomo
     environment:
       URL: ${URL:-localhost}
     command: -scheme http -public-host $URL:4443
