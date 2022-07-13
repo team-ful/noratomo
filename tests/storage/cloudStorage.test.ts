@@ -112,4 +112,25 @@ describe('cloudStorage', () => {
     // すでに存在するアバターは削除されている
     await expect(axios.get(oldImageURL)).rejects.toThrow();
   });
+
+  test('すでに存在するアバターで、bucket nameが違う場合は削除しない', async () => {
+    const s = new CloudStorage();
+
+    const f = randomText(10);
+
+    const link = config.publicStorageHost;
+    link.pathname = `/test/${f}`;
+
+    const file = {
+      filepath: filePath,
+    };
+
+    // 更新
+    const url = await s.updateAvatar(file as formidable.File, link);
+
+    const resNew = await axios.get(url.toString());
+    expect(resNew.status).toBe(200);
+
+    // TODO 違うバケットのものを用意できなかった
+  });
 });

@@ -42,10 +42,14 @@ class CloudStorage {
       // https://storage.google.com/bucketname/avatar/imagename
       // → avatar/imagename を取得する
       const pathname = oldImageURL.pathname.split('/');
-      // bucket nameを除いたパス
-      const storagePath = pathname.slice(2).join('/');
 
-      await this.delete(storagePath);
+      // linkのbucketnameを見る
+      if (pathname[1] === config.bucketName) {
+        // bucket nameを除いたパス
+        const storagePath = pathname.slice(2).join('/');
+
+        await this.delete(storagePath);
+      }
     }
 
     // 衝突困難性は評価していないのでもしかしたら衝突するかもしれないけどそんなこと知らん
