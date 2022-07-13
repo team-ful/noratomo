@@ -39,7 +39,7 @@ describe('getUser', () => {
   }, 10000);
 
   test('byUserIdで存在しないidはエラーが帰る', async () => {
-    expect(async () => {
+    await expect(async () => {
       await findUserByUserID(base.db, 123451234512345);
     }).rejects.toThrowError('not found');
   });
@@ -435,7 +435,7 @@ describe('updateUser', () => {
 
     const u = await findUserByUserID(base.db, user.user?.id || NaN);
 
-    expect(async () => {
+    await expect(async () => {
       await updateUser(base.db, u.id, {
         user_name: user2.user?.user_name || '',
       });

@@ -1,6 +1,8 @@
 import {URL} from 'url';
 import {Config} from '../config';
 
+const LOCAL_URL = process.env.URL || 'localhost';
+
 const config: Config = {
   environment: 'test',
 
@@ -69,6 +71,14 @@ const config: Config = {
     password: 'docker',
     database: 'test',
   },
+
+  // Cloud Storage
+  storageOptions: {
+    apiEndpoint: 'http://localhost:4443',
+    // projectId: 'test',
+  },
+  publicStorageHost: new URL(`http://${LOCAL_URL}:4443`),
+  bucketName: 'noratomo',
 };
 
 export default config;

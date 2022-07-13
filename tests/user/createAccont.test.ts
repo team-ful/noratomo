@@ -147,7 +147,7 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    expect(async () => {
+    await expect(async () => {
       await ca.check(base.db);
     }).rejects.toThrow('user is already exists');
   });
@@ -167,7 +167,7 @@ describe('CreateAccountByPassword', () => {
       '0'
     );
 
-    expect(async () => {
+    await expect(async () => {
       await ca.check(base.db);
     }).rejects.toThrow('user is already exists');
   });

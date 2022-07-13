@@ -4,6 +4,7 @@ import config from '../../config';
 import AuthedBase from '../../src/base/authedBase';
 import {authHandlerWrapper} from '../../src/base/handlerWrapper';
 import {findLoginHistoriesByUserID} from '../../src/services/loginHistory';
+import {findUserByUserID} from '../../src/services/user';
 import TestBase from '../../src/tests/base';
 import {TestUser} from '../../src/tests/user';
 import {randomText} from '../../src/utils/random';
@@ -366,6 +367,40 @@ describe('login', () => {
       test: async ({fetch}) => {
         const res = await fetch();
         expect(res.status).toBe(403);
+      },
+    });
+  });
+
+  test('updateAvatar', async () => {
+    expect.hasAssertions();
+
+    const newAvatar = randomText(20);
+
+    const handler = async (base: AuthedBase<void>) => {
+      await base.updateAvatar(newAvatar);
+    };
+
+    const h = authHandlerWrapper(handler, 'GET');
+
+    const user = new TestUser({avatar_url: randomText(20)});
+    await user.create(base.db);
+    await user.addSession(base.db);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: user.cookie,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+
+        const newUser = await findUserByUserID(base.db, user.user?.id || NaN);
+
+        expect(newUser.avatar_url).toBe(newAvatar);
+        expect(newUser.avatar_url).not.toBe(user.user?.avatar_url);
       },
     });
   });

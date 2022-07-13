@@ -209,8 +209,6 @@ class Base<T> {
 
     const files = this.multipartForm?.files[key];
 
-    console.log(files);
-
     if (typeof files === 'undefined') {
       if (require) {
         throw new ApiError(400, `Illegal form value ${key}`);

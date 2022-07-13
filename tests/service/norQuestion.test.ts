@@ -178,9 +178,7 @@ describe('noraQuestion', () => {
   test('存在しないIDでdeleteNoraQuestionByID', async () => {
     const id = randomInt(10000);
 
-    expect(async () => {
-      await deleteNoraQuestionByID(base.db, id);
-    }).not.toThrow();
+    await expect(deleteNoraQuestionByID(base.db, id)).resolves.not.toThrow();
   });
 
   test('updateNoraQuestionByID', async () => {
@@ -206,16 +204,14 @@ describe('noraQuestion', () => {
     const updateAnswerIndex = 0;
     const updateScore = 100;
 
-    try {
-      await updateNoraQuestionByID(base.db, id, {
+    await expect(
+      updateNoraQuestionByID(base.db, id, {
         question_title: updateTitle,
         answers: updateAnswers,
         current_answer_index: updateAnswerIndex,
         score: updateScore,
-      });
-    } catch (e) {
-      expect(e).not.toThrow();
-    }
+      })
+    ).resolves.not.toThrow();
 
     // DB更新されている
     const r = await base.db.test<RowDataPacket[]>(
@@ -248,13 +244,13 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    expect(async () => {
+    await expect(async () => {
       await updateNoraQuestionByID(base.db, id, {
         current_answer_index: 10, // 範囲外に更新する
       });
     }).rejects.toThrow('answerIndex is out of db answers index');
 
-    expect(async () => {
+    await expect(async () => {
       await updateNoraQuestionByID(base.db, id, {
         current_answer_index: -1, // 負の値
       });
@@ -274,7 +270,7 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    expect(async () => {
+    await expect(async () => {
       await updateNoraQuestionByID(base.db, id, {
         answers: [{index: 0, answerText: 'aaaa'}], // length = 1 にする
       });
@@ -294,14 +290,14 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    expect(async () => {
+    await expect(async () => {
       await updateNoraQuestionByID(base.db, id, {
         answers: [{index: 0, answerText: 'aaaa'}], // length = 1 にする
         current_answer_index: 10, // 範囲外
       });
     }).rejects.toThrow('answerIndex is out of answers index');
 
-    expect(async () => {
+    await expect(async () => {
       await updateNoraQuestionByID(base.db, id, {
         answers: [{index: 0, answerText: 'aaaa'}], // length = 1 にする
         current_answer_index: -100, // 負の値
@@ -324,13 +320,11 @@ describe('noraQuestion', () => {
 
     const updateTitle = 'aaaaaa';
 
-    try {
-      await updateNoraQuestionByID(base.db, id, {
+    await expect(
+      updateNoraQuestionByID(base.db, id, {
         question_title: updateTitle,
-      });
-    } catch (e) {
-      expect(e).not.toThrow();
-    }
+      })
+    ).resolves.not.toThrow();
 
     // DB更新されている
     const r = await base.db.test<RowDataPacket[]>(

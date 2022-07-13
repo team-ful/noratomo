@@ -146,7 +146,7 @@ describe('getPostFormFields', () => {
       const noExistForm = await base.getPostFormFields('testaaaaa');
       expect(noExistForm).toBeUndefined();
 
-      expect(base.getPostFormFields('testaaaaa', true)).rejects.toThrow(
+      await expect(base.getPostFormFields('testaaaaa', true)).rejects.toThrow(
         'Illegal form value testaaaaa'
       );
     };
@@ -169,9 +169,6 @@ describe('getPostFormFields', () => {
           method: 'POST',
           body: form,
         });
-
-        // console.log(await res.text());
-
         expect(res.status).toBe(200);
       },
     });
@@ -226,7 +223,7 @@ describe('getPostFormFiles', () => {
       const noExistForm = await base.getPostFormFiles('testaaaaa');
       expect(noExistForm).toBeUndefined();
 
-      expect(base.getPostFormFiles('testaaaaa', true)).rejects.toThrow(
+      await expect(base.getPostFormFiles('testaaaaa', true)).rejects.toThrow(
         'Illegal form value testaaaaa'
       );
     };
@@ -254,8 +251,6 @@ describe('getPostFormFiles', () => {
           method: 'POST',
           body: form,
         });
-
-        // console.log(await res.text());
 
         expect(res.status).toBe(200);
       },

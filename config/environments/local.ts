@@ -73,6 +73,14 @@ const config: Config = {
     password: 'docker',
     database: 'noratomo',
   },
+
+  // Cloud Storage
+  storageOptions: {
+    apiEndpoint: 'http://localhost:4443',
+    projectId: 'local',
+  },
+  publicStorageHost: new URL(`http://${LOCAL_URL}:4443`),
+  bucketName: 'noratomo',
 };
 
 export default config;
