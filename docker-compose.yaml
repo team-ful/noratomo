@@ -32,4 +32,4 @@ services:
       - ./.storage:/storage/noratomo
     environment:
       URL: ${URL:-localhost}
-    command: -scheme http -public-host $URL:4443
+    command: -scheme http -public-host ${URL:-localhost}:4443
