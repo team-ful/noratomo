@@ -22,4 +22,6 @@ export async function updateAvatarHandler(base: AuthedBase<void>) {
   const newImageURL = await s.updateAvatar(file, oldImageURL);
 
   await base.updateAvatar(newImageURL.toString());
+
+  base.res.send(newImageURL.toString());
 }

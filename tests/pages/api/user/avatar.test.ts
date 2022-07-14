@@ -51,14 +51,13 @@ describe('update avatar', () => {
           body: form,
         });
 
-        console.log(await res.text());
-
         expect(res.status).toBe(200);
 
         const newAvatar = (
           await findUserByUserID(base.db, base.users[0].user?.id || NaN)
         ).avatar_url;
 
+        expect(await res.text()).toBe(newAvatar);
         expect(newAvatar).not.toBe(oldAvatar);
       },
     });
