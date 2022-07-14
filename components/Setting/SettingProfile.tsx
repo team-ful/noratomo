@@ -20,9 +20,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
-import {useRecoilState} from 'recoil';
-import {UserState} from '../../utils/atom';
-import {User} from '../../utils/types';
+import useUser from '../Session/useUser';
 
 type SettingInputs = {
   display_name: string;
@@ -41,7 +39,7 @@ const SettingProfile = () => {
     formState: {errors, isSubmitting},
   } = useForm<SettingInputs>();
 
-  const [user, setUser] = useRecoilState(UserState);
+  const user = useUser();
   const toast = useToast();
 
   React.useEffect(() => {
@@ -51,14 +49,17 @@ const SettingProfile = () => {
       setValue('mail', user.mail);
       setValue('profile', user.profile);
       setValue('age', user.age);
-      setValue('gender', user.gender);
+
+      // 性別を指定していない場合は0なのでそのときはデフォルト値には入れない
+      if (user.gender !== 0) {
+        setValue('gender', user.gender);
+      }
     }
   }, [user]);
 
   const onSubmit: SubmitHandler<SettingInputs> = async data => {
     const body: {[key: string]: string | number} = {};
     const formattedBody: string[] = [];
-    // const newUser = user;
 
     if (user?.user_name !== data.user_name) {
       body.user_name = data.user_name;
@@ -78,7 +79,6 @@ const SettingProfile = () => {
 
     for (const b in body) {
       formattedBody.push(`${b}=${encodeURIComponent(body[b])}`);
-      // newUser[b as keyof User] = body[b];
     }
 
     const res = await fetch('/api/user/config', {
@@ -94,7 +94,6 @@ const SettingProfile = () => {
         title: '更新しました',
         status: 'info',
       });
-      // setUser(newUser);
     } else {
       toast({
         title: await res.text(),
@@ -105,15 +104,13 @@ const SettingProfile = () => {
 
   return (
     <Center>
-      <Box mt="2rem" w={{base: '100%', sm: '500px'}}>
+      <Box mt="2rem" w={{base: '97%', sm: '400px', md: '500px'}}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={Boolean(errors.display_name)}>
-            <FormLabel htmlFor="display_name" fontSize="lg">
-              表示名
-            </FormLabel>
+            <FormLabel htmlFor="display_name">表示名</FormLabel>
             <Input
               id="display_name"
-              placeholder="表示名"
+              placeholder="新しい表示名を入力"
               {...register('display_name', {
                 required: 'ナナシさんはダメです',
                 minLength: {
@@ -124,10 +121,6 @@ const SettingProfile = () => {
                   value: 16,
                   message: '最大で16字までにして下さい',
                 },
-                pattern: {
-                  value: /^[0-9a-zA-Z_-]+$/,
-                  message: 'アルファベット、数字、-、_のみ変更して下さい。',
-                },
               })}
             />
             <FormErrorMessage>
@@ -135,15 +128,12 @@ const SettingProfile = () => {
             </FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={Boolean(errors.user_name)} mt="1.2rem">
-            <FormLabel htmlFor="user_name" fontSize="lg">
-              ユーザー名
-            </FormLabel>
+            <FormLabel htmlFor="user_name">ユーザー名</FormLabel>
             <InputGroup>
               <InputLeftAddon>@</InputLeftAddon>
               <Input
                 id="user_name"
-                placeholder="新しい名前を入力
-                          "
+                placeholder="新しいユーザー名を入力"
                 {...register('user_name', {
                   required: 'ナナシさんはダメです',
                   minLength: {
@@ -172,7 +162,6 @@ const SettingProfile = () => {
               placeholder="あなたのプロフィールを入力しましょう"
               id="profile"
               {...register('profile', {
-                required: 'あなたを表現してみましょう',
                 maxLength: {
                   value: 128,
                   message: '128文字まで表現して下さい',
@@ -191,8 +180,15 @@ const SettingProfile = () => {
                   id="age"
                   placeholder="年齢"
                   {...register('age', {
-                    min: 18,
-                    max: 100,
+                    required: '年齢を入力してください',
+                    min: {
+                      value: 18,
+                      message: '年齢は0歳以上です',
+                    },
+                    max: {
+                      value: 149,
+                      message: '年齢は150歳未満で入力してください',
+                    },
                   })}
                 />
                 <NumberInputStepper>
