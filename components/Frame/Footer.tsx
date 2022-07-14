@@ -2,6 +2,7 @@
 import {Box, Container, Link, SimpleGrid, Stack, Text} from '@chakra-ui/react';
 import NextLink from 'next/link';
 import {ReactNode} from 'react';
+import React from 'react';
 import Logo from '../Logo/Logo';
 
 //リストヘッダー
@@ -14,7 +15,7 @@ const ListHeader = ({children}: {children: ReactNode}) => {
 };
 
 //ここからがヘッダーの中身
-const Footer = () => {
+const Footer = React.memo(() => {
   return (
     <Box>
       <Container as={Stack} maxW={'6xl'} py={10}>
@@ -56,6 +57,8 @@ const Footer = () => {
       </Container>
     </Box>
   );
-};
+});
+
+Footer.displayName = 'Footer';
 
 export default Footer;
