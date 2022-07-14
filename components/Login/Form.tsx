@@ -102,13 +102,7 @@ const LoginForm = () => {
           <NextLink href="/login/forget" passHref>
             <Link>パスワードを忘れましたか？</Link>
           </NextLink>
-          <Button
-            colorScheme="blue"
-            width="100%"
-            mt="1.5rem"
-            type="submit"
-            isLoading={load}
-          >
+          <Button width="100%" mt="1.5rem" type="submit" isLoading={load}>
             ログイン
           </Button>
         </form>

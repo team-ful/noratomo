@@ -190,14 +190,8 @@ const UpdateNoraQuestion: React.FC<Props> = ({
                   {errors.score && errors.score.message}
                 </FormErrorMessage>
               </FormControl>
-              <Button
-                mt="1rem"
-                colorScheme="blue"
-                type="submit"
-                w="100%"
-                isLoading={load}
-              >
-                更新された場合は追加していく
+              <Button mt="1rem" type="submit" w="100%" isLoading={load}>
+                更新
               </Button>
             </form>
           </FormProvider>

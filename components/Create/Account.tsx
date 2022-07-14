@@ -168,13 +168,7 @@ const CreateAccount = () => {
                 </FormErrorMessage>
               </FormControl>
             </Flex>
-            <Button
-              mt={4}
-              colorScheme="blue"
-              isLoading={load}
-              type="submit"
-              w="100%"
-            >
+            <Button mt={4} isLoading={load} type="submit" w="100%">
               新規作成
             </Button>
           </form>
