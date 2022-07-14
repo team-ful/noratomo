@@ -1,10 +1,9 @@
-import {Tab, TabList, Tabs, Center, Box} from '@chakra-ui/react';
+import {Tab, TabList, Tabs, Box} from '@chakra-ui/react';
 import {Router} from 'next/router';
 import React from 'react';
 import SettingTitle from './SettingTitle';
 
 interface Props {
-  children: React.ReactNode;
   router: Router;
 }
 
@@ -58,30 +57,27 @@ const SettingMenu = React.memo<Props>(props => {
   };
 
   return (
-    <Center>
-      <Box w="100%">
-        <SettingTitle />
-        <Box
-          overflow="auto"
-          css={{
-            '&::-webkit-scrollbar': {display: 'none'},
-            scrollbarWidth: 'none',
-          }}
-        >
-          <Box width={{base: '700px', sm: '100%'}}>
-            <Tabs isFitted index={index} onChange={handleChange}>
-              <TabList>
-                <Tab mx=".5rem">プロフィール</Tab>
-                <Tab mx=".5rem">パスワード</Tab>
-                <Tab mx=".5rem">メールアドレス</Tab>
-                <Tab mx=".5rem">通知</Tab>
-              </TabList>
-            </Tabs>
-          </Box>
+    <>
+      <SettingTitle />
+      <Box
+        overflow="auto"
+        css={{
+          '&::-webkit-scrollbar': {display: 'none'},
+          scrollbarWidth: 'none',
+        }}
+      >
+        <Box width={{base: '700px', sm: '100%'}}>
+          <Tabs isFitted index={index} onChange={handleChange}>
+            <TabList>
+              <Tab mx=".5rem">プロフィール</Tab>
+              <Tab mx=".5rem">パスワード</Tab>
+              <Tab mx=".5rem">メールアドレス</Tab>
+              <Tab mx=".5rem">通知</Tab>
+            </TabList>
+          </Tabs>
         </Box>
-        {props.children}
       </Box>
-    </Center>
+    </>
   );
 });
 

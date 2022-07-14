@@ -19,7 +19,12 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
           >
             <Box>
               <Header />
-              <SettingMenu router={router}>{children}</SettingMenu>
+              <Center>
+                <Box w="100%">
+                  <SettingMenu router={router} />
+                  {children}
+                </Box>
+              </Center>
             </Box>
             <Box marginTop="auto">
               <Footer />
