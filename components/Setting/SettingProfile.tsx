@@ -1,12 +1,9 @@
 import {
   FormControl,
-  FormHelperText,
   FormLabel,
   Input,
   InputLeftAddon,
   InputGroup,
-  HStack,
-  Stack,
   Button,
   NumberInput,
   NumberIncrementStepper,
@@ -17,9 +14,9 @@ import {
   FormErrorMessage,
   useToast,
   Select,
-  Heading,
-  Spacer,
+  Center,
   Box,
+  Flex,
 } from '@chakra-ui/react';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
@@ -28,6 +25,7 @@ import {UserState} from '../../utils/atom';
 import {User} from '../../utils/types';
 
 type SettingInputs = {
+  display_name: string;
   user_name: string;
   mail: string;
   profile: string;
@@ -40,7 +38,7 @@ const SettingProfile = () => {
     register,
     handleSubmit,
     setValue,
-    formState: {errors, isSubmitting, isValid, isDirty},
+    formState: {errors, isSubmitting},
   } = useForm<SettingInputs>();
 
   const [user, setUser] = useRecoilState(UserState);
@@ -48,6 +46,7 @@ const SettingProfile = () => {
 
   React.useEffect(() => {
     if (user) {
+      setValue('display_name', user.display_name);
       setValue('user_name', user.user_name);
       setValue('mail', user.mail);
       setValue('profile', user.profile);
@@ -105,135 +104,139 @@ const SettingProfile = () => {
   };
 
   return (
-    <div>
-      <Heading size="lg" textAlign="center" mb="1rem">
-        プロフィール変更
-      </Heading>
-      {/* プロフィールの変更 */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack>
-          <Box>
-            <FormControl isInvalid={Boolean(errors.user_name)}>
-              <FormLabel htmlFor="user_name" fontSize="lg">
-                現在のユーザー名を変更
-              </FormLabel>
-              <InputGroup>
-                <InputLeftAddon>@</InputLeftAddon>
-                <Input
-                  id="user_name"
-                  placeholder="新しい名前を入力
+    <Center>
+      <Box mt="2rem" w={{base: '100%', sm: '500px'}}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={Boolean(errors.display_name)}>
+            <FormLabel htmlFor="display_name" fontSize="lg">
+              表示名
+            </FormLabel>
+            <Input
+              id="display_name"
+              placeholder="表示名"
+              {...register('display_name', {
+                required: 'ナナシさんはダメです',
+                minLength: {
+                  value: 3,
+                  message: '最低4文字以上にして下さい',
+                },
+                maxLength: {
+                  value: 16,
+                  message: '最大で16字までにして下さい',
+                },
+                pattern: {
+                  value: /^[0-9a-zA-Z_-]+$/,
+                  message: 'アルファベット、数字、-、_のみ変更して下さい。',
+                },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.display_name && errors.display_name.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={Boolean(errors.user_name)} mt="1.2rem">
+            <FormLabel htmlFor="user_name" fontSize="lg">
+              ユーザー名
+            </FormLabel>
+            <InputGroup>
+              <InputLeftAddon>@</InputLeftAddon>
+              <Input
+                id="user_name"
+                placeholder="新しい名前を入力
                           "
-                  {...register('user_name', {
-                    required: 'ナナシさんはダメです',
-                    minLength: {
-                      value: 3,
-                      message: '最低4文字以上にして下さい',
-                    },
-                    maxLength: {
-                      value: 16,
-                      message: '最大で16字までにして下さい',
-                    },
-                    pattern: {
-                      value: /^[0-9a-zA-Z_-]+$/,
-                      message: 'アルファベット、数字、-、_のみ変更して下さい。',
-                    },
-                  })}
-                />
-              </InputGroup>
-              <FormHelperText>他の利用者に表示される名前です。</FormHelperText>
-              <FormErrorMessage>
-                {errors.user_name && errors.user_name.message}
-              </FormErrorMessage>
-            </FormControl>
-          </Box>
-          <Spacer />
-          <Box>
-            <FormControl isInvalid={Boolean(errors.gender)}>
-              <FormLabel htmlFor="profile" textAlign="center">
-                コメント(BIO)
-              </FormLabel>
-              <Textarea
-                size="lg"
-                placeholder="あなたのプロフィールを入力しましょう"
-                id="profile"
-                {...register('profile', {
-                  required: 'あなたを表現してみましょう',
+                {...register('user_name', {
+                  required: 'ナナシさんはダメです',
+                  minLength: {
+                    value: 3,
+                    message: '最低4文字以上にして下さい',
+                  },
                   maxLength: {
-                    value: 128,
-                    message: '128文字まで表現して下さい',
+                    value: 16,
+                    message: '最大で16字までにして下さい',
+                  },
+                  pattern: {
+                    value: /^[0-9a-zA-Z_-]+$/,
+                    message: 'アルファベット、数字、-、_のみ変更して下さい。',
                   },
                 })}
               />
+            </InputGroup>
+            <FormErrorMessage>
+              {errors.user_name && errors.user_name.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={Boolean(errors.gender)} mt="1.2rem">
+            <FormLabel htmlFor="profile">プロフィール</FormLabel>
+            <Textarea
+              size="lg"
+              placeholder="あなたのプロフィールを入力しましょう"
+              id="profile"
+              {...register('profile', {
+                required: 'あなたを表現してみましょう',
+                maxLength: {
+                  value: 128,
+                  message: '128文字まで表現して下さい',
+                },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.profile && errors.profile.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Flex mt="1.2rem">
+            <FormControl isInvalid={Boolean(errors.age)}>
+              <FormLabel htmlFor="age">年齢</FormLabel>
+              <NumberInput>
+                <NumberInputField
+                  id="age"
+                  placeholder="年齢"
+                  {...register('age', {
+                    min: 18,
+                    max: 100,
+                  })}
+                />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
               <FormErrorMessage>
-                {errors.profile && errors.profile.message}
+                {errors.age && errors.age.message}
               </FormErrorMessage>
             </FormControl>
-          </Box>
-          <Spacer />
-          <Box>
-            <HStack>
-              <Box>
-                <FormControl isInvalid={Boolean(errors.age)} w="100px">
-                  <FormLabel htmlFor="age" textAlign="center">
-                    年齢
-                  </FormLabel>
-                  <NumberInput>
-                    <NumberInputField
-                      id="age"
-                      placeholder="age"
-                      type="number"
-                      {...register('age', {
-                        required: '18から100歳の範囲で入力して下さい',
-                        min: 18,
-                        max: 100,
-                      })}
-                    />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                  <FormErrorMessage>
-                    {errors.age && errors.age.message}
-                  </FormErrorMessage>
-                </FormControl>
-              </Box>
-              <Spacer />
-              <Box>
-                <FormControl isInvalid={Boolean(errors.gender)} w="160px">
-                  <FormLabel htmlFor="gender" textAlign="center">
-                    性別
-                  </FormLabel>
-                  <Select
-                    placeholder="性別を選択"
-                    id="gender"
-                    {...register('gender', {
-                      required: '性別を入力してください',
-                    })}
-                  >
-                    <option value="1">男性</option>
-                    <option value="2">女性</option>
-                    <option value="3">その他</option>
-                  </Select>
-                  <FormErrorMessage>
-                    {errors.gender && errors.gender.message}
-                  </FormErrorMessage>
-                </FormControl>
-              </Box>
-            </HStack>
-          </Box>
-        </Stack>
-        <Button
-          disabled={!isValid && !isDirty}
-          isLoading={isSubmitting}
-          type="submit"
-          size="lg"
-          marginTop="2rem"
-        >
-          保存
-        </Button>
-      </form>
-    </div>
+
+            <FormControl isInvalid={Boolean(errors.gender)} ml=".5rem">
+              <FormLabel htmlFor="gender" textAlign="center">
+                性別
+              </FormLabel>
+              <Select
+                placeholder="性別を選択"
+                id="gender"
+                {...register('gender', {
+                  required: '性別を入力してください',
+                })}
+              >
+                <option value="1">男性</option>
+                <option value="2">女性</option>
+                <option value="3">その他</option>
+              </Select>
+              <FormErrorMessage>
+                {errors.gender && errors.gender.message}
+              </FormErrorMessage>
+            </FormControl>
+          </Flex>
+          <Button
+            isLoading={isSubmitting}
+            type="submit"
+            marginTop="2rem"
+            colorScheme="orange"
+            width="100%"
+          >
+            保存
+          </Button>
+        </form>
+      </Box>
+    </Center>
   );
 };
 export default SettingProfile;
