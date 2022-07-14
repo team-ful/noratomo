@@ -2,65 +2,80 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
-  Heading,
   Input,
-  //useToast,
+  Box,
+  Center,
+  useToast,
 } from '@chakra-ui/react';
-import {useForm} from 'react-hook-form';
-// import {useRecoilState} from 'recoil';
-// import {UserState} from '../../utils/atom';
+import React from 'react';
+import {SubmitHandler, useForm} from 'react-hook-form';
+import useUser from '../Session/useUser';
 
 type SettingInputs = {
   mail: string;
 };
 
-const SettingMailAdress = () => {
+const SettingMailAddress = () => {
   const {
     register,
-    // handleSubmit,
-    // setValue,
-    formState: {errors, isSubmitting, isValid, isDirty},
+    handleSubmit,
+    setValue,
+    formState: {errors, isSubmitting},
   } = useForm<SettingInputs>();
-  //   const [user, setUser] = useRecoilState(UserState);
-  //   const toast = useToast();
+
+  const toast = useToast();
+  const user = useUser();
+
+  React.useEffect(() => {
+    if (user) {
+      setValue('mail', user.mail);
+    }
+  }, [user]);
+
+  const onSubmit: SubmitHandler<SettingInputs> = async data => {
+    if (data.mail === user?.mail) {
+      return;
+    }
+
+    toast({
+      title: 'TODO: メールアドレスを更新できるようにする',
+      description: data.mail,
+      status: 'info',
+    });
+  };
 
   return (
-    <div>
-      <Heading textAlign="center" mb="1rem" size="lg">
-        メールアドレス変更
-      </Heading>
-      <form>
-        <FormControl isInvalid={Boolean(errors.mail)} isDisabled>
-          <FormLabel htmlFor="mail">メールアドレス</FormLabel>
-          <Input
-            id="mail"
-            placeholder="mail"
-            {...register('mail', {
-              required: '有効なアドレスを登録して下さい。',
-              pattern:
-                /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
-            })}
-          />
-          <FormHelperText>
-            ドットはアドレスの頭と尻尾に使用できず、連続で使用できません。
-          </FormHelperText>
-          <FormErrorMessage>
-            {errors.mail && errors.mail.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button
-          disabled={!isValid && !isDirty}
-          isLoading={isSubmitting}
-          type="submit"
-          size="lg"
-          mt="1rem"
-        >
-          保存
-        </Button>
-      </form>
-    </div>
+    <Center>
+      <Box mt="2rem" w={{base: '97%', sm: '400px', md: '500px'}}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={Boolean(errors.mail)}>
+            <FormLabel htmlFor="mail">メールアドレス</FormLabel>
+            <Input
+              id="mail"
+              placeholder="メールアドレス"
+              {...register('mail', {
+                required: 'メールアドレスは必須です',
+                pattern:
+                  /^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/,
+              })}
+            />
+            <FormErrorMessage>
+              {errors.mail && errors.mail.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Button
+            isLoading={isSubmitting}
+            type="submit"
+            marginTop="2rem"
+            colorScheme="orange"
+            width="100%"
+          >
+            更新
+          </Button>
+        </form>
+      </Box>
+    </Center>
   );
 };
-export default SettingMailAdress;
+export default SettingMailAddress;
