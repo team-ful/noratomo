@@ -2,54 +2,74 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Heading,
   Switch,
-  // useToast,
+  useToast,
+  Flex,
+  Center,
+  Box,
+  Spacer,
 } from '@chakra-ui/react';
-import {useForm} from 'react-hook-form';
-// import {useRecoilState} from 'recoil';
-// import {UserState} from '../../utils/atom';
+import {SubmitHandler, useForm} from 'react-hook-form';
 
-type SettingInputs = {
+type NoticeSettingForm = {
+  page_notification: boolean;
   email_notification: boolean;
-  Internal_notification: boolean;
 };
 
 const SettingNotice = () => {
   const {
-    // register,
-    // handleSubmit,
-    // setValue,
-    formState: {isSubmitting, isValid, isDirty},
-  } = useForm<SettingInputs>();
+    register,
+    handleSubmit,
+    formState: {isSubmitting, errors},
+  } = useForm<NoticeSettingForm>();
 
-  // const [user, setUser] = useRecoilState(UserState);
-  // const toast = useToast();
+  const toast = useToast();
+
+  const onSubmit: SubmitHandler<NoticeSettingForm> = async data => {
+    toast({
+      title: 'TODO: 通知設定できるようにする',
+      description: `page: ${data.page_notification}, mail: ${data.email_notification}`,
+      status: 'info',
+    });
+  };
 
   return (
-    <div>
-      <Heading textAlign="center" mb="1rem" size="lg">
-        通知
-      </Heading>
-      <form>
-        <FormControl display="flex" alignItems="center" isDisabled>
-          <FormLabel>ページ内での通知を有効にする</FormLabel>
-          <Switch id="" />
-        </FormControl>
-        <FormControl display="flex" alignItems="center" isDisabled>
-          <FormLabel>メール通知を有効にする</FormLabel>
-          <Switch id="" />
-        </FormControl>
-        <Button
-          disabled={true}
-          isLoading={isSubmitting}
-          type="submit"
-          size="lg"
-        >
-          保存
-        </Button>
-      </form>
-    </div>
+    <Center>
+      <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={Boolean(errors.page_notification)} as={Flex}>
+            <FormLabel htmlFor="page_notification">
+              ページ内での通知を有効にする
+            </FormLabel>
+            <Spacer />
+            <Switch id="page_notification" {...register('page_notification')} />
+          </FormControl>
+          <FormControl
+            isInvalid={Boolean(errors.email_notification)}
+            as={Flex}
+            mt="1.5rem"
+          >
+            <FormLabel htmlFor="email_notification">
+              メール通知を有効にする
+            </FormLabel>
+            <Spacer />
+            <Switch
+              id="email_notification"
+              {...register('email_notification')}
+            />
+          </FormControl>
+          <Button
+            isLoading={isSubmitting}
+            type="submit"
+            marginTop="2rem"
+            colorScheme="orange"
+            width="100%"
+          >
+            保存
+          </Button>
+        </form>
+      </Box>
+    </Center>
   );
 };
 export default SettingNotice;
