@@ -8,21 +8,21 @@ import {
   deleteSessionBySessionToken,
   findRefreshByRefreshToken,
 } from '../services/session';
-import {findUserBySessionToken, findUserByUserID} from '../services/user';
+import {
+  findUserBySessionToken,
+  findUserByUserID,
+  updateUser,
+} from '../services/user';
 import Base from './base';
 
 /**
  * 認証済みのユーザ用
  */
 class AuthedBase<T> extends Base<T> {
-  private userId: number;
-
   private _user?: User;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     super(req, res);
-
-    this.userId = NaN;
 
     this.sessionToken = this.getCookie(config.sessionCookieName);
     this.refreshToken = this.getCookie(config.refreshCookieName);
@@ -138,6 +138,12 @@ class AuthedBase<T> extends Base<T> {
     if (this._user && !this._user.is_admin) {
       throw new ApiError(403, 'no administrator');
     }
+  }
+
+  public async updateAvatar(newURL: string) {
+    await updateUser(await this.db(), this.user.id, {
+      avatar_url: newURL,
+    });
   }
 }
 

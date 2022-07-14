@@ -1,6 +1,8 @@
 import {URL} from 'url';
 import {Config} from '../config';
 
+const LOCAL_URL = process.env.URL || 'localhost';
+
 const config: Config = {
   environment: 'test',
 
@@ -18,15 +20,10 @@ const config: Config = {
 
   sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
-  sessionPeriodDay: 7,
+  sessionPeriodDay: 1,
   sessionCookieOptions: () => {
-    const date = new Date(Date.now());
-    date.setDate(date.getDate() + config.sessionPeriodDay);
-
     return {
       domain: 'localhost',
-      expires: date,
-      maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
       secure: false, // テスト用であるためfalse
       httpOnly: true,
@@ -74,6 +71,14 @@ const config: Config = {
     password: 'docker',
     database: 'test',
   },
+
+  // Cloud Storage
+  storageOptions: {
+    apiEndpoint: 'http://localhost:4443',
+    // projectId: 'test',
+  },
+  publicStorageHost: new URL(`http://${LOCAL_URL}:4443`),
+  bucketName: 'noratomo',
 };
 
 export default config;

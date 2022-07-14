@@ -1,10 +1,12 @@
 import {URL} from 'url';
 import {Config} from '../config';
 
+const LOCAL_URL = process.env.URL || 'localhost';
+
 const config: Config = {
   environment: 'local',
 
-  host: new URL('http://localhost:3000'),
+  host: new URL(`http://${LOCAL_URL}:3000`),
 
   // テスト用であるため公開している
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
@@ -20,15 +22,10 @@ const config: Config = {
 
   sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
-  sessionPeriodDay: 7,
+  sessionPeriodDay: 1,
   sessionCookieOptions: () => {
-    const date = new Date(Date.now());
-    date.setDate(date.getDate() + config.sessionPeriodDay);
-
     return {
-      domain: 'localhost',
-      expires: date,
-      maxAge: config.sessionPeriodDay * 86400,
+      domain: LOCAL_URL,
       sameSite: 'strict',
       secure: false, // テスト用であるためfalse
       httpOnly: true,
@@ -44,7 +41,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: LOCAL_URL,
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
@@ -60,7 +57,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'localhost',
+      domain: LOCAL_URL,
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
@@ -76,6 +73,14 @@ const config: Config = {
     password: 'docker',
     database: 'noratomo',
   },
+
+  // Cloud Storage
+  storageOptions: {
+    apiEndpoint: 'http://localhost:4443',
+    projectId: 'local',
+  },
+  publicStorageHost: new URL(`http://${LOCAL_URL}:4443`),
+  bucketName: 'noratomo',
 };
 
 export default config;

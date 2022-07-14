@@ -1,32 +1,20 @@
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
-import config from '../../../../config';
 import meHandler from '../../../../pages/api/user/me';
-import User from '../../../../src/models/user';
-import {TestUser} from '../../../../src/tests/user';
+import TestBase from '../../../../src/tests/base';
 
 describe('me', () => {
-  let db: mysql.Connection;
-  let sessionToken: string;
-  let user: User;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
 
-    const u = new TestUser();
-    await u.create(db);
-    await u.loginFromPassword(db);
-    await u.addSession(db);
-
-    if (u.user) {
-      user = u.user;
-    }
-    sessionToken = u.sessionCookie;
+    const u = await base.newUser();
+    await u.loginFromPassword(base.db);
+    await u.addSession(base.db);
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('me', async () => {
@@ -36,7 +24,7 @@ describe('me', () => {
       handler: meHandler,
       requestPatcher: async req => {
         req.headers = {
-          cookie: sessionToken,
+          cookie: base.users[0].sessionCookie,
         };
       },
       test: async ({fetch}) => {
@@ -45,15 +33,15 @@ describe('me', () => {
         expect(res.status).toBe(200);
 
         expect(await res.json()).toEqual({
-          display_name: user.display_name,
-          mail: user.mail,
-          profile: user.profile,
-          user_name: user.user_name,
-          age: user.age,
-          gender: user.gender,
-          is_admin: user.is_admin,
-          avatar_url: user.avatar_url,
-          join_date: user.join_date.toISOString(),
+          display_name: base.users[0].user?.display_name,
+          mail: base.users[0].user?.mail,
+          profile: base.users[0].user?.profile,
+          user_name: base.users[0].user?.user_name,
+          age: base.users[0].user?.age,
+          gender: base.users[0].user?.gender,
+          is_admin: base.users[0].user?.is_admin,
+          avatar_url: base.users[0].user?.avatar_url,
+          join_date: base.users[0].user?.join_date.toISOString(),
         });
       },
     });

@@ -18,3 +18,18 @@ services:
       - ./db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
+  gcs:
+    image: fsouza/fake-gcs-server
+    tty: true
+    stdin_open: true
+    privileged: true
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - 4443:4443
+    volumes:
+      - ./.data:/data/noratomo:cached
+      - ./.storage:/storage/noratomo
+    environment:
+      URL: ${URL:-localhost}
+    command: -scheme http -public-host ${URL:-localhost}:4443

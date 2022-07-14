@@ -10,11 +10,11 @@ import {CreateAccountByPassword} from '../../../src/user/createAccount';
 async function handler(base: Base<void>) {
   // TODO: 野良認証の結果の検証を先にする
 
-  const userName = base.getPostForm('user_name', true);
-  const mail = base.getPostForm('mail', true);
-  const password = base.getPostForm('password', true);
-  const age = base.getPostForm('age', true);
-  const gender = base.getPostForm('gender', true);
+  const userName = base.getPostURLForm('user_name', true);
+  const mail = base.getPostURLForm('mail', true);
+  const password = base.getPostURLForm('password', true);
+  const age = base.getPostURLForm('age', true);
+  const gender = base.getPostURLForm('gender', true);
 
   const ca = new CreateAccountByPassword(userName, mail, password, age, gender);
 

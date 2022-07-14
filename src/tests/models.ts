@@ -1,5 +1,7 @@
 import {randomBytes, randomInt} from 'crypto';
+import {Device} from '../base/base';
 import {CertModel} from '../models/cret';
+import {LoginHistoryModel} from '../models/loginHistory';
 import {SessionModel} from '../models/session';
 import {UserModel} from '../models/user';
 import {randomText} from '../utils/random';
@@ -17,6 +19,13 @@ export function dbDate(d: Date): Date {
 }
 
 /**
+ * ユーザIDを作成する
+ *
+ * @returns {number} - ユーザID
+ */
+export const createUserID = () => randomInt(100000);
+
+/**
  * テスト用のダミーUserModelを作成する
  *
  * @param {Partial<UserModel>} option -カスタムするUserModel
@@ -26,7 +35,7 @@ export function createUserModel(option?: Partial<UserModel>): UserModel {
   const joinDate = dbDate(new Date(Date.now()));
 
   const newUser: UserModel = {
-    id: option?.id || randomInt(10000), // 上書きされる
+    id: option?.id || createUserID(), // 上書きされる
     display_name: option?.display_name || null,
     mail: option?.mail || `${randomText(32)}@example.com`,
     profile: option?.profile || null,
@@ -73,7 +82,33 @@ export const createSessionModel = (
  * @returns {CertModel} cert
  */
 export const createCertModel = (options?: Partial<CertModel>): CertModel => ({
-  user_id: options?.user_id || randomInt(1000000),
+  user_id: options?.user_id || createUserID(),
   cateiru_sso_id: options?.cateiru_sso_id || null,
   password: options?.password || null,
 });
+
+/**
+ * ダミーのログイン履歴オブジェクトを作成する
+ *
+ * @param {Partial<LoginHistoryModel>} options - オプション
+ * @returns {LoginHistoryModel} ログイン履歴
+ */
+export const createLoginHistoryModel = (
+  options?: Partial<LoginHistoryModel>
+): LoginHistoryModel => {
+  const loginDate = dbDate(new Date(Date.now()));
+
+  return {
+    id: options?.id || randomInt(1000000),
+    user_id: options?.user_id || createUserID(),
+    ip_address: options?.ip_address || '203.0.113.0', // 203.0.113.0はテスト用のIPアドレス
+    device_name: options?.device_name || Device.Desktop,
+    os: options?.os || 'Windows',
+    is_phone: options?.is_phone || false,
+    is_tablet: options?.is_tablet || false,
+    is_desktop: options?.is_desktop || true,
+    browser_name: options?.browser_name || 'Chrome',
+    login_date: options?.login_date || loginDate,
+    'INET6_NTOA(ip_address)': options?.ip_address || '203.0.113.0', // 203.0.113.0はテスト用のIPアドレス
+  };
+};

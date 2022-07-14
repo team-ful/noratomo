@@ -1,13 +1,17 @@
+import fs from 'fs';
 import {URL} from 'url';
 import {serialize} from 'cookie';
-import mysql from 'mysql2/promise';
+import FormData from 'form-data';
+import {PageConfig} from 'next';
 import {testApiHandler} from 'next-test-api-route-handler';
 import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
 import Base, {Device} from '../../src/base/base';
 import {handlerWrapper} from '../../src/base/handlerWrapper';
+import {findLoginHistoriesByUserID} from '../../src/services/loginHistory';
 import {findSessionTokenByRefreshToken} from '../../src/services/session';
 import {findUserBySessionToken} from '../../src/services/user';
+import TestBase from '../../src/tests/base';
 import {TestUser} from '../../src/tests/user';
 
 describe('getQuery', () => {
@@ -67,21 +71,21 @@ describe('getQuery', () => {
   });
 });
 
-describe('getPostForm', () => {
+describe('getPostURLForm', () => {
   const query = 'test=hoge';
 
-  test('getPostFormで取得できる', async () => {
+  test('getPostURLFormで取得できる', async () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      const form = base.getPostForm('test');
+      const form = base.getPostURLForm('test');
       expect(form).toBe('hoge');
 
-      const noExistForm = base.getPostForm('testaaaaa');
+      const noExistForm = base.getPostURLForm('testaaaaa');
       expect(noExistForm).toBeUndefined();
 
       expect(() => {
-        base.getPostForm('testaaaaa', true);
+        base.getPostURLForm('testaaaaa', true);
       }).toThrow('Illegal form value testaaaaa');
     };
 
@@ -107,7 +111,7 @@ describe('getPostForm', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(() => base.getPostForm('test')).toThrow(
+      expect(() => base.getPostURLForm('test')).toThrow(
         new ApiError(400, 'no application/x-www-form-urlencoded')
       );
     };
@@ -126,6 +130,163 @@ describe('getPostForm', () => {
         });
 
         expect(res.status).toBe(200);
+      },
+    });
+  });
+});
+
+describe('getPostFormFields', () => {
+  test('取得できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      const form = await base.getPostFormFields('hoge');
+      expect(form).toBe('fooo');
+
+      const noExistForm = await base.getPostFormFields('testaaaaa');
+      expect(noExistForm).toBeUndefined();
+
+      await expect(base.getPostFormFields('testaaaaa', true)).rejects.toThrow(
+        'Illegal form value testaaaaa'
+      );
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    form.append('hoge', 'fooo');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('content-typeが違う場合はエラー', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      await base.getPostFormFields('hoge');
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    form.append('hoge', 'fooo');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(400);
+      },
+    });
+  });
+});
+
+describe('getPostFormFiles', () => {
+  test('取得できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      const image = await base.getPostFormFiles('file');
+      expect(image?.mimetype).toBe('image/png');
+
+      const form = await base.getPostFormFields('file');
+      expect(form).toBeUndefined();
+
+      const noExistForm = await base.getPostFormFiles('testaaaaa');
+      expect(noExistForm).toBeUndefined();
+
+      await expect(base.getPostFormFiles('testaaaaa', true)).rejects.toThrow(
+        'Illegal form value testaaaaa'
+      );
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const buffer = fs.readFileSync('tests/base/sample.png');
+    const form = new FormData();
+    form.append('file', buffer, {
+      filename: 'sample.png',
+      contentType: 'image/png',
+      knownLength: buffer.length,
+    });
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('content-typeが違う場合はエラー', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      await base.getPostFormFiles('hoge');
+    };
+
+    const _h = handlerWrapper(handler, 'POST');
+    const h: typeof _h & {config?: PageConfig} = _h;
+    h.config = {
+      api: {
+        bodyParser: false,
+      },
+    };
+
+    const form = new FormData();
+    form.append('hoge', 'fooo');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(400);
       },
     });
   });
@@ -570,15 +731,14 @@ describe('cookie', () => {
 });
 
 describe('newLogin', () => {
-  let connection: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    connection = await mysql.createConnection(config.db);
-    await connection.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await connection.end();
+    await base.end();
   });
 
   test('新規でログインするとtokenがcookieにセットされる', async () => {
@@ -606,8 +766,6 @@ describe('newLogin', () => {
         const res = await fetch();
         expect(res.status).toBe(200);
 
-        console.log(res.cookies);
-
         let session = '';
         let refresh = '';
 
@@ -619,16 +777,27 @@ describe('newLogin', () => {
           }
         }
 
-        const user = await findUserBySessionToken(connection, session);
+        const user = await findUserBySessionToken(base.db, session);
 
         expect(user?.id).toBe(userId);
 
         const sessionToken = await findSessionTokenByRefreshToken(
-          connection,
+          base.db,
           refresh
         );
 
         expect(sessionToken).toBe(session);
+
+        const loginHistory = await findLoginHistoriesByUserID(
+          base.db,
+          user?.id || NaN
+        );
+
+        expect(loginHistory).not.toBeNull();
+        if (loginHistory) {
+          expect(loginHistory.length).toBe(2); // TestUserでログイン履歴を保存しているため2
+          expect(loginHistory[0].device_name).toBe(Device.Desktop);
+        }
       },
     });
   });

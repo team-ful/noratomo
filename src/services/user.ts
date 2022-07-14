@@ -1,6 +1,5 @@
 import sql from 'mysql-bricks';
-import {ResultSetHeader} from 'mysql2/promise';
-import {Connection, Pool, RowDataPacket} from 'mysql2/promise';
+import DBOperator from '../db/operator';
 import {Gender} from '../models/common';
 import User, {UserModel} from '../models/user';
 
@@ -18,11 +17,11 @@ export interface UpdateOption {
 /**
  * UserIDからユーザ情報を取得する
  *
- * @param {Connection | Pool} db - database
+ * @param {DBOperator} db - database
  * @param {number} id - User ID
  */
 export async function findUserByUserID(
-  db: Connection | Pool,
+  db: DBOperator,
   id: number
 ): Promise<User> {
   const query = sql
@@ -32,25 +31,25 @@ export async function findUserByUserID(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (rows.length === 0) {
+  if (row === null) {
     throw new Error('not found');
   }
 
-  return new User(rows[0] as UserModel);
+  return new User(row);
 }
 
 /**
  * ユーザを作成する
  * WARN: 主にテストで使用する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {UserModel} user - 追加するユーザ
  * @returns {Promise<User>} id
  */
 export async function createTestUser(
-  db: Connection,
+  db: DBOperator,
   user: UserModel
 ): Promise<User> {
   const query = sql
@@ -69,9 +68,7 @@ export async function createTestUser(
     })
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
-
-  user.id = rows.insertId;
+  user.id = await db.insert(query);
 
   return new User(user);
 }
@@ -79,7 +76,7 @@ export async function createTestUser(
 /**
  * Cateiru SSO用のユーザ作成
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} displayName - 表示名
  * @param {string} mail - メールアドレス
  * @param {string} userName - ユーザ名
@@ -89,7 +86,7 @@ export async function createTestUser(
  * @returns {Promise<number>} user id
  */
 export async function createUserSSO(
-  db: Connection,
+  db: DBOperator,
   displayName: string,
   mail: string,
   userName: string,
@@ -109,15 +106,13 @@ export async function createUserSSO(
     })
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
-
-  return rows.insertId;
+  return await db.insert(query);
 }
 
 /**
  * パスワード用ユーザ作成
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} mail - メールアドレス
  * @param {string} userName - ユーザ名
  * @param {string} gender - 性別
@@ -125,7 +120,7 @@ export async function createUserSSO(
  * @returns {Promise<number>} user id
  */
 export async function createUserPW(
-  db: Connection,
+  db: DBOperator,
   mail: string,
   userName: string,
   gender: Gender,
@@ -141,19 +136,17 @@ export async function createUserPW(
     })
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
-
-  return rows.insertId;
+  return await db.insert(query);
 }
 
 /**
  * CateiruSSOでログインしている場合、そのユーザを取得する
  *
- * @param {Connection | Pool} db - db
+ * @param {DBOperator} db - db
  * @param {string} id - cateirusso userid
  */
 export async function findUserByCateiruSSO(
-  db: Connection | Pool,
+  db: DBOperator,
   id: string
 ): Promise<User | null> {
   const query = sql
@@ -172,23 +165,23 @@ export async function findUserByCateiruSSO(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new User(row[0] as UserModel);
+  return new User(row);
 }
 
 /**
  * Session Tokenからユーザを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} token - session token
  */
 export async function findUserBySessionToken(
-  db: Connection,
+  db: DBOperator,
   token: string
 ): Promise<User | null> {
   const query = sql
@@ -208,23 +201,23 @@ export async function findUserBySessionToken(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new User(row[0] as UserModel);
+  return new User(row);
 }
 
 /**
  * メールアドレスからユーザを探す
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} mail - メールアドレス
  */
 export async function findUserByMail(
-  db: Connection,
+  db: DBOperator,
   mail: string
 ): Promise<User | null> {
   const query = sql
@@ -234,23 +227,23 @@ export async function findUserByMail(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new User(row[0] as UserModel);
+  return new User(row);
 }
 
 /**
  * ユーザ名からユーザを探す
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} userName - ユーザ名
  */
 export async function findUserByUserName(
-  db: Connection,
+  db: DBOperator,
   userName: string
 ): Promise<User | null> {
   const query = sql
@@ -260,24 +253,24 @@ export async function findUserByUserName(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new User(row[0] as UserModel);
+  return new User(row);
 }
 
 /**
  * ユーザ名とメールアドレスでselectする
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} userName - user name
  * @param {string} mail - mail
  */
 export async function findUserByUserNameAndMail(
-  db: Connection,
+  db: DBOperator,
   userName: string,
   mail: string
 ): Promise<User | null> {
@@ -288,24 +281,24 @@ export async function findUserByUserNameAndMail(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new User(row[0] as UserModel);
+  return new User(row);
 }
 
 /**
  * 設定、プロフィールを更新する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} id - ユーザID
  * @param {UpdateOption} option - options
  */
 export async function updateUser(
-  db: Connection,
+  db: DBOperator,
   id: number,
   option: UpdateOption
 ) {
@@ -314,17 +307,17 @@ export async function updateUser(
     .where('id', id)
     .toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * userを削除する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} id - ユーザID
  */
-export async function deleteUserByID(db: Connection, id: number) {
+export async function deleteUserByID(db: DBOperator, id: number) {
   const query = sql.delete('user').where('id', id).toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }

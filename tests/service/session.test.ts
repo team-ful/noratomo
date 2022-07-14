@@ -1,6 +1,5 @@
 import {randomInt} from 'crypto';
-import mysql, {RowDataPacket} from 'mysql2/promise';
-import config from '../../config';
+import {RowDataPacket} from 'mysql2/promise';
 import {
   createSession,
   findSessionBySessionToken,
@@ -13,25 +12,25 @@ import {
   deleteRefreshByRefreshToken,
   deleteRefreshBySessionToken,
 } from '../../src/services/session';
+import TestBase from '../../src/tests/base';
 import {createSessionModel} from '../../src/tests/models';
 import {randomText} from '../../src/utils/random';
 
 describe('session', () => {
-  let db: mysql.Connection;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('createSession', async () => {
-    const session = await createSession(db, randomInt(10000));
+    const session = await createSession(base.db, randomInt(10000));
 
-    const [row] = await db.query<RowDataPacket[]>(
+    const row = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM session WHERE session_token = ?',
       session.session_token
     );
@@ -42,7 +41,7 @@ describe('session', () => {
   test('findSessionBySessionToken', async () => {
     const s = createSessionModel();
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO session(
       session_token,
       date,
@@ -52,7 +51,7 @@ describe('session', () => {
       [s.session_token, '7', s.user_id]
     );
 
-    const session = await findSessionBySessionToken(db, s.session_token);
+    const session = await findSessionBySessionToken(base.db, s.session_token);
 
     expect(session?.user_id).toBe(s.user_id);
   });
@@ -61,7 +60,7 @@ describe('session', () => {
     const s = createSessionModel();
     const r = randomText(64);
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO refresh(
       refresh_token,
       session_token,
@@ -72,7 +71,7 @@ describe('session', () => {
       [r, s.session_token, '7', s.user_id]
     );
 
-    const session = await findRefreshByRefreshToken(db, r);
+    const session = await findRefreshByRefreshToken(base.db, r);
 
     expect(session?.user_id).toBe(s.user_id);
   });
@@ -81,7 +80,7 @@ describe('session', () => {
     const s = createSessionModel();
     const r = randomText(64);
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO session(
       session_token,
       date,
@@ -91,7 +90,7 @@ describe('session', () => {
       [s.session_token, '7', s.user_id]
     );
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO refresh(
       refresh_token,
       session_token,
@@ -102,7 +101,7 @@ describe('session', () => {
       [r, s.session_token, '7', s.user_id]
     );
 
-    const session = await findSessionByRefreshToken(db, r);
+    const session = await findSessionByRefreshToken(base.db, r);
 
     expect(session?.user_id).toBe(s.user_id);
   });
@@ -111,7 +110,7 @@ describe('session', () => {
     const s = createSessionModel();
     const r = randomText(64);
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO refresh(
       refresh_token,
       session_token,
@@ -122,7 +121,7 @@ describe('session', () => {
       [r, s.session_token, '7', s.user_id]
     );
 
-    const sessionToken = await findSessionTokenByRefreshToken(db, r);
+    const sessionToken = await findSessionTokenByRefreshToken(base.db, r);
 
     expect(sessionToken).toBe(s.session_token);
   });
@@ -132,9 +131,9 @@ describe('session', () => {
     const periodDay = 1;
     const userId = randomInt(10000);
 
-    await createSessionSpecifyToken(db, token, periodDay, userId);
+    await createSessionSpecifyToken(base.db, token, periodDay, userId);
 
-    const session = await findSessionBySessionToken(db, token);
+    const session = await findSessionBySessionToken(base.db, token);
 
     expect(session).not.toBeNull();
     if (session) {
@@ -159,9 +158,15 @@ describe('session', () => {
     const periodDay = 1;
     const userId = randomInt(10000);
 
-    await createRefreshSpecifyToken(db, token, sessionToken, periodDay, userId);
+    await createRefreshSpecifyToken(
+      base.db,
+      token,
+      sessionToken,
+      periodDay,
+      userId
+    );
 
-    const session = await findRefreshByRefreshToken(db, token);
+    const session = await findRefreshByRefreshToken(base.db, token);
 
     expect(session).not.toBeNull();
     if (session) {
@@ -183,7 +188,7 @@ describe('session', () => {
   test('session tokenでSessionを削除できる', async () => {
     const s = createSessionModel();
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO session(
       session_token,
       date,
@@ -193,9 +198,9 @@ describe('session', () => {
       [s.session_token, '7', s.user_id]
     );
 
-    await deleteSessionBySessionToken(db, s.session_token);
+    await deleteSessionBySessionToken(base.db, s.session_token);
 
-    const dbSession = await findSessionBySessionToken(db, s.session_token);
+    const dbSession = await findSessionBySessionToken(base.db, s.session_token);
 
     expect(dbSession).toBeNull();
   });
@@ -204,7 +209,7 @@ describe('session', () => {
     const s = createSessionModel();
     const r = randomText(64);
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO refresh(
       refresh_token,
       session_token,
@@ -215,9 +220,9 @@ describe('session', () => {
       [r, s.session_token, '7', s.user_id]
     );
 
-    await deleteRefreshByRefreshToken(db, r);
+    await deleteRefreshByRefreshToken(base.db, r);
 
-    const dbSession = await findRefreshByRefreshToken(db, r);
+    const dbSession = await findRefreshByRefreshToken(base.db, r);
 
     expect(dbSession).toBeNull();
   });
@@ -226,7 +231,7 @@ describe('session', () => {
     const s = createSessionModel();
     const r = randomText(64);
 
-    await db.query(
+    await base.db.test(
       `INSERT INTO refresh(
       refresh_token,
       session_token,
@@ -237,9 +242,9 @@ describe('session', () => {
       [r, s.session_token, '7', s.user_id]
     );
 
-    await deleteRefreshBySessionToken(db, s.session_token);
+    await deleteRefreshBySessionToken(base.db, s.session_token);
 
-    const dbSession = await findRefreshByRefreshToken(db, r);
+    const dbSession = await findRefreshByRefreshToken(base.db, r);
 
     expect(dbSession).toBeNull();
   });

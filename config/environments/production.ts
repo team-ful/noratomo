@@ -20,15 +20,10 @@ const config: Config = {
 
   sessionTokenLen: 64,
   sessionCookieName: 'noratomo-session',
-  sessionPeriodDay: 7,
+  sessionPeriodDay: 1,
   sessionCookieOptions: () => {
-    const date = new Date(Date.now());
-    date.setDate(date.getDate() + config.sessionPeriodDay);
-
     return {
       domain: 'noratomo.tdu.app',
-      expires: date,
-      maxAge: config.sessionPeriodDay * 86400,
       sameSite: 'strict',
       secure: true,
       httpOnly: true,
@@ -76,6 +71,10 @@ const config: Config = {
     database: 'noratomo',
     socketPath: `${DB_SOCKET_PATH}/${process.env.INSTANCE_CONNECTION_NAME}`,
   },
+
+  // Cloud Storage
+  publicStorageHost: new URL(' https://storage.googleapis.com'),
+  bucketName: 'noratomo',
 };
 
 export default config;

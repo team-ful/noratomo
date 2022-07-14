@@ -11,8 +11,8 @@ import {findUserByMail, findUserByUserName} from '../../../src/services/user';
  * @param {Base<void>} base base
  */
 async function handler(base: Base<void>) {
-  const userName = base.getPostForm('user', true);
-  const password = base.getPostForm('password', true);
+  const userName = base.getPostURLForm('user', true);
+  const password = base.getPostURLForm('password', true);
 
   let user: User | null;
 

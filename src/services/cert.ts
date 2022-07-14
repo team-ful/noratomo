@@ -1,15 +1,15 @@
 import sql, {select, insert} from 'mysql-bricks';
-import type {Connection, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
+import DBOperator from '../db/operator';
 import Cert, {CertModel} from '../models/cret';
 
 /**
  * Certを作成する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {CertModel} cert - cert
  */
-export async function setCert(db: Connection, cert: CertModel) {
+export async function setCert(db: DBOperator, cert: CertModel) {
   const insertElement: {[key: string]: string | number} = {
     user_id: cert.user_id,
   };
@@ -22,18 +22,18 @@ export async function setCert(db: Connection, cert: CertModel) {
 
   const query = insert('cert', insertElement).toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * UserIDからCertを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} userId - User ID
  * @returns {Cert} - cert object.
  */
 export async function findCertByUserID(
-  db: Connection,
+  db: DBOperator,
   userId: number
 ): Promise<Cert> {
   const query = select('*')
@@ -42,26 +42,26 @@ export async function findCertByUserID(
     .limit(1)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     throw new ApiError(400, 'no cert');
   }
 
-  return new Cert(row[0] as CertModel);
+  return new Cert(row);
 }
 
 /**
  * Certを削除する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} userId - User ID
  */
-export async function deleteCertById(db: Connection, userId: number) {
+export async function deleteCertById(db: DBOperator, userId: number) {
   const query = sql
     .delete('cert')
     .where('user_id', userId)
     .toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }

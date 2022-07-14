@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import {DefaultObject} from '../db/operator';
 
 export interface CertModel {
   user_id: number;
@@ -11,10 +12,10 @@ class Cert implements CertModel {
   readonly password: string | null;
   readonly cateiru_sso_id: string | null;
 
-  constructor(init: CertModel) {
-    this.user_id = init.user_id;
-    this.password = init.password;
-    this.cateiru_sso_id = init.cateiru_sso_id;
+  constructor(init: DefaultObject | CertModel) {
+    this.user_id = init.user_id as number;
+    this.password = init.password as string | null;
+    this.cateiru_sso_id = init.cateiru_sso_id as string | null;
   }
 
   /**

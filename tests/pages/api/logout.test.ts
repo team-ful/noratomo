@@ -1,29 +1,21 @@
-import {serialize} from 'cookie';
-import mysql from 'mysql2/promise';
 import {testApiHandler} from 'next-test-api-route-handler';
-import config from '../../../config';
 import logoutHandler from '../../../pages/api/logout';
 import {findUserBySessionToken} from '../../../src/services/user';
-import {TestUser} from '../../../src/tests/user';
+import TestBase from '../../../src/tests/base';
 
 describe('パスワードでログイン', () => {
-  let db: mysql.Connection;
-  let sessionToken: string;
+  const base = new TestBase();
 
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
 
-    const u = new TestUser();
-    await u.create(db);
-    await u.loginFromPassword(db);
-    await u.addSession(db);
-
-    sessionToken = u.session?.session_token || '';
+    const u = await base.newUser();
+    await u.loginFromPassword(base.db);
+    await u.addSession(base.db);
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('ログアウトできる', async () => {
@@ -33,7 +25,7 @@ describe('パスワードでログイン', () => {
       handler: logoutHandler,
       requestPatcher: async req => {
         req.headers = {
-          cookie: serialize(config.sessionCookieName, sessionToken),
+          cookie: base.users[0].sessionCookie,
         };
       },
       test: async ({fetch}) => {
@@ -41,7 +33,10 @@ describe('パスワードでログイン', () => {
 
         expect(res.status).toBe(200);
 
-        const u = await findUserBySessionToken(db, sessionToken);
+        const u = await findUserBySessionToken(
+          base.db,
+          base.users[0].session?.session_token || ''
+        );
 
         expect(u).toBeNull();
 

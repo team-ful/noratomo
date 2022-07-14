@@ -3,13 +3,15 @@ import {URL} from 'url';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import {serialize, CookieSerializeOptions} from 'cookie';
+import formidable from 'formidable';
 import mysql from 'mysql2/promise';
-import {Connection} from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
+import DBOperator from '../db/operator';
 import User from '../models/user';
+import {createLoginHistory} from '../services/loginHistory';
 import {createSession} from '../services/session';
 
 export enum Device {
@@ -34,13 +36,17 @@ class Base<T> {
 
   public status: number;
 
-  private _db?: Connection;
+  private _db?: DBOperator;
 
   private contentType: ParsedMediaType;
   private ip: string;
   private userAgent: UserAgent;
   private cookies: string[];
   private postBody?: ParsedUrlQuery;
+  private multipartForm?: {
+    fields: formidable.Fields;
+    files: formidable.Files;
+  };
 
   protected sessionToken?: string;
   protected refreshToken?: string;
@@ -63,7 +69,7 @@ class Base<T> {
   /**
    * DB Connectionを返す
    *
-   * @returns {mysql.Connection} DB Connection
+   * @returns {DBOperator} - DBOperator
    */
   public async db() {
     if (typeof this._db !== 'undefined') {
@@ -73,9 +79,9 @@ class Base<T> {
     const connection = await mysql.createConnection(config.db);
     await connection.connect();
 
-    this._db = connection;
+    this._db = new DBOperator(connection);
 
-    return connection;
+    return this._db;
   }
 
   public async end() {
@@ -113,9 +119,9 @@ class Base<T> {
    * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
    * @returns {string} - クエリの値
    */
-  public getPostForm(key: string, require: true): string;
-  public getPostForm(key: string): string | undefined;
-  public getPostForm(key: string, require = false): string | undefined {
+  public getPostURLForm(key: string, require: true): string;
+  public getPostURLForm(key: string): string | undefined;
+  public getPostURLForm(key: string, require = false): string | undefined {
     let p: ParsedUrlQuery;
 
     if (typeof this.postBody === 'undefined') {
@@ -147,6 +153,97 @@ class Base<T> {
   }
 
   /**
+   * content-type: multipart-form-data からフォームデータを取得する
+   *
+   * @param {string} key - key
+   * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
+   * @returns {formidable.File} - file data
+   */
+  public async getPostFormFields(key: string, require: true): Promise<string>;
+  public async getPostFormFields(key: string): Promise<string | undefined>;
+  public async getPostFormFields(
+    key: string,
+    require = false
+  ): Promise<string | undefined> {
+    if (typeof this.multipartForm === 'undefined') {
+      await this.parseMultipartForm();
+    }
+
+    const field = this.multipartForm?.fields[key];
+
+    if (typeof field === 'undefined') {
+      if (require) {
+        throw new ApiError(400, `Illegal form value ${key}`);
+      }
+      return undefined;
+    }
+
+    if (typeof field === 'string') {
+      return field;
+    }
+
+    return field[0];
+  }
+
+  /**
+   *  content-type: multipart-form-data からファイルデータを取得する
+   *
+   * @param {string} key - key
+   * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
+   * @returns {formidable.File} - file data
+   */
+  public async getPostFormFiles(
+    key: string,
+    require: true
+  ): Promise<formidable.File>;
+  public async getPostFormFiles(
+    key: string
+  ): Promise<formidable.File | undefined>;
+  public async getPostFormFiles(
+    key: string,
+    require = false
+  ): Promise<formidable.File | undefined> {
+    if (typeof this.multipartForm === 'undefined') {
+      await this.parseMultipartForm();
+    }
+
+    const files = this.multipartForm?.files[key];
+
+    if (typeof files === 'undefined') {
+      if (require) {
+        throw new ApiError(400, `Illegal form value ${key}`);
+      }
+      return undefined;
+    }
+
+    if (Array.isArray(files)) {
+      return files[0];
+    }
+
+    return files;
+  }
+
+  /**
+   * content-type: multipart-form-data をパースする
+   */
+  private async parseMultipartForm() {
+    if (!this.checkContentType('multipart/form-data')) {
+      throw new ApiError(400, 'no multipart/form-data');
+    }
+
+    const form = new formidable.IncomingForm();
+
+    this.multipartForm = await new Promise((resolve, reject) => {
+      form.parse(this.req, (err, fields, files) => {
+        if (err) {
+          reject(err);
+        }
+        resolve({fields, files});
+      });
+    });
+  }
+
+  /**
    * Content-Type: application/json
    * のデータを取得する
    *
@@ -172,7 +269,7 @@ class Base<T> {
    * @returns {boolean} - 引数のcontent-typeと同じであればtrue、違えばfalse
    */
   public checkContentType(contentType: string): boolean {
-    return this.contentType.type === contentType.toLowerCase();
+    return contentType.toLowerCase().includes(this.contentType.type);
   }
 
   /**
@@ -373,6 +470,8 @@ class Base<T> {
       throw new ApiError(500, 'refresh_token is empty');
     }
 
+    await this.saveLoginHistory(user.id);
+
     this.sessionToken = session.session_token;
     this.refreshToken = session.refresh_token;
 
@@ -394,6 +493,32 @@ class Base<T> {
       config.otherCookieName,
       options,
       config.otherCookieOptions()
+    );
+  }
+
+  /**
+   * ログイン履歴を保存する
+   *
+   * @param {number} userID - ユーザID
+   */
+  private async saveLoginHistory(userID: number) {
+    const deviceName = this.getDevice();
+    const os = this.getPlatform();
+    const isPhone = deviceName === Device.Mobile;
+    const isTablet = deviceName === Device.Tablet;
+    const isDesktop = deviceName === Device.Desktop;
+    const browserName = this.getVender();
+
+    await createLoginHistory(
+      await this.db(),
+      userID,
+      this.ip,
+      deviceName,
+      os,
+      isPhone,
+      isTablet,
+      isDesktop,
+      browserName
     );
   }
 

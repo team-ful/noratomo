@@ -1,11 +1,7 @@
 import sql, {insert, select, update} from 'mysql-bricks';
-import type {Connection, ResultSetHeader, RowDataPacket} from 'mysql2/promise';
 import {ApiError} from 'next/dist/server/api-utils';
-import {
-  NoraQuestion,
-  NoraQuestionModel,
-  NoraQuestionSelect,
-} from '../models/noraQuestion';
+import DBOperator from '../db/operator';
+import {NoraQuestion, NoraQuestionSelect} from '../models/noraQuestion';
 
 export interface UpdateNoraQuestion {
   question_title?: string;
@@ -17,14 +13,14 @@ export interface UpdateNoraQuestion {
 /**
  * 野良認証のクイズを追加する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {string} title - 野良認証の問題タイトル
  * @param {NoraQuestionSelect[]} answers - 野良認証の回答リスト
  * @param {number} answerIndex - 野良認証の正解の回答インデックス
  * @param {number} score - その野良認証のスコア
  */
 export async function createNoraQuestion(
-  db: Connection,
+  db: DBOperator,
   title: string,
   answers: NoraQuestionSelect[],
   answerIndex: number,
@@ -42,9 +38,7 @@ export async function createNoraQuestion(
     score: score,
   }).toParams({placeholder: '?'});
 
-  const [rows] = await db.query<ResultSetHeader>(query.text, query.values);
-
-  const id = rows.insertId;
+  const id = await db.insert(query);
 
   return new NoraQuestion({
     id: id,
@@ -58,12 +52,12 @@ export async function createNoraQuestion(
 /**
  * IDを指定してNoraQuestionを更新sる
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} id - 更新するNoraQuestionのID
  * @param {UpdateNoraQuestion} d - 更新する値
  */
 export async function updateNoraQuestionByID(
-  db: Connection,
+  db: DBOperator,
   id: number,
   d: UpdateNoraQuestion
 ) {
@@ -111,17 +105,17 @@ export async function updateNoraQuestionByID(
     .where('id', id)
     .toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }
 
 /**
  * 野良認証のクイズをidで引く
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} id - nora question id
  */
 export async function findNoraQuestionById(
-  db: Connection,
+  db: DBOperator,
   id: number
 ): Promise<NoraQuestion | null> {
   const query = select('*')
@@ -129,22 +123,22 @@ export async function findNoraQuestionById(
     .where('id', id)
     .toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const row = await db.one(query);
 
-  if (row.length === 0) {
+  if (row === null) {
     return null;
   }
 
-  return new NoraQuestion(row[0] as NoraQuestionModel);
+  return new NoraQuestion(row);
 }
 
 /**
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} limit - limit
  */
 export async function findAllNoraQuestion(
-  db: Connection,
+  db: DBOperator,
   limit?: number
 ): Promise<NoraQuestion[]> {
   let q = select('*').from('nora_question');
@@ -155,25 +149,19 @@ export async function findAllNoraQuestion(
 
   const query = q.toParams({placeholder: '?'});
 
-  const [row] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const n = await db.multi(query);
 
-  const n = [];
-
-  for (const r of row) {
-    n.push(new NoraQuestion(r as NoraQuestionModel));
-  }
-
-  return n;
+  return n.map(v => new NoraQuestion(v));
 }
 
 /**
  * ランダムでNoraQuestionを取得する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} limit - 取得件数
  */
 export async function findRandomNoraQuestion(
-  db: Connection,
+  db: DBOperator,
   limit: number
 ): Promise<NoraQuestion[]> {
   const query = select('*')
@@ -182,24 +170,18 @@ export async function findRandomNoraQuestion(
     .limit(limit)
     .toParams({placeholder: '?'});
 
-  const [rows] = await db.query<RowDataPacket[]>(query.text, query.values);
+  const n = await db.multi(query);
 
-  const n = [];
-
-  for (const r of rows) {
-    n.push(new NoraQuestion(r as NoraQuestionModel));
-  }
-
-  return n;
+  return n.map(v => new NoraQuestion(v));
 }
 
 /**
  * IDを指定してNoraQuestionを削除する
  *
- * @param {Connection} db - database
+ * @param {DBOperator} db - database
  * @param {number} id - 削除するid
  */
-export async function deleteNoraQuestionByID(db: Connection, id: number) {
+export async function deleteNoraQuestionByID(db: DBOperator, id: number) {
   const query = sql
     .delete('*')
     .from('nora_question')
@@ -207,5 +189,5 @@ export async function deleteNoraQuestionByID(db: Connection, id: number) {
     .limit(1)
     .toParams({placeholder: '?'});
 
-  await db.query(query.text, query.values);
+  await db.execute(query);
 }

@@ -1,6 +1,5 @@
 import {randomInt} from 'crypto';
-import mysql, {ResultSetHeader, RowDataPacket} from 'mysql2/promise';
-import config from '../../config';
+import {ResultSetHeader, RowDataPacket} from 'mysql2/promise';
 import {
   NoraQuestion,
   NoraQuestionModel,
@@ -14,10 +13,9 @@ import {
   findRandomNoraQuestion,
   updateNoraQuestionByID,
 } from '../../src/services/noraQuestion';
+import TestBase from '../../src/tests/base';
 
 describe('noraQuestion', () => {
-  let db: mysql.Connection;
-
   const answers: NoraQuestionSelect[] = [
     {
       index: 0,
@@ -32,17 +30,24 @@ describe('noraQuestion', () => {
   const answerIndex = 1;
   const score = 90;
 
+  const base = new TestBase();
+
   beforeAll(async () => {
-    db = await mysql.createConnection(config.db);
-    await db.connect();
+    await base.connection();
   });
 
   afterAll(async () => {
-    await db.end();
+    await base.end();
   });
 
   test('createNoraQuestion', async () => {
-    const q = await createNoraQuestion(db, title, answers, answerIndex, score);
+    const q = await createNoraQuestion(
+      base.db,
+      title,
+      answers,
+      answerIndex,
+      score
+    );
 
     // 返ってくる値が正しい
     expect(typeof q.id === 'number').toBeTruthy();
@@ -51,7 +56,7 @@ describe('noraQuestion', () => {
     expect(q.score).toBe(score);
 
     // dbに格納されている
-    const [r] = await db.query<RowDataPacket[]>(
+    const r = await base.db.test<RowDataPacket[]>(
       'SELECT id FROM nora_question WHERE id = ?',
       q.id
     );
@@ -60,7 +65,7 @@ describe('noraQuestion', () => {
   });
 
   test('findNoraQuestionById', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -72,7 +77,7 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    const q = await findNoraQuestionById(db, id);
+    const q = await findNoraQuestionById(base.db, id);
 
     const qq = new NoraQuestion({
       id: id,
@@ -86,7 +91,7 @@ describe('noraQuestion', () => {
   });
 
   test('findAllNoraQuestion', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -98,7 +103,7 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    const questions = await findAllNoraQuestion(db);
+    const questions = await findAllNoraQuestion(base.db);
 
     // 0 = 空という判断
     expect(questions.length).not.toBe(0);
@@ -110,7 +115,7 @@ describe('noraQuestion', () => {
   test('findAllNoraQuestionのlimit付き', async () => {
     // 3つ追加
     for (let i = 0; 3 > i; i++) {
-      await db.query<ResultSetHeader>(
+      await base.db.test<ResultSetHeader>(
         `INSERT INTO nora_question(
         question_title,
         answers,
@@ -121,7 +126,7 @@ describe('noraQuestion', () => {
       );
     }
 
-    const questions = await findAllNoraQuestion(db, 2);
+    const questions = await findAllNoraQuestion(base.db, 2);
 
     // 0 = 空という判断
     expect(questions.length).toBe(2);
@@ -130,7 +135,7 @@ describe('noraQuestion', () => {
   test('findRandomNoraQuestion', async () => {
     // 最低2個の問題を格納する
     for (let i = 0; 2 > i; ++i) {
-      await db.query<ResultSetHeader>(
+      await base.db.test<ResultSetHeader>(
         `INSERT INTO nora_question(
         question_title,
         answers,
@@ -141,13 +146,13 @@ describe('noraQuestion', () => {
       );
     }
 
-    const questions = await findRandomNoraQuestion(db, 2);
+    const questions = await findRandomNoraQuestion(base.db, 2);
 
     expect(questions.length).toBe(2);
   });
 
   test('deleteNoraQuestionByID', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -159,10 +164,10 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    await deleteNoraQuestionByID(db, id);
+    await deleteNoraQuestionByID(base.db, id);
 
     // DBから消えている
-    const [r] = await db.query<RowDataPacket[]>(
+    const r = await base.db.test<RowDataPacket[]>(
       'SELECT id FROM nora_question WHERE id = ?',
       id
     );
@@ -173,13 +178,11 @@ describe('noraQuestion', () => {
   test('存在しないIDでdeleteNoraQuestionByID', async () => {
     const id = randomInt(10000);
 
-    expect(async () => {
-      await deleteNoraQuestionByID(db, id);
-    }).not.toThrow();
+    await expect(deleteNoraQuestionByID(base.db, id)).resolves.not.toThrow();
   });
 
   test('updateNoraQuestionByID', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -201,19 +204,17 @@ describe('noraQuestion', () => {
     const updateAnswerIndex = 0;
     const updateScore = 100;
 
-    try {
-      await updateNoraQuestionByID(db, id, {
+    await expect(
+      updateNoraQuestionByID(base.db, id, {
         question_title: updateTitle,
         answers: updateAnswers,
         current_answer_index: updateAnswerIndex,
         score: updateScore,
-      });
-    } catch (e) {
-      expect(e).not.toThrow();
-    }
+      })
+    ).resolves.not.toThrow();
 
     // DB更新されている
-    const [r] = await db.query<RowDataPacket[]>(
+    const r = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM nora_question WHERE id = ?',
       id
     );
@@ -231,7 +232,7 @@ describe('noraQuestion', () => {
   });
 
   test('updateNoraQuestionByIDで範囲外のcurrent_answer_indexを更新する', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -243,21 +244,21 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    expect(async () => {
-      await updateNoraQuestionByID(db, id, {
+    await expect(async () => {
+      await updateNoraQuestionByID(base.db, id, {
         current_answer_index: 10, // 範囲外に更新する
       });
     }).rejects.toThrow('answerIndex is out of db answers index');
 
-    expect(async () => {
-      await updateNoraQuestionByID(db, id, {
+    await expect(async () => {
+      await updateNoraQuestionByID(base.db, id, {
         current_answer_index: -1, // 負の値
       });
     }).rejects.toThrow('answerIndex is out of db answers index');
   });
 
   test('updateNoraQuestionByIDで範囲外になるようなanswersを更新する', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -269,15 +270,15 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    expect(async () => {
-      await updateNoraQuestionByID(db, id, {
+    await expect(async () => {
+      await updateNoraQuestionByID(base.db, id, {
         answers: [{index: 0, answerText: 'aaaa'}], // length = 1 にする
       });
     }).rejects.toThrow('answerIndex is out of answers index');
   });
 
   test('updateNoraQuestionByIDで範囲外になるようなanswersとcurrent_answer_indexを更新する', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -289,15 +290,15 @@ describe('noraQuestion', () => {
 
     const id = rows.insertId;
 
-    expect(async () => {
-      await updateNoraQuestionByID(db, id, {
+    await expect(async () => {
+      await updateNoraQuestionByID(base.db, id, {
         answers: [{index: 0, answerText: 'aaaa'}], // length = 1 にする
         current_answer_index: 10, // 範囲外
       });
     }).rejects.toThrow('answerIndex is out of answers index');
 
-    expect(async () => {
-      await updateNoraQuestionByID(db, id, {
+    await expect(async () => {
+      await updateNoraQuestionByID(base.db, id, {
         answers: [{index: 0, answerText: 'aaaa'}], // length = 1 にする
         current_answer_index: -100, // 負の値
       });
@@ -305,7 +306,7 @@ describe('noraQuestion', () => {
   });
 
   test('updateNoraQuestionByIDでtitleだけのように1つのカラムで更新できる', async () => {
-    const [rows] = await db.query<ResultSetHeader>(
+    const rows = await base.db.test<ResultSetHeader>(
       `INSERT INTO nora_question(
       question_title,
       answers,
@@ -319,16 +320,14 @@ describe('noraQuestion', () => {
 
     const updateTitle = 'aaaaaa';
 
-    try {
-      await updateNoraQuestionByID(db, id, {
+    await expect(
+      updateNoraQuestionByID(base.db, id, {
         question_title: updateTitle,
-      });
-    } catch (e) {
-      expect(e).not.toThrow();
-    }
+      })
+    ).resolves.not.toThrow();
 
     // DB更新されている
-    const [r] = await db.query<RowDataPacket[]>(
+    const r = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM nora_question WHERE id = ?',
       id
     );
