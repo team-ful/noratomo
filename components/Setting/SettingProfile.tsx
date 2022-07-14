@@ -21,6 +21,7 @@ import {
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import useUser from '../Session/useUser';
+import SettingAvatar from './SettingAvatar';
 
 type SettingInputs = {
   display_name: string;
@@ -105,6 +106,9 @@ const SettingProfile = () => {
   return (
     <Center>
       <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
+        <Center my="1.5rem">
+          <SettingAvatar />
+        </Center>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={Boolean(errors.display_name)}>
             <FormLabel htmlFor="display_name">表示名</FormLabel>
