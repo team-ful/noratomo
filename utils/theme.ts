@@ -1,6 +1,6 @@
-import {extendTheme} from '@chakra-ui/react';
+import {extendTheme, withDefaultColorScheme} from '@chakra-ui/react';
 
-const theme = extendTheme({
+const theme = {
   components: {
     CloseButton: {
       baseStyle: {
@@ -9,7 +9,29 @@ const theme = extendTheme({
         },
       },
     },
+    Input: {
+      defaultProps: {
+        focusBorderColor: 'orange.400',
+      },
+    },
+    NumberInput: {
+      defaultProps: {
+        focusBorderColor: 'orange.400',
+      },
+    },
+    Textarea: {
+      defaultProps: {
+        focusBorderColor: 'orange.400',
+      },
+    },
+
+    Select: {
+      defaultProps: {
+        focusBorderColor: 'orange.400',
+      },
+    },
   },
+
   styles: {
     global: (props: {colorMode: string}) => ({
       // Chrome
@@ -27,6 +49,22 @@ const theme = extendTheme({
       },
     }),
   },
-});
+};
 
-export default theme;
+export default extendTheme(
+  theme,
+  withDefaultColorScheme({
+    colorScheme: 'orange',
+    components: [
+      'Button',
+      'Checkbox',
+      'Switch',
+      'Spinner',
+      'CircularProgress',
+      'Radio',
+      'Slider',
+      'Select',
+      'Tabs',
+    ],
+  })
+);

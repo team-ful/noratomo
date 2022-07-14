@@ -5,15 +5,15 @@ import {
   Heading,
   Center,
   Avatar,
-  SimpleGrid,
+  Link,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import {Tooltip} from '@chakra-ui/react';
+import NextLink from 'next/link';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
 import IconPost from '../Logo/IconPost';
-import IconSearch from '../Logo/IconSearch';
 import MenuButton from '../Logo/MenuButton';
 import NoticeExist from '../Logo/NoticeExist';
 import useUser from '../Session/useUser';
@@ -21,7 +21,7 @@ import useUser from '../Session/useUser';
 const Header = () => {
   const user = useUser();
   return (
-    <Box width="100%" height="2.5rem">
+    <Box width="100%" height="3.5rem">
       <Flex height="100%">
         <Center height="100%">
           <Heading fontSize="2rem" fontFamily="Permanent Marker" ml=".5rem">
@@ -69,84 +69,19 @@ const Header = () => {
           </Box>
           <Tooltip label="マイページ">
             <Center mr=".5rem" ml=".5rem">
-              <Avatar
-                size={{base: 'sm', sm: 'sm'}}
-                src={user?.avatar_url}
-                icon={<Avater size="25px" />}
-              />
+              <NextLink passHref href={'/profile'}>
+                <Link>
+                  <Avatar
+                    size={{base: 'md', sm: 'sm'}}
+                    src={user?.avatar_url}
+                    icon={<Avater size="25px" />}
+                  />
+                </Link>
+              </NextLink>
             </Center>
           </Tooltip>
         </Flex>
       </Flex>
-      <Box
-        position="fixed"
-        display={{base: 'block', sm: 'none'}}
-        top="0"
-        left="0"
-        w="100%"
-      >
-        <SimpleGrid
-          columns={5}
-          position="relative"
-          left="0"
-          zIndex="10"
-          mx="1rem"
-          p="5px"
-          borderRadius="50px"
-          bg="white"
-          boxShadow="-5px 5px 14px #dedede"
-          top="calc(100vh - 80px)"
-          css={{
-            // iPhoneだとdvhじゃないとツールバーが画面の外に出てしまうため重ねて定義する
-            top: 'calc(100dvh - 80px)',
-          }}
-        >
-          <Center>
-            <MenuButton
-              icon={<IconHome size="23px" />}
-              label="ホーム"
-              isTooltip={false}
-              href="/"
-            />
-          </Center>
-
-          <Center>
-            <MenuButton
-              icon={<IconSearch size="23px" />}
-              label="検索"
-              isTooltip={false}
-              href="/"
-            />
-          </Center>
-
-          <Center>
-            <MenuButton
-              icon={<IconPost size="26px" />}
-              label="募集する"
-              isTooltip={false}
-              href="/"
-            />
-          </Center>
-
-          <Center>
-            <MenuButton
-              icon={<NoticeExist size="23px" />}
-              label="通知"
-              isTooltip={false}
-              href="/"
-            />
-          </Center>
-
-          <Center>
-            <MenuButton
-              icon={<IconChat size="23px" />}
-              label="チャット"
-              isTooltip={false}
-              href="/"
-            />
-          </Center>
-        </SimpleGrid>
-      </Box>
     </Box>
   );
 };

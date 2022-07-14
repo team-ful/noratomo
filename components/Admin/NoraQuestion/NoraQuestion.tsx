@@ -56,12 +56,7 @@ const NoraQuestion = () => {
   return (
     <Box>
       <Heading textAlign="center">野良認証問題</Heading>
-      <Button
-        onClick={createModal.onOpen}
-        colorScheme="blue"
-        mb="1.5rem"
-        ml="1rem"
-      >
+      <Button onClick={createModal.onOpen} mb="1.5rem" ml="1rem">
         新規作成
       </Button>
       <Box overflow="scroll">

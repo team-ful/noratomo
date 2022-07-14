@@ -1,5 +1,5 @@
+import LoginForm from '../components/Login/Form';
 import Require from '../components/Session/Require';
-import LoginForm from '../components/login/Form';
 
 const Login = () => {
   return (

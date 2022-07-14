@@ -133,13 +133,7 @@ const CreateNewNoraQuestion: React.FC<Props> = ({isOpen, onClose, create}) => {
                   {errors.score && errors.score.message}
                 </FormErrorMessage>
               </FormControl>
-              <Button
-                mt="1rem"
-                colorScheme="blue"
-                type="submit"
-                w="100%"
-                isLoading={load}
-              >
+              <Button mt="1rem" type="submit" w="100%" isLoading={load}>
                 追加
               </Button>
             </form>
