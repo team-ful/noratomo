@@ -1,17 +1,41 @@
-import {Tab, TabList, Tabs, Heading, Center, Box} from '@chakra-ui/react';
-import NextLink from 'next/link';
-import {useRouter} from 'next/router';
+import {Tab, TabList, Tabs, Center, Box} from '@chakra-ui/react';
+import {Router} from 'next/router';
 import React from 'react';
+import SettingTitle from './SettingTitle';
 
 interface Props {
-  index: number;
   children: React.ReactNode;
+  router: Router;
 }
 
-const SettingMenu: React.FC<Props> = props => {
-  const router = useRouter();
+const SettingMenu = React.memo<Props>(props => {
+  const [index, setIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const path = props.router.pathname.split('/').at(-1);
+    let i = 0;
+    switch (path) {
+      case 'password':
+        i = 1;
+        break;
+      case 'mail':
+        i = 2;
+        break;
+      case 'notice':
+        i = 3;
+        break;
+      default:
+        break;
+    }
+
+    setIndex(i);
+  }, []);
 
   const handleChange = (i: number) => {
+    if (i === index) {
+      return;
+    }
+
     let path = '/setting';
     switch (i) {
       case 0:
@@ -29,15 +53,14 @@ const SettingMenu: React.FC<Props> = props => {
         break;
     }
 
-    router.push(path);
+    setIndex(i);
+    props.router.push(path);
   };
 
   return (
     <Center>
       <Box w="100%">
-        <Heading textAlign="center" mb="1rem" mt="2rem">
-          設定
-        </Heading>
+        <SettingTitle />
         <Box
           overflow="auto"
           css={{
@@ -46,20 +69,12 @@ const SettingMenu: React.FC<Props> = props => {
           }}
         >
           <Box width={{base: '700px', sm: '100%'}}>
-            <Tabs isFitted defaultIndex={props.index} onChange={handleChange}>
+            <Tabs isFitted index={index} onChange={handleChange}>
               <TabList>
-                <NextLink href="/setting" passHref>
-                  <Tab mx=".5rem">プロフィール</Tab>
-                </NextLink>
-                <NextLink href="/setting/password" passHref>
-                  <Tab mx=".5rem">パスワード</Tab>
-                </NextLink>
-                <NextLink href="/setting/mail" passHref>
-                  <Tab mx=".5rem">メールアドレス</Tab>
-                </NextLink>
-                <NextLink href="/setting/notice" passHref>
-                  <Tab mx=".5rem">通知</Tab>
-                </NextLink>
+                <Tab mx=".5rem">プロフィール</Tab>
+                <Tab mx=".5rem">パスワード</Tab>
+                <Tab mx=".5rem">メールアドレス</Tab>
+                <Tab mx=".5rem">通知</Tab>
               </TabList>
             </Tabs>
           </Box>
@@ -68,6 +83,8 @@ const SettingMenu: React.FC<Props> = props => {
       </Box>
     </Center>
   );
-};
+});
+
+SettingMenu.displayName = 'SettingMenu';
 
 export default SettingMenu;
