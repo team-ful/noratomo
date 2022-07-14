@@ -11,7 +11,7 @@ import 'nprogress/nprogress.css';
 
 nprogress.configure({showSpinner: false, speed: 400, minimum: 0.25});
 
-const MyApp = ({Component, pageProps}: AppProps) => {
+const MyApp = ({Component, pageProps, router}: AppProps) => {
   Router.events.on('routeChangeStart', () => {
     nprogress.start();
   });
@@ -29,7 +29,7 @@ const MyApp = ({Component, pageProps}: AppProps) => {
       <RecoilRoot>
         <ChakraProvider theme={theme}>
           <Me />
-          <Frame>
+          <Frame router={router}>
             <Component {...pageProps} />
           </Frame>
         </ChakraProvider>
