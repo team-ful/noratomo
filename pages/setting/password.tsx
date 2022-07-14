@@ -1,11 +1,11 @@
 import type {NextPage} from 'next';
 import Require from '../../components/Session/Require';
-import SettingForm from '../../components/Setting/Setting';
+import SettingMenu from '../../components/Setting/SettingMenu';
 
 const Password: NextPage = () => {
   return (
     <Require loginRequire={true} path="/">
-      <SettingForm />
+      <SettingMenu index={1}>aaa</SettingMenu>
     </Require>
   );
 };
