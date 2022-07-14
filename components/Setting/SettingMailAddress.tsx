@@ -47,7 +47,7 @@ const SettingMailAddress = () => {
 
   return (
     <Center>
-      <Box mt="2rem" w={{base: '97%', sm: '400px', md: '500px'}}>
+      <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl isInvalid={Boolean(errors.mail)}>
             <FormLabel htmlFor="mail">メールアドレス</FormLabel>

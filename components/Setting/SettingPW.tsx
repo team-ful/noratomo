@@ -55,7 +55,7 @@ const SettingPW = () => {
 
   return (
     <Center>
-      <Box mt="2rem" w={{base: '97%', sm: '400px', md: '500px'}}>
+      <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={Boolean(errors.now_password)}>
