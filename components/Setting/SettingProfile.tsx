@@ -82,6 +82,10 @@ const SettingProfile = () => {
       formattedBody.push(`${b}=${encodeURIComponent(body[b])}`);
     }
 
+    if (formattedBody.length === 0) {
+      return;
+    }
+
     const res = await fetch('/api/user/config', {
       method: 'PUT',
       headers: {
@@ -159,7 +163,7 @@ const SettingProfile = () => {
               {errors.user_name && errors.user_name.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={Boolean(errors.gender)} mt="1.2rem">
+          <FormControl isInvalid={Boolean(errors.profile)} mt="1.2rem">
             <FormLabel htmlFor="profile">プロフィール</FormLabel>
             <Textarea
               size="lg"
