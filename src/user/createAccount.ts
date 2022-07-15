@@ -50,7 +50,7 @@ export class CreateAccountBySSO {
     const user = await findUserByCateiruSSO(this.db, this.ssoId);
 
     if (user) {
-      return await this.update(user.id);
+      return await this.update(user.id, user);
     }
 
     return await this.createUser();
@@ -60,22 +60,14 @@ export class CreateAccountBySSO {
    * ユーザを更新する
    *
    * @param {number} id - user id
+   * @param {User} user - 元のUser
    * @returns {Promise<User>} - user
    */
-  private async update(id: number): Promise<User> {
+  private async update(id: number, user: User): Promise<User> {
     const option: UpdateOption = {};
 
-    if (this.displayName) {
-      option['display_name'] = this.displayName;
-    }
-    if (this.mail) {
-      option['mail'] = this.mail;
-    }
-    if (this.isAdmin) {
+    if (this.isAdmin !== user.is_admin) {
       option['is_admin'] = this.isAdmin;
-    }
-    if (this.avatarURL) {
-      option['avatar_url'] = this.avatarURL;
     }
 
     await updateUser(this.db, id, option);
