@@ -19,7 +19,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
       return (
         <Flex flexDirection="column" minHeight="100vh">
           <Box>
-            <Box mx="2rem">
+            <Box mx={{base: '.5rem', lg: '2rem'}}>
               <Header user={user} />
             </Box>
             {user && <HeaderToolbar />}

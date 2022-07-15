@@ -21,7 +21,7 @@ const Section3 = () => {
             </Heading>
             <Box fontSize={{base: '1.2rem', lg: '1.5rem'}}>
               <UnorderedList>
-                <ListItem>
+                <ListItem my="1rem">
                   気になるお店があるけど、
                   <Text
                     background="linear-gradient(transparent 70%, #F6AD55 0%)"
@@ -30,7 +30,7 @@ const Section3 = () => {
                     １人で行く勇気がない…
                   </Text>
                 </ListItem>
-                <ListItem>
+                <ListItem my="1rem">
                   食べ放題に行きたいけど、
                   <Text
                     background="linear-gradient(transparent 70%, #F6AD55 0%)"
@@ -39,7 +39,7 @@ const Section3 = () => {
                     1人じゃ入れさせてくれない…
                   </Text>
                 </ListItem>
-                <ListItem>
+                <ListItem my="1rem">
                   1回行けば慣れるけど、
                   <Text
                     background="linear-gradient(transparent 70%, #F6AD55 0%)"
