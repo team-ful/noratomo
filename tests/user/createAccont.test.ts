@@ -62,7 +62,7 @@ describe('cateiruSSO', () => {
 
     const dbUser = await findUserByUserID(base.db, user.user?.id || NaN);
 
-    expect(user.user).toEqual(dbUser);
+    expect(user.user).not.toEqual(dbUser);
     expect(dbUser).toEqual(loginUser);
   });
 
