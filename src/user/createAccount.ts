@@ -65,18 +65,19 @@ export class CreateAccountBySSO {
   private async update(id: number): Promise<User> {
     const option: UpdateOption = {};
 
-    if (this.displayName) {
-      option['display_name'] = this.displayName;
-    }
-    if (this.mail) {
-      option['mail'] = this.mail;
-    }
+    // 設定で更新できるようになったのでログインごとに上書きされてほしくない
+    // if (this.displayName) {
+    //   option['display_name'] = this.displayName;
+    // }
+    // if (this.mail) {
+    //   option['mail'] = this.mail;
+    // }
     if (this.isAdmin) {
       option['is_admin'] = this.isAdmin;
     }
-    if (this.avatarURL) {
-      option['avatar_url'] = this.avatarURL;
-    }
+    // if (this.avatarURL) {
+    //   option['avatar_url'] = this.avatarURL;
+    // }
 
     await updateUser(this.db, id, option);
 
