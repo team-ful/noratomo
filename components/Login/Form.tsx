@@ -110,7 +110,7 @@ const LoginForm = () => {
           <Divider my="1.5rem" width="95%" />
         </Center>
         <Center>
-          <NextLink href="/login/forget" passHref>
+          <NextLink href="/create/account" passHref>
             <Link textAlign="center">アカウントを作成する</Link>
           </NextLink>
         </Center>
