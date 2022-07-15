@@ -1,12 +1,8 @@
-import {Box} from '@chakra-ui/react';
 import type {NextPage} from 'next';
+import Top from '../components/Top/Top';
 
 const Home: NextPage = () => {
-  return (
-    <Box fontSize="2rem" fontFamily="'Permanent Marker', cursive">
-      ぼでぃー
-    </Box>
-  );
+  return <Top />;
 };
 
 export default Home;
