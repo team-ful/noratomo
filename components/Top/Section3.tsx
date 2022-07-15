@@ -1,4 +1,11 @@
-import {Center, Box, Heading, UnorderedList, ListItem} from '@chakra-ui/react';
+import {
+  Center,
+  Box,
+  Heading,
+  UnorderedList,
+  ListItem,
+  Text,
+} from '@chakra-ui/react';
 
 const Section3 = () => {
   return (
@@ -15,12 +22,32 @@ const Section3 = () => {
             <Box fontSize={{base: '1.2rem', lg: '1.5rem'}}>
               <UnorderedList>
                 <ListItem>
-                  気になるお店があるけど、１人で行く勇気がない…
+                  気になるお店があるけど、
+                  <Text
+                    background="linear-gradient(transparent 70%, #F6AD55 0%)"
+                    as="span"
+                  >
+                    １人で行く勇気がない…
+                  </Text>
                 </ListItem>
                 <ListItem>
-                  食べ放題に行きたいけど、1人じゃ入れさせてくれない…
+                  食べ放題に行きたいけど、
+                  <Text
+                    background="linear-gradient(transparent 70%, #F6AD55 0%)"
+                    as="span"
+                  >
+                    1人じゃ入れさせてくれない…
+                  </Text>
                 </ListItem>
-                <ListItem>1回行けば慣れるけど、最初がなぁ</ListItem>
+                <ListItem>
+                  1回行けば慣れるけど、
+                  <Text
+                    background="linear-gradient(transparent 70%, #F6AD55 0%)"
+                    as="span"
+                  >
+                    最初がなぁ
+                  </Text>
+                </ListItem>
               </UnorderedList>
             </Box>
           </Box>
