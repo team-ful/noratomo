@@ -210,9 +210,7 @@ const SettingProfile = () => {
             </FormControl>
 
             <FormControl isInvalid={Boolean(errors.gender)} ml=".5rem">
-              <FormLabel htmlFor="gender" textAlign="center">
-                性別
-              </FormLabel>
+              <FormLabel htmlFor="gender">性別</FormLabel>
               <Select
                 placeholder="性別を選択"
                 id="gender"
