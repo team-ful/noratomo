@@ -1,11 +1,12 @@
-import {Box} from '@chakra-ui/react';
 import type {NextPage} from 'next';
+import Require from '../components/Session/Require';
+import Top from '../components/Top/Top';
 
 const Home: NextPage = () => {
   return (
-    <Box fontSize="2rem" fontFamily="'Permanent Marker', cursive">
-      ぼでぃー
-    </Box>
+    <Require loginRequire={false} path="/">
+      <Top />
+    </Require>
   );
 };
 

@@ -17,9 +17,11 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
     // 横の余白は持たせない
     if (pathname === '/') {
       return (
-        <Flex flexDirection="column" minHeight="100vh" mx="2rem">
+        <Flex flexDirection="column" minHeight="100vh">
           <Box>
-            <Header user={user} />
+            <Box mx="2rem">
+              <Header user={user} />
+            </Box>
             {user && <HeaderToolbar />}
             {children}
           </Box>
