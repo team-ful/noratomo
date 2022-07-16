@@ -20,7 +20,9 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
-import useUser from '../Session/useUser';
+import {useRecoilState} from 'recoil';
+import {UserState} from '../../utils/atom';
+import {User} from '../../utils/types';
 import SettingAvatar from './SettingAvatar';
 
 type SettingInputs = {
@@ -40,7 +42,7 @@ const SettingProfile = () => {
     formState: {errors, isSubmitting},
   } = useForm<SettingInputs>();
 
-  const user = useUser();
+  const [user, setUser] = useRecoilState(UserState);
   const toast = useToast();
 
   React.useEffect(() => {
@@ -59,23 +61,37 @@ const SettingProfile = () => {
   }, [user]);
 
   const onSubmit: SubmitHandler<SettingInputs> = async data => {
+    if (typeof user === 'undefined' || user === null) {
+      return;
+    }
+
     const body: {[key: string]: string | number} = {};
     const formattedBody: string[] = [];
+    const u: User = {...user};
 
     if (user?.user_name !== data.user_name) {
       body.user_name = data.user_name;
+      u.user_name = data.user_name;
     }
     if (user?.mail !== data.mail) {
       body.mail = data.mail;
+      u.mail = data.mail;
     }
     if (user?.profile !== data.profile) {
       body.profile = data.profile;
+      u.profile = data.profile;
     }
     if (user?.age !== data.age) {
       body.age = data.age;
+      u.age = data.age;
     }
     if (user?.gender !== data.gender) {
       body.gender = data.gender;
+      u.gender = data.gender;
+    }
+    if (user?.display_name !== data.display_name) {
+      body.display_name = data.display_name;
+      u.display_name = data.display_name;
     }
 
     for (const b in body) {
@@ -99,6 +115,8 @@ const SettingProfile = () => {
         title: '更新しました',
         status: 'info',
       });
+
+      setUser(u);
     } else {
       toast({
         title: await res.text(),

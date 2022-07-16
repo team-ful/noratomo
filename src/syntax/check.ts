@@ -68,10 +68,6 @@ export function checkDisplayName(displayName: string) {
   if (displayNameLen < 1 || displayNameLen >= 32) {
     throw new ApiError(400, 'display name is 1 <= x < 32');
   }
-
-  if (!/^[0-9a-zA-Z_-]+$/.test(displayName)) {
-    throw new ApiError(400, 'not display name format');
-  }
 }
 
 /**
