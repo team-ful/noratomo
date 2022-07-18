@@ -90,4 +90,24 @@ describe('noraQuestion', () => {
       },
     });
   });
+
+  test('getで管理者以外は403', async () => {
+    expect.hasAssertions();
+
+    const u = await base.newUser();
+    await u.addSession(base.db);
+
+    await testApiHandler({
+      handler: get,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: u.cookie,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(403);
+      },
+    });
+  });
 });
