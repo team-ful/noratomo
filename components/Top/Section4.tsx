@@ -17,7 +17,7 @@ const Section4 = () => {
   };
 
   return (
-    <Center h={{base: '40vh', lg: '70vh'}}>
+    <Center h={{base: '40vh', lg: '50vh'}}>
       <Box w={{base: '97%', lg: '700px'}}>
         <Heading
           textAlign="center"
