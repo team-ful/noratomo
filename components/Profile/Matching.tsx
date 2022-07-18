@@ -1,5 +1,5 @@
-const Matching = () => {
+const MatchingResult = () => {
   return <div>マッチングの経過</div>;
 };
 
-export default Matching;
+export default MatchingResult;

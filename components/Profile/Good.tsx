@@ -1,4 +1,4 @@
-const MyGood = () => {
+const Good = () => {
   return <div>いいねしたやつ</div>;
 };
-export default MyGood;
+export default Good;
