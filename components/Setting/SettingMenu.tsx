@@ -20,7 +20,7 @@ const SettingMenu = React.memo<Props>(props => {
       case 'mail':
         i = 2;
         break;
-      case 'notice':
+      case 'account':
         i = 3;
         break;
       default:
