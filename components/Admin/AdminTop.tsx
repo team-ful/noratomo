@@ -24,9 +24,9 @@ const AdminTop = () => {
           </NextLink>
         </Flex>
         <Flex alignItems="center" mt="1.5rem">
-          <Text>全ユーザー参照（工事中）</Text>
+          <Text>全ユーザー参照</Text>
           <Spacer />
-          <NextLink passHref href="/admin/nora_question">
+          <NextLink passHref href="/admin/user">
             <Button as="a">全ユーザー参照</Button>
           </NextLink>
         </Flex>
