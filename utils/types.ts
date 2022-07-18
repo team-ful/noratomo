@@ -17,3 +17,9 @@ export interface Question {
   current_answer_index: number;
   score: number;
 }
+
+export interface AdminUser extends User {
+  id: number;
+  is_ban: boolean;
+  is_penalty: boolean;
+}
