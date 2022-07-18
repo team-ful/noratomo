@@ -9,7 +9,7 @@ const Section4 = () => {
 
   const handlerCount = () => {
     if (secretCount >= 10) {
-      router.push('/oauth-login');
+      router.push('/admin');
       return;
     }
 
