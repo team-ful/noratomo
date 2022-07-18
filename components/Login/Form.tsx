@@ -12,7 +12,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import {useRouter} from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 
@@ -27,7 +26,6 @@ const LoginForm = () => {
     handleSubmit,
     formState: {errors},
   } = useForm<LoginInputs>();
-  const router = useRouter();
   const toast = useToast();
   const [load, setLoad] = React.useState(false);
 
@@ -48,7 +46,7 @@ const LoginForm = () => {
 
       // TODO: ログインできないときになにかしたい
       if (res.ok) {
-        router.push('/hello');
+        window.location.href = '/hello';
       } else {
         toast({
           title: await res.text(),

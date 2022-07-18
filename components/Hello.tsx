@@ -1,4 +1,5 @@
 import {Center, Heading, Skeleton} from '@chakra-ui/react';
+import React from 'react';
 import useUser from './Session/useUser';
 
 const Hello = () => {
