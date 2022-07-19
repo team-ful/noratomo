@@ -157,6 +157,15 @@ export class CreateAccountByPassword {
    * @returns {User} - ユーザ
    */
   public async create(db: DBOperator): Promise<User> {
+    let hashPW = '';
+    try {
+      hashPW = await argon2.hash(this.password);
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new ApiError(500, e.message);
+      }
+    }
+
     const userID = await createUserPW(
       db,
       this.mail,
@@ -164,8 +173,6 @@ export class CreateAccountByPassword {
       this.gender,
       this.age
     );
-
-    const hashPW = await argon2.hash(this.password);
 
     const c: CertModel = {
       user_id: userID,
