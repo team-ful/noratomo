@@ -1,7 +1,15 @@
 # Based on https://github.com/vercel/next.js/tree/canary/examples/with-docker
 # Rebuild the source code only when needed
-FROM node:16 AS builder
+FROM node:16-alpine AS builder
 WORKDIR /app
+
+# argon2で、Alpine Linuxでは、ビルド時と実行時のnodeのバージョンが違うと実行エラーが発生するため、ソースからビルドする
+# ref. https://github.com/ranisalt/node-argon2/issues/302
+ENV npm_config_build_from_source true
+
+# argon2のビルド必要なツールをインストール
+RUN apk add make g++ python3 git
+RUN yarn global add -g node-pre-gyp
 
 COPY ./package.json /app/package.json
 COPY ./yarn.lock /app/yarn.lock

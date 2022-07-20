@@ -18,7 +18,7 @@
         "@emotion/styled": "^11.9.3",
         "@fontsource/permanent-marker": "^4.5.5",
         "@google-cloud/storage": "^6.2.2",
-        "argon2": "0.27.2",
+        "argon2": "^0.28.7",
         "axios": "^0.27.2",
         "client-hints": "^0.2.2",
         "content-type": "^1.0.4",
