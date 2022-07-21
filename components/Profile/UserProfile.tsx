@@ -22,28 +22,33 @@ const UserProfile = React.memo(() => {
   const user = useUser();
 
   return (
-    <Box mt="3rem" w={{base: '96%x', sm: '100%'}}>
+    <Box mt="2rem" w={{base: '96%x', sm: '100%'}}>
       <Grid
-        ml={{base: '30px', sm: 'none'}}
+        ml="auto"
+        w="96%"
         templateRows="repeat(2, 1fr)"
         templateColumns="repeat(5, 1fr)"
       >
         <GridItem rowSpan={2} colSpan={1}>
           <VStack>
             <Avatar
-              size="xl"
+              size={{base: 'xl', sm: '2xl'}}
               src={user?.avatar_url}
               icon={<Avater size="25px" />}
               boxShadow="10px 10px 30px #A0AEC0B3"
             />
-            <Text fontSize="lg" fontWeight="bold">
-              {user?.display_name}
-            </Text>
-            <Text _before={{content: '"@"'}}>{user?.user_name}</Text>
+            <Box>
+              <Text fontSize="lg" fontWeight="bold">
+                {user?.display_name}
+              </Text>
+              <Text mt="0px" _before={{content: '"@"'}}>
+                {user?.user_name}
+              </Text>
+            </Box>
           </VStack>
         </GridItem>
         <GridItem colSpan={4}>
-          <HStack marginTop="10px">
+          <HStack marginTop={{base: '20px', sm: '10px'}}>
             <Spacer />
             <Spacer />
             <Box>
@@ -68,10 +73,15 @@ const UserProfile = React.memo(() => {
         </GridItem>
         <GridItem colSpan={2}></GridItem>
         <GridItem colSpan={2}>
-          <Box textAlign="center" ml="10px" mt="40px">
+          <Box textAlign="center" ml="0" mt={{base: '35px', sm: '50px'}}>
             <NextLink passHref href={'/setting'}>
               <Link>
-                <Button size="sm">プロフィール編集</Button>
+                <Button
+                  size={{base: 'xs', sm: 'sm'}}
+                  fontSize={{base: 'xs', sm: 'sm'}}
+                >
+                  プロフィール編集
+                </Button>
               </Link>
             </NextLink>
           </Box>
