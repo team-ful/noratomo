@@ -1,7 +1,6 @@
 import {Tab, TabList, Tabs, Box} from '@chakra-ui/react';
 import {Router} from 'next/router';
 import React from 'react';
-//import SettingTitle from './SettingTitle';
 
 interface Props {
   router: Router;
@@ -54,7 +53,6 @@ const ProfileMenu = React.memo<Props>(props => {
 
   return (
     <>
-      {/* <ProfileTitle /> */}
       <Box
         overflow="auto"
         css={{

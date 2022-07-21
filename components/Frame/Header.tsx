@@ -72,6 +72,8 @@ const Header = () => {
               <NextLink passHref href={'/profile'}>
                 <Link>
                   <Avatar
+                    //
+                    zIndex="1"
                     size={{base: 'md', sm: 'sm'}}
                     src={user?.avatar_url}
                     icon={<Avater size="25px" />}

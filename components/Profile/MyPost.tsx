@@ -1,5 +1,13 @@
+import {Center, Box} from '@chakra-ui/react';
+
 const MyPost = () => {
-  return <div>過去の投稿</div>;
+  return (
+    <Center>
+      <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
+        投稿したやつ
+      </Box>
+    </Center>
+  );
   //参考
   //   CREATE TABLE IF NOT EXISTS `entry` (
   //     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,

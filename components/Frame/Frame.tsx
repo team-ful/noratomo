@@ -45,6 +45,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
           >
             <Box>
               <Header />
+              <HeaderToolbar />
               <Center>
                 <Box w="100%">
                   <UserProfile />
