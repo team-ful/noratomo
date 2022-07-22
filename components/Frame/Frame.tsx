@@ -92,7 +92,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
             minWidth={{base: '96%', sm: 'auto'}}
           >
             <Box>
-              <Header />
+              <Header user={user} />
               <HeaderToolbar />
               <Center>
                 <Box w="100%">
