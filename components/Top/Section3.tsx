@@ -9,9 +9,9 @@ import {
 
 const Section3 = () => {
   return (
-    <Center h={{base: '40vh', lg: '70vh'}}>
+    <Center h={{base: '50vh', md: '60vh', lg: '70vh'}}>
       <Box
-        background="center center / 60% auto no-repeat url(https://storage.googleapis.com/noratomo/contents/top_cat1.png)"
+        background="center center / 100% auto no-repeat url(https://storage.googleapis.com/noratomo/contents/top_cat4.png)"
         h="100%"
       >
         <Center h="100%" backgroundColor="rgba(255, 255, 255, 0.9)">

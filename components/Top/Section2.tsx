@@ -2,7 +2,7 @@ import {Box, Center, Text, Heading} from '@chakra-ui/react';
 
 const Section2 = () => {
   return (
-    <Center h={{base: '60vh', lg: '100vh'}}>
+    <Center h={{base: '60vh', lg: '80vh'}}>
       <Box
         background="center center / 100% auto no-repeat url(https://storage.googleapis.com/noratomo/contents/top_cat3.png)"
         h="100%"
