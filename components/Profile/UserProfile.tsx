@@ -3,14 +3,10 @@ import {
   Avatar,
   Text,
   Button,
-  Link,
-  HStack,
-  VStack,
-  Spacer,
-  Grid,
-  GridItem,
   Heading,
+  Flex,
   Center,
+  SimpleGrid,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
@@ -22,75 +18,88 @@ const UserProfile = React.memo(() => {
   const user = useUser();
 
   return (
-    <Box mt="2rem" w={{base: '96%x', sm: '100%'}}>
-      <Grid
-        ml="auto"
-        w="96%"
-        templateRows="repeat(2, 1fr)"
-        templateColumns="repeat(5, 1fr)"
-      >
-        <GridItem rowSpan={2} colSpan={1}>
-          <VStack>
-            <Avatar
-              size={{base: 'xl', sm: '2xl'}}
-              src={user?.avatar_url}
-              icon={<Avater size="25px" />}
-              boxShadow="10px 10px 30px #A0AEC0B3"
-            />
-            <Box>
-              <Text fontSize="lg" fontWeight="bold">
-                {user?.display_name}
-              </Text>
-              <Text mt="0px" _before={{content: '"@"'}}>
-                {user?.user_name}
-              </Text>
-            </Box>
-          </VStack>
-        </GridItem>
-        <GridItem colSpan={4}>
-          <HStack marginTop={{base: '20px', sm: '10px'}}>
-            <Spacer />
-            <Spacer />
-            <Box>
-              {/* コンポーネント化予定 */}
-              <Text textAlign="center">10</Text>
-              <Heading size="md">募集</Heading>
-            </Box>
-            <Spacer />
-            <Box>
-              {/* コンポーネント化予定 */}
-              <Text textAlign="center">10</Text>
-              <Heading size="md">いいね</Heading>
-            </Box>
-            <Spacer />
-            <Box>
-              {/* コンポーネント化予定 */}
-              <Text textAlign="center">10</Text>
-              <Heading size="md">マッチ</Heading>
-            </Box>
-            <Spacer />
-          </HStack>
-        </GridItem>
-        <GridItem colSpan={2}></GridItem>
-        <GridItem colSpan={2}>
-          <Box textAlign="center" ml="0" mt={{base: '35px', sm: '50px'}}>
-            <NextLink passHref href={'/setting'}>
-              <Link>
-                <Button
-                  size={{base: 'xs', sm: 'sm'}}
-                  fontSize={{base: 'xs', sm: 'sm'}}
-                >
-                  プロフィール編集
-                </Button>
-              </Link>
-            </NextLink>
+    <Box mt="3rem" w={{base: '96%x', sm: '100%'}}>
+      <Center w="100%">
+        <Box ml=".5rem">
+          <Avatar
+            size={{base: 'xl', sm: '2xl'}}
+            src={user?.avatar_url}
+            icon={<Avater size="25px" />}
+            boxShadow="10px 10px 30px #A0AEC0B3"
+          />
+          <Box mt="1rem" ml={{base: '0', sm: '.5rem'}}>
+            <Text fontSize="1.6rem" fontWeight="bold" whiteSpace="nowrap">
+              {user?.display_name}
+            </Text>
+            <Text mt="0px" _before={{content: '"@"'}}>
+              {user?.user_name}
+            </Text>
           </Box>
-        </GridItem>
-      </Grid>
+        </Box>
+        <Box w="100%">
+          <Flex mr="1rem" justifyContent="flex-end">
+            <NextLink passHref href={'/setting'}>
+              <Button as="a" size="md">
+                プロフィール編集
+              </Button>
+            </NextLink>
+          </Flex>
+          <Flex
+            display={{base: 'none', sm: 'flex'}}
+            mt="1rem"
+            justifyContent="flex-end"
+          >
+            <SimpleGrid columns={3} spacing={5} w="300px">
+              <Box>
+                <Text textAlign="center">10</Text>
+                <Heading fontSize="1rem" textAlign="center">
+                  募集
+                </Heading>
+              </Box>
 
-      <Center m="2rem 1rem">
-        <Text>{user?.profile}</Text>
+              <Box>
+                <Text textAlign="center">10</Text>
+                <Heading fontSize="1rem" textAlign="center">
+                  いいね
+                </Heading>
+              </Box>
+
+              <Box>
+                <Text textAlign="center">10</Text>
+                <Heading fontSize="1rem" textAlign="center">
+                  マッチ
+                </Heading>
+              </Box>
+            </SimpleGrid>
+          </Flex>
+        </Box>
       </Center>
+      <Box display={{base: 'block', sm: 'none'}} mx=".5rem" mt=".5rem">
+        <SimpleGrid columns={3} spacing={5}>
+          <Box>
+            <Text textAlign="center">10</Text>
+            <Heading textAlign="center" size="md">
+              募集
+            </Heading>
+          </Box>
+
+          <Box>
+            <Text textAlign="center">10</Text>
+            <Heading textAlign="center" size="md">
+              いいね
+            </Heading>
+          </Box>
+
+          <Box>
+            <Text textAlign="center">10</Text>
+            <Heading textAlign="center" size="md">
+              マッチ
+            </Heading>
+          </Box>
+        </SimpleGrid>
+      </Box>
+
+      <Text m="2rem 1rem">{user?.profile}</Text>
     </Box>
   );
 });
