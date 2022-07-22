@@ -96,14 +96,6 @@ describe('checkDisplayName', () => {
       expect(() => checkDisplayName(n)).not.toThrow();
     }
   });
-
-  test('フォーマットが正しくないとエラー', () => {
-    const names = ['@@@asogo4p', '', randomText(64)];
-
-    for (const n of names) {
-      expect(() => checkDisplayName(n)).toThrow();
-    }
-  });
 });
 
 describe('checkProfile', () => {

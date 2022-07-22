@@ -20,7 +20,7 @@ const SettingMenu = React.memo<Props>(props => {
       case 'mail':
         i = 2;
         break;
-      case 'notice':
+      case 'account':
         i = 3;
         break;
       default:
@@ -46,7 +46,7 @@ const SettingMenu = React.memo<Props>(props => {
         path = '/setting/mail';
         break;
       case 3:
-        path = '/setting/notice';
+        path = '/setting/account';
         break;
       default:
         break;
@@ -72,7 +72,7 @@ const SettingMenu = React.memo<Props>(props => {
               <Tab mx=".5rem">プロフィール</Tab>
               <Tab mx=".5rem">パスワード</Tab>
               <Tab mx=".5rem">メールアドレス</Tab>
-              <Tab mx=".5rem">通知</Tab>
+              <Tab mx=".5rem">アカウント</Tab>
             </TabList>
           </Tabs>
         </Box>

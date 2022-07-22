@@ -1,13 +1,13 @@
 import type {NextPage} from 'next';
 import Require from '../../components/Session/Require';
-import SettingNotice from '../../components/Setting/SettingNotice';
+import SettingAccount from '../../components/Setting/SettingAccount';
 
-const Notice: NextPage = () => {
+const Account: NextPage = () => {
   return (
     <Require loginRequire={true} path="/">
-      <SettingNotice />
+      <SettingAccount />
     </Require>
   );
 };
 
-export default Notice;
+export default Account;

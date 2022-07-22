@@ -14,8 +14,8 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Select,
+  useToast,
 } from '@chakra-ui/react';
-import {useRouter} from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler, FormProvider} from 'react-hook-form';
 import Password, {PasswordForm} from '../Common/Form/Password';
@@ -31,7 +31,7 @@ const CreateAccount = () => {
   const [pwOk, setPWOK] = React.useState(false);
   const [load, setLoad] = React.useState(false);
 
-  const router = useRouter();
+  const toast = useToast();
 
   const methods = useForm<CreateAccountForm>();
   const {
@@ -73,7 +73,12 @@ const CreateAccount = () => {
 
       // TODO: ログインできないときになにかしたい
       if (res.ok) {
-        router.push('/hello');
+        window.location.href = '/hello';
+      } else {
+        toast({
+          status: 'error',
+          title: await res.text(),
+        });
       }
     };
 

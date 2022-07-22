@@ -291,6 +291,32 @@ export async function findUserByUserNameAndMail(
 }
 
 /**
+ * 全ユーザを返す
+ *
+ * @param {DBOperator} db - database
+ * @param {number} limit - db limit
+ * @param {number} offset - db offset
+ */
+export async function allUsers(
+  db: DBOperator,
+  limit?: number,
+  offset?: number
+) {
+  let query = sql.select('*').from('user');
+
+  if (typeof limit === 'number') {
+    query = query.limit(limit);
+  }
+  if (typeof offset === 'number') {
+    query = query.offset(offset);
+  }
+
+  const rows = await db.multi(query.toParams({placeholder: '?'}));
+
+  return rows.map(v => new User(v));
+}
+
+/**
  * 設定、プロフィールを更新する
  *
  * @param {DBOperator} db - database

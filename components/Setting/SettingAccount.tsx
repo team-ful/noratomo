@@ -8,8 +8,10 @@ import {
   Center,
   Box,
   Spacer,
+  Heading,
 } from '@chakra-ui/react';
 import {SubmitHandler, useForm} from 'react-hook-form';
+import SettingAccountDanger from './SettingAccountDanger';
 
 type NoticeSettingForm = {
   page_notification: boolean;
@@ -37,6 +39,9 @@ const SettingNotice = () => {
     <Center>
       <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <Heading mb="2rem" fontSize="1.5rem">
+            通知設定
+          </Heading>
           <FormControl isInvalid={Boolean(errors.page_notification)} as={Flex}>
             <FormLabel htmlFor="page_notification">
               ページ内での通知を有効にする
@@ -68,6 +73,7 @@ const SettingNotice = () => {
             保存
           </Button>
         </form>
+        <SettingAccountDanger />
       </Box>
     </Center>
   );

@@ -13,6 +13,7 @@ import {
   findUserByUserNameAndMail,
   updateUser,
   deleteUserByID,
+  allUsers,
 } from '../../src/services/user';
 import TestBase from '../../src/tests/base';
 import {createCertModel, createUserModel} from '../../src/tests/models';
@@ -303,6 +304,48 @@ describe('findUserByUserNameAndMail', () => {
     );
 
     expect(dbUser).toBeNull();
+  });
+});
+
+describe('allUsers', () => {
+  const base = new TestBase();
+
+  beforeAll(async () => {
+    await base.connection();
+  });
+
+  afterAll(async () => {
+    await base.end();
+  });
+
+  test('全件取得できる', async () => {
+    const user = await base.newUser();
+
+    const users = await allUsers(base.db);
+
+    if (typeof user.user === 'undefined') {
+      throw new Error('user undefined');
+    }
+
+    expect(users.length).not.toBe(0);
+    // 1件だけ比較して存在するかどうか
+    expect(users.map(v => v.id).includes(user.user.id)).toBeTruthy();
+  });
+
+  test('limit指定して取得できる', async () => {
+    await base.multiUser(5);
+
+    const users = await allUsers(base.db, 3);
+
+    expect(users.length).toBe(3);
+  });
+
+  test('offset指定して取得できる', async () => {
+    await base.multiUser(5);
+
+    const users = await allUsers(base.db, 3, 2);
+
+    expect(users.length).toBe(3);
   });
 });
 
