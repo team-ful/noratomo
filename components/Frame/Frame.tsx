@@ -82,7 +82,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
           </Flex>
         </Center>
       );
-    } else if (/\/profile\/?.*/g.test(router.pathname)) {
+    } else if (router.pathname === "/profile")) {
       return (
         <Center>
           <Flex

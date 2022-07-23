@@ -99,7 +99,7 @@ const UserProfile = React.memo(() => {
         </SimpleGrid>
       </Box>
 
-      <Text m="2rem 1rem">{user?.profile}</Text>
+      <Text m="2rem 1rem" as="pre">{user?.profile}</Text>
     </Box>
   );
 });
