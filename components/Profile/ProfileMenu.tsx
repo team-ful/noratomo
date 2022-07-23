@@ -60,7 +60,7 @@ const ProfileMenu = React.memo<Props>(props => {
           scrollbarWidth: 'none',
         }}
       >
-        <Box width={{base: '700px', sm: '100%'}}>
+        <Box width={{base: '500px', sm: '100%'}}>
           <Tabs isFitted index={index} onChange={handleChange}>
             <TabList>
               <Tab mx=".5rem">募集</Tab>
