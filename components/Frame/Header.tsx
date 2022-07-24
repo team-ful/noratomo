@@ -106,7 +106,6 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
           <NextLink passHref href={'/profile'}>
             <Box as="a">
               <Avatar
-                zIndex="1"
                 size={{base: 'md', sm: 'sm'}}
                 src={user?.avatar_url}
                 icon={<Avater size="25px" />}

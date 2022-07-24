@@ -17,7 +17,8 @@ const HeaderToolbar = () => {
     >
       <SimpleGrid
         columns={5}
-        position="relative"
+        position="fixed"
+        w="92%"
         left="0"
         zIndex="10"
         mx="1rem"
