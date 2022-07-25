@@ -5,7 +5,6 @@ import {
   Heading,
   Center,
   Avatar,
-  Link,
   Button,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
@@ -105,13 +104,13 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
       <Tooltip label="マイページ">
         <Center mr=".5rem" ml=".5rem">
           <NextLink passHref href={'/profile'}>
-            <Link>
+            <Box as="a">
               <Avatar
                 size={{base: 'md', sm: 'sm'}}
                 src={user?.avatar_url}
                 icon={<Avater size="25px" />}
               />
-            </Link>
+            </Box>
           </NextLink>
         </Center>
       </Tooltip>
