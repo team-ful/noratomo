@@ -10,17 +10,17 @@ export class ApiError extends Error {
     this.code = code;
   }
 
-  public send<T>(base: Base<T>) {
+  public async send<T>(base: Base<T>) {
     this.sendRes(base.res);
+    await base.dbEnd();
   }
 
   public sendRes<T>(res: NextApiResponse<T>) {
     res.status(this.code).send(this.message as any);
+    res.end();
 
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       console.error(this.stack);
-    } else {
-      console.info(this.message);
     }
   }
 }

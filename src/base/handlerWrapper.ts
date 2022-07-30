@@ -19,17 +19,14 @@ export const handlerWrapper =
       await handler(base);
     } catch (e) {
       if (e instanceof ApiError) {
-        e.send(base);
+        await e.send(base);
         return;
       }
-      // db閉じないといけない
-      await base.end();
+      await base.dbEnd();
       throw e;
     }
 
     await base.end();
-    res.status(base.status);
-    res.end();
   };
 
 export const authHandlerWrapper =
@@ -49,15 +46,12 @@ export const authHandlerWrapper =
       await handler(authBase);
     } catch (e) {
       if (e instanceof ApiError) {
-        e.send(authBase);
+        await e.send(authBase);
         return;
       }
-      // db閉じないといけない
-      await authBase.end();
+      await authBase.dbEnd();
       throw e;
     }
 
     await authBase.end();
-    res.status(authBase.status);
-    res.end();
   };

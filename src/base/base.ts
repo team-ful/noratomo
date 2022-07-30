@@ -86,6 +86,13 @@ class Base<T> {
 
   public async end() {
     await this._db?.end();
+
+    this.res.status(this.status);
+    this.res.end();
+  }
+
+  public async dbEnd() {
+    await this._db?.end();
   }
 
   /**
