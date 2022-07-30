@@ -32,13 +32,15 @@ export class HotPepper {
     });
 
     if (!res.ok) {
-      throw new ApiError(400, await res.text());
+      console.error(await res.text());
+      throw new ApiError(400, 'failed get hotpepper api');
     }
 
     const resp = await res.json();
 
     if (resp['results']['error']) {
-      throw new ApiError(400, JSON.stringify(resp['results']['error']));
+      console.error(resp['results']['error']);
+      throw new ApiError(400, 'failed get hotpepper api');
     }
 
     return resp as GourmetResponseLite;

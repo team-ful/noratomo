@@ -48,6 +48,10 @@ export async function shopSearch(base: Base<GourmetResponseLite>) {
       }
     }
   } else {
+    if (keyword.length === 0) {
+      throw new ApiError(400, 'keyword is empty');
+    }
+
     query.keyword = keyword;
   }
 
