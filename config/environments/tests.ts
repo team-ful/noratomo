@@ -88,6 +88,8 @@ const config: Config = {
   hotpepperShopSearchEndpoint: new URL(
     'http://webservice.recruit.co.jp/hotpepper/shop/v1'
   ),
+
+  searchCount: 20,
 };
 
 export default config;
