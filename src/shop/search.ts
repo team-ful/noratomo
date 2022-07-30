@@ -1,5 +1,5 @@
-import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
+import {ApiError} from '../base/apiError';
 import Base from '../base/base';
 import {
   GourmetRequest,

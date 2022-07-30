@@ -4,8 +4,8 @@
  * https://webservice.recruit.co.jp/doc/hotpepper/reference.html
  */
 import {URL} from 'url';
-import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../../../config';
+import {ApiError} from '../../../base/apiError';
 import {
   GourmetRequest,
   GourmetResponseLite,

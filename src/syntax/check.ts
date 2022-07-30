@@ -1,4 +1,4 @@
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../base/apiError';
 
 /**
  * ユーザ名が正しいかチェックする

@@ -6,13 +6,13 @@ import {serialize, CookieSerializeOptions} from 'cookie';
 import formidable from 'formidable';
 import mysql from 'mysql2/promise';
 import {NextApiRequest, NextApiResponse} from 'next';
-import {ApiError} from 'next/dist/server/api-utils';
 import {UAParser, UAParserInstance} from 'ua-parser-js';
 import config from '../../config';
 import DBOperator from '../db/operator';
 import User from '../models/user';
 import {createLoginHistory} from '../services/loginHistory';
 import {createSession} from '../services/session';
+import {ApiError} from './apiError';
 
 export enum Device {
   Console = 'Console',
