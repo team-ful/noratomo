@@ -68,7 +68,9 @@ describe('search', () => {
       type: 'lite',
     };
 
-    await expect(hotpepper.search(query)).rejects.toThrow('ああああ');
+    await expect(hotpepper.search(query)).rejects.toThrow(
+      'failed get hotpepper api'
+    );
 
     expect(fetchMock).toHaveLastFetched(url.toString());
 
@@ -96,7 +98,7 @@ describe('search', () => {
     };
 
     await expect(hotpepper.search(query)).rejects.toThrow(
-      '[{"code":2000,"message":"APIキーが正しくありません"}]'
+      'failed get hotpepper api'
     );
 
     expect(fetchMock).toHaveLastFetched(url.toString());
