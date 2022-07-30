@@ -1,5 +1,5 @@
 import sql, {select, insert} from 'mysql-bricks';
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../base/apiError';
 import DBOperator from '../db/operator';
 import Cert, {CertModel} from '../models/cret';
 

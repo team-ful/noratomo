@@ -1,4 +1,4 @@
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../../../src/base/apiError';
 import Base from '../../../src/base/base';
 import {handlerWrapper} from '../../../src/base/handlerWrapper';
 import User from '../../../src/models/user';

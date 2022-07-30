@@ -1,7 +1,7 @@
 import {URL} from 'url';
 import {JwtPayload, verify, VerifyOptions} from 'jsonwebtoken';
-import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../../config';
+import {ApiError} from '../../base/apiError';
 
 export interface TokenResponse {
   access_token: string;

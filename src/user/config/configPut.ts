@@ -1,4 +1,4 @@
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../../base/apiError';
 import AuthedBase from '../../base/authedBase';
 import {gender as ge, Gender} from '../../models/common';
 import {findUserByUserName, updateUser} from '../../services/user';

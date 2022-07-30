@@ -1,5 +1,5 @@
 import sql, {insert, select, update} from 'mysql-bricks';
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../base/apiError';
 import DBOperator from '../db/operator';
 import {NoraQuestion, NoraQuestionSelect} from '../models/noraQuestion';
 

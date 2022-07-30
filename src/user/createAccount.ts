@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import {JwtPayload} from 'jsonwebtoken';
 import {Connection} from 'mysql2/promise';
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../base/apiError';
 import DBOperator from '../db/operator';
 import {Gender, gender as pg} from './../models/common';
 import {CertModel} from './../models/cret';

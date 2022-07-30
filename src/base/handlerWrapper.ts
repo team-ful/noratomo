@@ -1,4 +1,5 @@
 import {NextApiHandler, NextApiRequest, NextApiResponse} from 'next';
+import {ApiError} from './apiError';
 import AuthedBase from './authedBase';
 import Base from './base';
 
@@ -10,21 +11,22 @@ export const handlerWrapper =
   async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const base = new Base<T>(req, res);
 
-    if (method) {
-      base.checkMethod(method);
-    }
-
     try {
+      if (method) {
+        base.checkMethod(method);
+      }
+
       await handler(base);
     } catch (e) {
-      // db閉じないといけない
-      await base.end();
+      if (e instanceof ApiError) {
+        await e.send(base);
+        return;
+      }
+      await base.dbEnd();
       throw e;
     }
 
     await base.end();
-    res.status(base.status);
-    res.end();
   };
 
 export const authHandlerWrapper =
@@ -35,20 +37,21 @@ export const authHandlerWrapper =
   async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const authBase = new AuthedBase<T>(req, res);
 
-    if (method) {
-      authBase.checkMethod(method);
-    }
-
     try {
+      if (method) {
+        authBase.checkMethod(method);
+      }
+
       await authBase.login();
       await handler(authBase);
     } catch (e) {
-      // db閉じないといけない
-      await authBase.end();
+      if (e instanceof ApiError) {
+        await e.send(authBase);
+        return;
+      }
+      await authBase.dbEnd();
       throw e;
     }
 
     await authBase.end();
-    res.status(authBase.status);
-    res.end();
   };

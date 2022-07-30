@@ -1,6 +1,6 @@
 import sql, {select, gte, insert, delete as sqlDelete} from 'mysql-bricks';
-import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
+import {ApiError} from '../base/apiError';
 import DBOperator from '../db/operator';
 import {Session} from '../models/session';
 import {randomText} from '../utils/random';

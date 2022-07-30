@@ -1,4 +1,4 @@
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../../base/apiError';
 import AuthedBase from '../../base/authedBase';
 import {authHandlerWrapper} from '../../base/handlerWrapper';
 import {NoraQuestionModel} from '../../models/noraQuestion';

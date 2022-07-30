@@ -1,5 +1,4 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../config';
 import User from '../models/user';
 import {
@@ -13,6 +12,7 @@ import {
   findUserByUserID,
   updateUser,
 } from '../services/user';
+import {ApiError} from './apiError';
 import Base from './base';
 
 /**

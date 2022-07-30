@@ -1,5 +1,5 @@
 import {testApiHandler} from 'next-test-api-route-handler';
-import {ApiError} from 'next/dist/server/api-utils';
+import {ApiError} from '../../src/base/apiError';
 import Base from '../../src/base/base';
 import {handlerWrapper} from '../../src/base/handlerWrapper';
 
