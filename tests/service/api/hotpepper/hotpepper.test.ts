@@ -51,7 +51,7 @@ describe('search', () => {
   test('apiの接続で失敗する（200以外が返ってくる', async () => {
     const url = endpoint;
     url.searchParams.set('key', apiKey);
-    url.searchParams.set('keyword', 'カフェ レイクタウン');
+    url.searchParams.set('keyword', 'かふぇええええ');
     url.searchParams.set('format', 'json');
     url.searchParams.set('type', 'lite');
 
@@ -64,7 +64,7 @@ describe('search', () => {
 
     const query: GourmetRequest = {
       key: apiKey,
-      keyword: 'カフェ レイクタウン',
+      keyword: 'かふぇええええ',
       type: 'lite',
     };
 
@@ -77,7 +77,7 @@ describe('search', () => {
 
   test('apiの接続で失敗する（200で返ってくる', async () => {
     const url = endpoint;
-    url.searchParams.set('key', apiKey);
+    url.searchParams.set('key', '');
     url.searchParams.set('keyword', 'カフェ レイクタウン');
     url.searchParams.set('format', 'json');
     url.searchParams.set('type', 'lite');
@@ -90,7 +90,7 @@ describe('search', () => {
     const hotpepper = new HotPepper();
 
     const query: GourmetRequest = {
-      key: apiKey,
+      key: '',
       keyword: 'カフェ レイクタウン',
       type: 'lite',
     };
