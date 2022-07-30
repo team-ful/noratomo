@@ -1,9 +1,9 @@
 import fs from 'fs';
 import fetchMock from 'fetch-mock-jest';
-import config from '../../../config';
-import {GourmetRequest} from '../../../src/api/hotpepper/gourmet';
-import {HotPepper} from '../../../src/api/hotpepper/hotpepper';
-import {randomText} from '../../../src/utils/random';
+import config from '../../../../config';
+import {GourmetRequest} from '../../../../src/services/api/hotpepper/gourmet';
+import {HotPepper} from '../../../../src/services/api/hotpepper/hotpepper';
+import {randomText} from '../../../../src/utils/random';
 
 describe('search', () => {
   const endpoint = config.hotpepperGourmetSearchEndpoint;
@@ -17,7 +17,7 @@ describe('search', () => {
     url.searchParams.set('type', 'lite');
 
     const resp = fs.readFileSync(
-      './tests/api/hotpepper/gourmet_response_sample.json'
+      './tests/service/api/hotpepper/gourmet_response_sample.json'
     );
 
     fetchMock.get(url.toString(), {

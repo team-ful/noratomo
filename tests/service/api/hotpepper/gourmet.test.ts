@@ -1,5 +1,8 @@
 import {URL} from 'url';
-import {GourmetRequest, parse} from '../../../src/api/hotpepper/gourmet';
+import {
+  GourmetRequest,
+  parse,
+} from '../../../../src/services/api/hotpepper/gourmet';
 
 describe('gourmet', () => {
   const endpoint = new URL(

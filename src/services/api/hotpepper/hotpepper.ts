@@ -4,7 +4,7 @@
  * https://webservice.recruit.co.jp/doc/hotpepper/reference.html
  */
 import {URL} from 'url';
-import config from '../../../config';
+import config from '../../../../config';
 import {
   GourmetRequest,
   GourmetResponseLite,
