@@ -28,14 +28,14 @@ const Footer = React.memo(() => {
               <Logo />
             </Box>
             <Text fontSize={'sm'}>© {new Date().getFullYear()} team-ful</Text>
-            <Box as="a" href="http://webservice.recruit.co.jp">
+            <Box as="a" href="https://webservice.recruit.co.jp">
               <picture>
                 <source
-                  srcSet="http://webservice.recruit.co.jp/banner/hotpepper-m.gif"
+                  srcSet="https://webservice.recruit.co.jp/banner/hotpepper-m.gif"
                   type="image/gif"
                 />
                 <img
-                  src="http://webservice.recruit.co.jp/banner/hotpepper-m.gif"
+                  src="https://webservice.recruit.co.jp/banner/hotpepper-m.gif"
                   alt="ホットペッパー Webサービス"
                   width="88"
                   height="35"
