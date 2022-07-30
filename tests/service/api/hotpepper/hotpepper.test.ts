@@ -47,4 +47,60 @@ describe('search', () => {
 
     fetchMock.mockClear();
   });
+
+  test('apiの接続で失敗する（200以外が返ってくる', async () => {
+    const url = endpoint;
+    url.searchParams.set('key', apiKey);
+    url.searchParams.set('keyword', 'カフェ レイクタウン');
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('type', 'lite');
+
+    fetchMock.get(url.toString(), {
+      status: 400,
+      body: 'ああああ',
+    });
+
+    const hotpepper = new HotPepper();
+
+    const query: GourmetRequest = {
+      key: apiKey,
+      keyword: 'カフェ レイクタウン',
+      type: 'lite',
+    };
+
+    await expect(hotpepper.search(query)).rejects.toThrow('ああああ');
+
+    expect(fetchMock).toHaveLastFetched(url.toString());
+
+    fetchMock.mockClear();
+  });
+
+  test('apiの接続で失敗する（200で返ってくる', async () => {
+    const url = endpoint;
+    url.searchParams.set('key', apiKey);
+    url.searchParams.set('keyword', 'カフェ レイクタウン');
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('type', 'lite');
+
+    fetchMock.get(url.toString(), {
+      status: 200,
+      body: '{"results":{"api_version":"1.26","error":[{"code":2000,"message":"APIキーが正しくありません"}]}}',
+    });
+
+    const hotpepper = new HotPepper();
+
+    const query: GourmetRequest = {
+      key: apiKey,
+      keyword: 'カフェ レイクタウン',
+      type: 'lite',
+    };
+
+    await expect(hotpepper.search(query)).rejects.toThrow(
+      '[{"code":2000,"message":"APIキーが正しくありません"}]'
+    );
+
+    expect(fetchMock).toHaveLastFetched(url.toString());
+
+    fetchMock.mockClear();
+  });
 });

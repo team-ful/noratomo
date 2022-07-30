@@ -4,6 +4,7 @@
  * https://webservice.recruit.co.jp/doc/hotpepper/reference.html
  */
 import {URL} from 'url';
+import {ApiError} from 'next/dist/server/api-utils';
 import config from '../../../../config';
 import {
   GourmetRequest,
@@ -30,6 +31,16 @@ export class HotPepper {
       method: 'GET',
     });
 
-    return (await res.json()) as GourmetResponseLite;
+    if (!res.ok) {
+      throw new ApiError(400, await res.text());
+    }
+
+    const resp = await res.json();
+
+    if (resp['results']['error']) {
+      throw new ApiError(400, JSON.stringify(resp['results']['error']));
+    }
+
+    return resp as GourmetResponseLite;
   }
 }
