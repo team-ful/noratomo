@@ -40,8 +40,6 @@ describe('search', () => {
 
     expect(fetchMock).toHaveLastFetched(url.toString());
 
-    console.log(r);
-
     expect(r.results.api_version).toBe('1.26');
     expect(r.results.shop.length).toBe(2);
 
