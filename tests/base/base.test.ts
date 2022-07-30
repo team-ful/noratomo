@@ -55,7 +55,11 @@ describe('getQuery', () => {
     expect.hasAssertions();
 
     const handler = async (base: Base<void>) => {
-      expect(base.getQuery('nya')).toBe(undefined);
+      expect(base.getQuery('nya')).toBeUndefined();
+
+      expect(() => base.getQuery('testaaaaa', true)).toThrow(
+        'Illegal query value testaaaaa'
+      );
     };
 
     const h = handlerWrapper(handler, 'GET');

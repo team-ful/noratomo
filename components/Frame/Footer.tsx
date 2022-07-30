@@ -28,6 +28,20 @@ const Footer = React.memo(() => {
               <Logo />
             </Box>
             <Text fontSize={'sm'}>© {new Date().getFullYear()} team-ful</Text>
+            <Box as="a" href="http://webservice.recruit.co.jp">
+              <picture>
+                <source
+                  srcSet="http://webservice.recruit.co.jp/banner/hotpepper-m.gif"
+                  type="image/gif"
+                />
+                <img
+                  src="http://webservice.recruit.co.jp/banner/hotpepper-m.gif"
+                  alt="ホットペッパー Webサービス"
+                  width="88"
+                  height="35"
+                />
+              </picture>
+            </Box>
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>野良友</ListHeader>

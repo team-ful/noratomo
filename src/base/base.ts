@@ -94,13 +94,19 @@ class Base<T> {
    * value = base.getQuery('hoge')
    * // value === 'huga'
    *
-   * @param {string} name - クエリ名
+   * @param {string} key - クエリ名
+   * @param {boolean} require - 必須かどうか。trueの場合は存在しない場合にエラーをスローする
    * @returns {string} クエリパラメータの値
    */
-  public getQuery(name: string) {
-    const query = this.req.query[name];
+  public getQuery(key: string, require: true): string;
+  public getQuery(key: string): string | undefined;
+  public getQuery(key: string, require = false): string | undefined {
+    const query = this.req.query[key];
 
     if (typeof query === 'undefined') {
+      if (require) {
+        throw new ApiError(400, `Illegal query value ${key}`);
+      }
       return undefined;
     }
 
@@ -108,7 +114,7 @@ class Base<T> {
       return query;
     }
 
-    return query.join('');
+    return query[0];
   }
 
   /**
