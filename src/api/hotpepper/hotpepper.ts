@@ -12,12 +12,10 @@ import {
 } from './gourmet';
 
 export class HotPepper {
-  private apiKey: string;
   private gourmetSearchEndpoint: URL;
   private shopSearchEndpoint: URL;
 
   constructor() {
-    this.apiKey = config.hotpepperApiKey;
     this.gourmetSearchEndpoint = config.hotpepperGourmetSearchEndpoint;
     this.shopSearchEndpoint = config.hotpepperShopSearchEndpoint;
   }
