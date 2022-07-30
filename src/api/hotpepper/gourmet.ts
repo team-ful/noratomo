@@ -162,17 +162,18 @@ export interface HotpepperRequestApi {
 }
 
 export interface GourmetResponseLite {
-  results: string;
-  api_version: string;
+  results: {
+    api_version: string;
 
-  // 検索結果の全件数
-  results_available: number;
-  // 返される結果の件数
-  results_returned: number;
-  // 検索結果の開始位置
-  results_start: number;
+    // 検索結果の全件数
+    results_available: number;
+    // 返される結果の件数
+    results_returned: string;
+    // 検索結果の開始位置
+    results_start: number;
 
-  shop: ShopLite;
+    shop: ShopLite[];
+  };
 }
 
 export interface ShopLite {
@@ -186,6 +187,20 @@ export interface ShopLite {
   // 位置
   lat: number;
   lon: number;
+
+  // 料金備考
+  budget_memo: string;
+  // その他設備
+  other_memo: string;
+  // 備考
+  shop_detail_memo: string;
+  photo: {
+    pc: {
+      l: string;
+      m: string;
+      s: string;
+    };
+  };
 
   // ジャンル
   genre: {

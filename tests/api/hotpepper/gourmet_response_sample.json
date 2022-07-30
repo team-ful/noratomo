@@ -1,0 +1,64 @@
+{
+    "results": {
+        "api_version": "1.26",
+        "results_available": 2,
+        "results_returned": "2",
+        "results_start": 1,
+        "shop": [
+            {
+                "access": "ＪＲ武蔵野線越谷レイクタウン駅北口より徒歩約18分  ",
+                "address": "埼玉県越谷市レイクタウン３－1－1　イオンレイクタウンMORI",
+                "budget_memo": "",
+                "catch": "",
+                "food": {},
+                "genre": {
+                    "catch": "にゃにゃにゃ",
+                    "name": "カフェ・スイーツ"
+                },
+                "id": "J000787115",
+                "lat": 35.8820392884,
+                "lng": 139.8280217533,
+                "name": "にゃにゃにゃ イオンレイクタウン店",
+                "other_memo": "",
+                "photo": {
+                    "pc": {
+                        "l": "https://imgfp.hotp.jp/IMGH/aaaa.jpg",
+                        "m": "https://imgfp.hotp.jp/IMGH/aaaa.jpg",
+                        "s": "https://imgfp.hotp.jp/IMGH/aaaa.jpg"
+                    }
+                },
+                "shop_detail_memo": "",
+                "urls": {
+                    "pc": "https://example.com"
+                }
+            },
+            {
+                "access": "越谷レイクタウン駅から徒歩約7分",
+                "address": "埼玉県越谷市レイクタウン４-1-1 レイクタウンアウトレット1st.Ave.1階",
+                "budget_memo": "",
+                "catch": "",
+                "food": {},
+                "genre": {
+                    "catch": "ワンワンワン",
+                    "name": "その他グルメ"
+                },
+                "id": "J001258196",
+                "lat": 35.8804968805,
+                "lng": 139.8249781861,
+                "name": "ワンワンワン レイクタウンアウトレット店",
+                "other_memo": "",
+                "photo": {
+                    "pc": {
+                        "l": "https://imgfp.hotp.jp/IMGH/aaaa.jpg",
+                        "m": "https://imgfp.hotp.jp/IMGH/aaaa.jpg",
+                        "s": "https://imgfp.hotp.jp/IMGH/aaaa.jpg"
+                    }
+                },
+                "shop_detail_memo": "",
+                "urls": {
+                    "pc": "https://example.com"
+                }
+            }
+        ]
+    }
+}
