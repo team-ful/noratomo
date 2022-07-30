@@ -40,4 +40,9 @@ export interface Config {
   storageOptions?: StorageOptions;
   publicStorageHost: URL;
   bucketName: string;
+
+  // hotpepper api
+  hotpepperApiKey: string;
+  hotpepperGourmetSearchEndpoint: URL;
+  hotpepperShopSearchEndpoint: URL;
 }

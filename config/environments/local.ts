@@ -81,6 +81,11 @@ const config: Config = {
   },
   publicStorageHost: new URL(`http://${LOCAL_URL}:4443`),
   bucketName: 'noratomo',
+
+  // hotpepper api
+  hotpepperApiKey: '',
+  hotpepperGourmetSearchEndpoint: new URL(''),
+  hotpepperShopSearchEndpoint: new URL(''),
 };
 
 export default config;

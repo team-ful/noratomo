@@ -75,6 +75,15 @@ const config: Config = {
   // Cloud Storage
   publicStorageHost: new URL(' https://storage.googleapis.com'),
   bucketName: 'noratomo',
+
+  // hotpepper api
+  hotpepperApiKey: process.env.HOTPEPPER_API_KEY || '',
+  hotpepperGourmetSearchEndpoint: new URL(
+    'http://webservice.recruit.co.jp/hotpepper/gourmet/v1'
+  ),
+  hotpepperShopSearchEndpoint: new URL(
+    'http://webservice.recruit.co.jp/hotpepper/shop/v1'
+  ),
 };
 
 export default config;
