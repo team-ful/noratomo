@@ -81,7 +81,7 @@ const config: Config = {
   bucketName: 'noratomo',
 
   // hotpepper api
-  hotpepperApiKey: '',
+  hotpepperApiKey: 'api_key',
   hotpepperGourmetSearchEndpoint: new URL(
     'http://webservice.recruit.co.jp/hotpepper/gourmet/v1'
   ),

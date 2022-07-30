@@ -41,7 +41,7 @@ export async function shopSearch(base: Base<GourmetResponseLite>) {
     try {
       query.lat = parseInt(lat);
       query.lon = parseInt(lon);
-      query.range = ((parseInt(range) % 5) + 2) as 1 | 2 | 3 | 4 | 5;
+      query.range = (((parseInt(range) - 1) % 5) + 1) as 1 | 2 | 3 | 4 | 5;
     } catch (e) {
       if (e instanceof Error) {
         throw new ApiError(400, 'Illegal parse');
