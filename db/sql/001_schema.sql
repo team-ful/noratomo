@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `shop` (
     `site_url` TEXT NOT NULL,
     `photo` TEXT,
     `google_map_url` TEXT NOT NULL,
-    `hotpepper_id` TEXT NOT NULL,
+    `hotpepper_id` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`id`)
 );
 
