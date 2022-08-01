@@ -3,6 +3,7 @@ import {Device} from '../base/base';
 import {CertModel} from '../models/cret';
 import {LoginHistoryModel} from '../models/loginHistory';
 import {SessionModel} from '../models/session';
+import {ShopModel} from '../models/shop';
 import {UserModel} from '../models/user';
 import {randomText} from '../utils/random';
 
@@ -110,5 +111,27 @@ export const createLoginHistoryModel = (
     browser_name: options?.browser_name || 'Chrome',
     login_date: options?.login_date || loginDate,
     'INET6_NTOA(ip_address)': options?.ip_address || '203.0.113.0', // 203.0.113.0はテスト用のIPアドレス
+  };
+};
+
+/**
+ * ダミーのショップオブジェクトを作成する
+ *
+ * @param {Partial<ShopModel>} options - オプション
+ * @returns {ShopModel} ショップモデル
+ */
+export const createShopModel = (options?: Partial<ShopModel>): ShopModel => {
+  return {
+    id: options?.id || randomInt(1000000),
+    name: options?.name || randomText(10),
+    address: options?.address || randomText(20),
+    lat: options?.lat || randomInt(50),
+    lon: options?.lon || randomInt(50),
+    genre_name: options?.genre_name || randomText(10),
+    genre_catch: options?.genre_catch || randomText(10),
+    gender: options?.gender || false,
+    site_url: options?.site_url || randomText(20),
+    photo_url: options?.photo_url || randomText(20),
+    hotpepper_id: options?.hotpepper_id || randomText(10),
   };
 };
