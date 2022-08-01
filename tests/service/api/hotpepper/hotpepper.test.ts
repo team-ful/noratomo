@@ -160,7 +160,7 @@ describe('findShopByLatLon', () => {
     const url = endpoint;
     url.searchParams.set('key', apiKey);
     url.searchParams.set('lat', lat);
-    url.searchParams.set('lon', lon);
+    url.searchParams.set('lng', lon);
     url.searchParams.set('range', '3');
     url.searchParams.set('format', 'json');
     url.searchParams.set('type', 'lite');

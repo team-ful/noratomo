@@ -133,7 +133,7 @@ export const createShopModel = (options?: Partial<ShopModel>): ShopModel => {
     gender: options?.gender || false,
     site_url: options?.site_url || randomText(20),
     photo_url: options?.photo_url || null,
-    hotpepper_id: options?.hotpepper_id || randomText(10),
+    hotpepper_id: options?.hotpepper_id || randomText(20),
   };
 };
 

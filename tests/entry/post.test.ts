@@ -1,4 +1,3 @@
-import fs from 'fs';
 import fetchMock from 'fetch-mock-jest';
 import FormData from 'form-data';
 import {PageConfig} from 'next';
@@ -8,7 +7,46 @@ import {post} from '../../src/entry';
 import {findEntryById} from '../../src/services/entry';
 import {findShopById} from '../../src/services/shop';
 import TestBase from '../../src/tests/base';
-import {createEntryModel} from '../../src/tests/models';
+import {createEntryModel, createShopModel} from '../../src/tests/models';
+import {randomText} from '../../src/utils/random';
+
+const hotppeerBody = (id: string) => ({
+  results: {
+    api_version: '1.26',
+    results_available: 1,
+    results_returned: '1',
+    results_start: 1,
+    shop: [
+      {
+        access: 'ＪＲ武蔵野線越谷レイクタウン駅北口より徒歩約18分  ',
+        address: '埼玉県越谷市レイクタウン３－1－1　イオンレイクタウンMORI',
+        budget_memo: '',
+        catch: '',
+        food: {},
+        genre: {
+          catch: 'にゃにゃにゃ',
+          name: 'カフェ・スイーツ',
+        },
+        id: id,
+        lat: 35.8820392884,
+        lng: 139.8280217533,
+        name: 'にゃにゃにゃ イオンレイクタウン店',
+        other_memo: '',
+        photo: {
+          pc: {
+            l: 'https://imgfp.hotp.jp/IMGH/aaaa.jpg',
+            m: 'https://imgfp.hotp.jp/IMGH/aaaa.jpg',
+            s: 'https://imgfp.hotp.jp/IMGH/aaaa.jpg',
+          },
+        },
+        shop_detail_memo: '',
+        urls: {
+          pc: 'https://example.com',
+        },
+      },
+    ],
+  },
+});
 
 describe('post', () => {
   const base = new TestBase();
@@ -30,7 +68,7 @@ describe('post', () => {
   test('ホットペッパーIDを指定して投稿できる', async () => {
     expect.hasAssertions();
 
-    const id = 'j1234';
+    const id = randomText(10);
 
     const url = endpoint;
     url.searchParams.set('key', apiKey);
@@ -40,12 +78,8 @@ describe('post', () => {
     url.searchParams.set('count', '1');
     url.searchParams.set('start', '0');
 
-    const resp = fs.readFileSync(
-      './tests/service/api/hotpepper/gourmet_response_sample2.json'
-    );
-
     fetchMock.get(url.toString(), {
-      body: resp.toString(),
+      body: hotppeerBody(id),
       headers: {
         // 何故かjsなのである
         'content-type': 'text/javascript',
@@ -98,5 +132,9 @@ describe('post', () => {
         expect(newShop?.name).toBe('にゃにゃにゃ イオンレイクタウン店');
       },
     });
+  });
+
+  test('すでにshopにある場合はそれを使う', async () => {
+    const shop = createShopModel();
   });
 });
