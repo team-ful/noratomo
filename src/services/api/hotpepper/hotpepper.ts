@@ -10,7 +10,7 @@ import {
   GourmetRequest,
   GourmetResponseLite,
   parse as gourmetParse,
-} from './gourmet';
+} from '../../../models/api/hotpepper/gourmet';
 
 export class HotPepper {
   private gourmetSearchEndpoint: URL;

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import fetchMock from 'fetch-mock-jest';
 import config from '../../../../config';
-import {GourmetRequest} from '../../../../src/services/api/hotpepper/gourmet';
+import {GourmetRequest} from '../../../../src/models/api/hotpepper/gourmet';
 import {HotPepper} from '../../../../src/services/api/hotpepper/hotpepper';
 import {randomText} from '../../../../src/utils/random';
 

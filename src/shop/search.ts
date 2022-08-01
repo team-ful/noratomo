@@ -4,7 +4,7 @@ import Base from '../base/base';
 import {
   GourmetRequest,
   GourmetResponseLite,
-} from '../services/api/hotpepper/gourmet';
+} from '../models/api/hotpepper/gourmet';
 import {HotPepper} from '../services/api/hotpepper/hotpepper';
 
 /**

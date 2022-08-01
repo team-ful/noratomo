@@ -2,7 +2,7 @@ import {URL} from 'url';
 import {
   GourmetRequest,
   parse,
-} from '../../../../src/services/api/hotpepper/gourmet';
+} from '../../../../src/models/api/hotpepper/gourmet';
 
 describe('gourmet', () => {
   const endpoint = new URL(
