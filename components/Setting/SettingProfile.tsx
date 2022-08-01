@@ -201,7 +201,7 @@ const SettingProfile = () => {
           <Flex mt="1.2rem">
             <FormControl isInvalid={Boolean(errors.age)}>
               <FormLabel htmlFor="age">年齢</FormLabel>
-              <NumberInput defaultValue={user.profile}>
+              <NumberInput defaultValue={user?.age}>
                 <NumberInputField
                   id="age"
                   placeholder="年齢"
