@@ -5,7 +5,7 @@ import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../config';
 import {post} from '../../src/entry';
 import {findEntryById} from '../../src/services/entry';
-import {findShopById} from '../../src/services/shop';
+import {createShop, findShopById} from '../../src/services/shop';
 import TestBase from '../../src/tests/base';
 import {createEntryModel, createShopModel} from '../../src/tests/models';
 import {randomText} from '../../src/utils/random';
@@ -53,6 +53,13 @@ describe('post', () => {
   const endpoint = config.hotpepperGourmetSearchEndpoint;
   const apiKey = config.hotpepperApiKey;
 
+  const h: typeof post & {config?: PageConfig} = post;
+  h.config = {
+    api: {
+      bodyParser: false,
+    },
+  };
+
   beforeAll(async () => {
     await base.connection();
 
@@ -85,13 +92,6 @@ describe('post', () => {
         'content-type': 'text/javascript',
       },
     });
-
-    const h: typeof post & {config?: PageConfig} = post;
-    h.config = {
-      api: {
-        bodyParser: false,
-      },
-    };
 
     const entry = createEntryModel();
 
@@ -136,5 +136,216 @@ describe('post', () => {
 
   test('すでにshopにある場合はそれを使う', async () => {
     const shop = createShopModel();
+
+    const shopId = await createShop(
+      base.db,
+      shop.name,
+      shop.address,
+      shop.lat,
+      shop.lon,
+      shop.genre_name,
+      shop.genre_catch || '',
+      shop.gender,
+      shop.site_url,
+      shop.photo_url || '',
+      shop.hotpepper_id || ''
+    );
+
+    const entry = createEntryModel();
+
+    const form = new FormData();
+    form.append('title', entry.title);
+    form.append('body', entry.body);
+    form.append('hotppepper', shop.hotpepper_id);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: base.users[0].sessionCookie,
+          ...req.headers,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(200);
+
+        const newEntry = await res.json();
+
+        // DBからEntryを引く
+        const newEntryFromDB = await findEntryById(base.db, newEntry.id);
+        if (newEntryFromDB === null) {
+          throw new Error();
+        }
+        expect(newEntryFromDB.title).toBe(entry.title);
+        expect(newEntryFromDB.body).toBe(entry.body);
+        expect(newEntryFromDB.owner_user_id).toBe(base.users[0].user?.id);
+
+        // DBからshopを引く（新しく追加されているはず）
+        const newShop = await findShopById(base.db, newEntryFromDB.shop_id);
+        expect(newShop?.id).toBe(shopId);
+        expect(newShop?.name).toBe(shop.name);
+      },
+    });
+  });
+
+  test('ホットペッパーお店IDを指定しない場合、ユーザが店情報を追加する必要がある', async () => {
+    const entry = createEntryModel();
+    const shop = createShopModel();
+
+    const form = new FormData();
+    form.append('title', entry.title);
+    form.append('body', entry.body);
+
+    // shop情報
+    form.append('shop_name', shop.name);
+    form.append('shop_address', shop.address);
+    form.append('lat', shop.lat);
+    form.append('lon', shop.lon);
+    form.append('genre_name', shop.genre_name);
+    form.append('gender', 'true');
+    form.append('site_url', shop.site_url);
+    form.append('photo', shop.photo_url || '');
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: base.users[0].sessionCookie,
+          ...req.headers,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(200);
+
+        const newEntry = await res.json();
+
+        // DBからEntryを引く
+        const newEntryFromDB = await findEntryById(base.db, newEntry.id);
+        if (newEntryFromDB === null) {
+          throw new Error();
+        }
+        expect(newEntryFromDB.title).toBe(entry.title);
+        expect(newEntryFromDB.body).toBe(entry.body);
+        expect(newEntryFromDB.owner_user_id).toBe(base.users[0].user?.id);
+
+        // DBからshopを引く（新しく追加されているはず）
+        const newShop = await findShopById(base.db, newEntryFromDB.shop_id);
+        expect(newShop?.name).toBe(shop.name);
+        expect(newShop?.photo_url).toBe(shop.photo_url);
+      },
+    });
+  });
+
+  test('ユーザ定義の店情報はphotoは省略可能', async () => {
+    const entry = createEntryModel();
+    const shop = createShopModel();
+
+    const form = new FormData();
+    form.append('title', entry.title);
+    form.append('body', entry.body);
+
+    // shop情報
+    form.append('shop_name', shop.name);
+    form.append('shop_address', shop.address);
+    form.append('lat', shop.lat);
+    form.append('lon', shop.lon);
+    form.append('genre_name', shop.genre_name);
+    form.append('gender', 'true');
+    form.append('site_url', shop.site_url);
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: base.users[0].sessionCookie,
+          ...req.headers,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(200);
+
+        const newEntry = await res.json();
+
+        // DBからEntryを引く
+        const newEntryFromDB = await findEntryById(base.db, newEntry.id);
+        if (newEntryFromDB === null) {
+          throw new Error();
+        }
+        expect(newEntryFromDB.title).toBe(entry.title);
+        expect(newEntryFromDB.body).toBe(entry.body);
+        expect(newEntryFromDB.owner_user_id).toBe(base.users[0].user?.id);
+
+        // DBからshopを引く（新しく追加されているはず）
+        const newShop = await findShopById(base.db, newEntryFromDB.shop_id);
+        expect(newShop?.name).toBe(shop.name);
+        expect(newShop?.photo_url).toBeNull();
+      },
+    });
+  });
+
+  test('bodyは省略可能', async () => {
+    const entry = createEntryModel();
+    const shop = createShopModel();
+
+    const form = new FormData();
+    form.append('title', entry.title);
+
+    // shop情報
+    form.append('shop_name', shop.name);
+    form.append('shop_address', shop.address);
+    form.append('lat', shop.lat);
+    form.append('lon', shop.lon);
+    form.append('genre_name', shop.genre_name);
+    form.append('gender', 'true');
+    form.append('site_url', shop.site_url);
+    form.append('photo', shop.photo_url || '');
+
+    await testApiHandler({
+      handler: h,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: base.users[0].sessionCookie,
+          ...req.headers,
+        };
+      },
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          body: form,
+        });
+
+        expect(res.status).toBe(200);
+
+        const newEntry = await res.json();
+
+        // DBからEntryを引く
+        const newEntryFromDB = await findEntryById(base.db, newEntry.id);
+        if (newEntryFromDB === null) {
+          throw new Error();
+        }
+        expect(newEntryFromDB.title).toBe(entry.title);
+        expect(newEntryFromDB.body).toBe(''); // Nullalbeだけどnullにはならない
+        expect(newEntryFromDB.owner_user_id).toBe(base.users[0].user?.id);
+
+        // DBからshopを引く（新しく追加されているはず）
+        const newShop = await findShopById(base.db, newEntryFromDB.shop_id);
+        expect(newShop?.name).toBe(shop.name);
+      },
+    });
   });
 });
