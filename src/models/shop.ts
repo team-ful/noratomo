@@ -25,7 +25,7 @@ export interface ShopModel {
   photo_url: string | null;
 
   // ホットペッパーのお店ID
-  hotpepper_id: string;
+  hotpepper_id: string | null;
 }
 
 class Shop implements ShopModel {
@@ -39,7 +39,7 @@ class Shop implements ShopModel {
   readonly gender: boolean;
   readonly site_url: string;
   readonly photo_url: string | null;
-  readonly hotpepper_id: string;
+  readonly hotpepper_id: string | null;
 
   constructor(init: DefaultObject | ShopModel) {
     this.id = init.id as number;
@@ -65,7 +65,7 @@ class Shop implements ShopModel {
 
     this.site_url = init.site_url as string;
     this.photo_url = init.photo_url as string | null;
-    this.hotpepper_id = init.hotpepper_id as string;
+    this.hotpepper_id = init.hotpepper_id as string | null;
   }
 }
 
