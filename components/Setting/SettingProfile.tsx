@@ -30,7 +30,7 @@ type SettingInputs = {
   user_name: string;
   mail: string;
   profile: string;
-  age: string;
+  age: number;
   gender: number;
 };
 
@@ -51,7 +51,7 @@ const SettingProfile = () => {
       setValue('user_name', user.user_name);
       setValue('mail', user.mail);
       setValue('profile', user.profile);
-      setValue('age', String(user.age));
+      setValue('age', user.age);
 
       // 性別を指定していない場合は0なのでそのときはデフォルト値には入れない
       if (user.gender !== 0) {
@@ -81,10 +81,9 @@ const SettingProfile = () => {
       body.profile = data.profile;
       u.profile = data.profile;
     }
-    if (user?.age !== parseInt(data.age)) {
-      const age = parseInt(data.age);
-      body.age = age;
-      u.age = age;
+    if (user?.age !== data.age) {
+      body.age = data.age;
+      u.age = data.age;
     }
     if (user?.gender !== data.gender) {
       body.gender = data.gender;
@@ -202,7 +201,7 @@ const SettingProfile = () => {
           <Flex mt="1.2rem">
             <FormControl isInvalid={Boolean(errors.age)}>
               <FormLabel htmlFor="age">年齢</FormLabel>
-              <NumberInput>
+              <NumberInput defaultValue={user.profile}>
                 <NumberInputField
                   id="age"
                   placeholder="年齢"
