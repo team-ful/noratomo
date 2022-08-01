@@ -143,7 +143,6 @@ CREATE TABLE IF NOT EXISTS `shop` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
     `name` TEXT NOT NULL,
     `address` TEXT NOT NULL,
-    `tel` VARCHAR(255) NOT NULL,
     `lat` FLOAT NOT NULL,
     `lon` FLOAT NOT NULL,
     `genre_name` TEXT NOT NULL,
