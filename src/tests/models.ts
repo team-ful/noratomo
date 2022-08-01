@@ -1,6 +1,7 @@
 import {randomBytes, randomInt} from 'crypto';
 import {Device} from '../base/base';
 import {CertModel} from '../models/cret';
+import {EntryModel} from '../models/entry';
 import {LoginHistoryModel} from '../models/loginHistory';
 import {SessionModel} from '../models/session';
 import {ShopModel} from '../models/shop';
@@ -133,5 +134,24 @@ export const createShopModel = (options?: Partial<ShopModel>): ShopModel => {
     site_url: options?.site_url || randomText(20),
     photo_url: options?.photo_url || randomText(20),
     hotpepper_id: options?.hotpepper_id || randomText(10),
+  };
+};
+
+/**
+ * ダミーのentryオブジェクトを作成する
+ *
+ * @param {Partial<EntryModel>} options - オプション
+ * @returns {EntryModel} entry model
+ */
+export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
+  return {
+    id: options?.id || randomInt(1000000),
+    owner_user_id: options?.owner_user_id || randomInt(1000000),
+    title: options?.title || randomText(20),
+    shop_id: options?.shop_id || randomInt(1000000),
+    number_of_people: options?.number_of_people || 1, // 設計上1になる
+    date: options?.date || dbDate(new Date(Date.now())),
+    body: options?.body || randomText(30),
+    is_closed: options?.is_closed || false,
   };
 };
