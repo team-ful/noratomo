@@ -58,13 +58,13 @@ describe('shop', () => {
   });
 
   test('lat, lonで検索できる', async () => {
-    const lat = 10;
-    const lon = 20;
+    const lat = '10';
+    const lon = '20';
 
     const url = endpoint;
     url.searchParams.set('key', apiKey);
-    url.searchParams.set('lat', String(lat));
-    url.searchParams.set('lon', String(lon));
+    url.searchParams.set('lat', lat);
+    url.searchParams.set('lon', lon);
     url.searchParams.set('range', '3');
     url.searchParams.set('format', 'json');
     url.searchParams.set('type', 'lite');
@@ -83,7 +83,7 @@ describe('shop', () => {
 
     await testApiHandler({
       handler: h,
-      url: `?lat=${lat}&lon=${lon}}`,
+      url: `?lat=${lat}&lon=${lon}`,
       test: async ({fetch}) => {
         const res = await fetch();
 
