@@ -49,8 +49,8 @@ export interface GourmetRequest extends HotpepperRequestApi {
   keyword?: string;
 
   // 位置
-  lat?: number;
-  lon?: number;
+  lat?: string;
+  lon?: string;
   // lat, lonからの検索範囲を指定する
   // 1: 300m, 2: 500m, 3: 1000m(default), 4: 2000m, 5: 3000m
   range?: 1 | 2 | 3 | 4 | 5;
