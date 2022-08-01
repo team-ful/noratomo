@@ -149,8 +149,7 @@ CREATE TABLE IF NOT EXISTS `shop` (
     `genre_catch` TEXT,
     `gender` INT(1) NOT NULL,
     `site_url` TEXT NOT NULL,
-    `photo` TEXT,
-    `google_map_url` TEXT NOT NULL,
+    `photo_url` TEXT,
     `hotpepper_id` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`id`)
 );
