@@ -1,4 +1,5 @@
 import {URL} from 'url';
+import {HotpepperRequestApi} from './common';
 
 /**
  * ホットペッパーグルメサーチAPIのリクエストクエリ
@@ -155,10 +156,6 @@ export interface GourmetRequest extends HotpepperRequestApi {
   count?: number;
   // レスポンス形式
   format?: 'xml' | 'json' | 'jsonp';
-}
-
-export interface HotpepperRequestApi {
-  key: string;
 }
 
 export interface GourmetResponseLite {
