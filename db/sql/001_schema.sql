@@ -141,20 +141,18 @@ CREATE TABLE IF NOT EXISTS `entry` (
 
 CREATE TABLE IF NOT EXISTS `shop` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `name` VARCHAR(1024) NOT NULL,
-    `brand_name` VARCHAR(1024) NOT NULL,
-    `country` VARCHAR(1024) NOT NULL,
-    `prefecture` VARCHAR(1024) NOT NULL,
-    `municipality` VARCHAR(1024) NOT NULL,
+    `name` TEXT NOT NULL,
     `address` TEXT NOT NULL,
     `tel` VARCHAR(255) NOT NULL,
     `lat` FLOAT NOT NULL,
     `lon` FLOAT NOT NULL,
-    `genres` TEXT,
+    `genre_name` TEXT NOT NULL,
+    `genre_catch` TEXT,
     `gender` INT(1) NOT NULL,
     `site_url` TEXT NOT NULL,
+    `photo` TEXT,
     `google_map_url` TEXT NOT NULL,
-    `hotpepper_id` VARCHAR(1024) NOT NULL,
+    `hotpepper_id` TEXT NOT NULL,
     PRIMARY KEY (`id`)
 );
 
