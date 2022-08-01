@@ -206,3 +206,42 @@ describe('findShopByLatLon', () => {
     ).rejects.toThrow('lat or lon is parse failed');
   });
 });
+
+describe('findShopById', () => {
+  const endpoint = config.hotpepperGourmetSearchEndpoint;
+  const apiKey = config.hotpepperApiKey;
+
+  test('ok', async () => {
+    const id = 'j1234';
+
+    const url = endpoint;
+    url.searchParams.set('key', apiKey);
+    url.searchParams.set('id', id);
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('type', 'lite');
+    url.searchParams.set('count', '1');
+    url.searchParams.set('start', '0');
+
+    const resp = fs.readFileSync(
+      './tests/service/api/hotpepper/gourmet_response_sample2.json'
+    );
+
+    fetchMock.get(url.toString(), {
+      body: resp.toString(),
+      headers: {
+        // 何故かjsなのである
+        'content-type': 'text/javascript',
+      },
+    });
+
+    const hotpepper = new HotPepper();
+
+    const result = await hotpepper.findShopById(id);
+
+    expect(fetchMock).toHaveLastFetched(url.toString());
+
+    expect(result.name).toBe('にゃにゃにゃ イオンレイクタウン店');
+
+    fetchMock.mockClear();
+  });
+});
