@@ -50,8 +50,8 @@ export interface GourmetRequest extends HotpepperRequestApi {
 
   // 位置
   lat?: string;
-  lon?: string;
-  // lat, lonからの検索範囲を指定する
+  lng?: string;
+  // lat, lngからの検索範囲を指定する
   // 1: 300m, 2: 500m, 3: 1000m(default), 4: 2000m, 5: 3000m
   range?: 1 | 2 | 3 | 4 | 5;
   // 測地系 world: 世界測地系(default), tokyo: 旧日本測地系
@@ -183,7 +183,7 @@ export interface ShopLite {
 
   // 位置
   lat: number;
-  lon: number;
+  lng: number;
 
   // 料金備考
   budget_memo: string;

@@ -91,7 +91,7 @@ export class HotPepper {
       count: count,
       start: start,
       lat: lat,
-      lon: lon,
+      lng: lon,
       range: range,
     };
 

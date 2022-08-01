@@ -21,6 +21,17 @@ export interface EntryModel {
   is_closed: boolean;
 }
 
+export interface ResponseEntry {
+  id: number;
+
+  title: string;
+  body: string | null;
+  date: Date;
+  number_of_people: number;
+  is_closed: boolean;
+  shop_id: number;
+}
+
 class Entry implements EntryModel {
   readonly id: number;
   readonly owner_user_id: number;
@@ -40,6 +51,18 @@ class Entry implements EntryModel {
     this.date = new Date(init.date as Date | string);
     this.body = init.body as string | null;
     this.is_closed = Boolean(init.is_closed);
+  }
+
+  public json(): ResponseEntry {
+    return {
+      id: this.id,
+      title: this.title,
+      body: this.body,
+      date: this.date,
+      number_of_people: this.number_of_people,
+      is_closed: this.is_closed,
+      shop_id: this.shop_id,
+    };
   }
 }
 

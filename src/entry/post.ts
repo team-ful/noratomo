@@ -1,7 +1,9 @@
 import {ApiError} from '../base/apiError';
 import AuthedBase from '../base/authedBase';
 import {authHandlerWrapper} from '../base/handlerWrapper';
+import {ResponseEntry} from '../models/entry';
 import {HotPepper} from '../services/api/hotpepper/hotpepper';
+import {createEntryRow, findEntryById} from '../services/entry';
 import {
   createShop,
   createShopUserDefined,
@@ -13,7 +15,10 @@ import {
  *
  * @param {AuthedBase} base - base
  */
-async function entryPostHandler(base: AuthedBase<void>) {
+async function entryPostHandler(base: AuthedBase<ResponseEntry>) {
+  const title = await base.getPostFormFields('title', true);
+  const body = await base.getPostFormFields('body');
+
   const hotpepperId = await base.getPostFormFields('hotppepper');
   let shopId: number;
 
@@ -61,7 +66,7 @@ async function entryPostHandler(base: AuthedBase<void>) {
         shop.name,
         shop.address,
         shop.lat,
-        shop.lon,
+        shop.lng,
         shop.genre.name,
         shop.genre.catch,
         false,
@@ -73,6 +78,21 @@ async function entryPostHandler(base: AuthedBase<void>) {
       shopId = shop.id;
     }
   }
+
+  const entryId = await createEntryRow(
+    await base.db(),
+    base.user.id,
+    shopId,
+    title,
+    body || ''
+  );
+
+  const entry = await findEntryById(await base.db(), entryId);
+  if (entry === null) {
+    throw new ApiError(500, 'failed create entry');
+  }
+
+  base.sendJson(entry.json());
 }
 
 export default authHandlerWrapper(entryPostHandler);
