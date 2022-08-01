@@ -195,7 +195,7 @@ describe('post', () => {
 
   test('ホットペッパーお店IDを指定しない場合、ユーザが店情報を追加する必要がある', async () => {
     const entry = createEntryModel();
-    const shop = createShopModel();
+    const shop = createShopModel({photo_url: randomText(20)});
 
     const form = new FormData();
     form.append('title', entry.title);
