@@ -17,10 +17,8 @@ async function handler(base: AuthedBase<UserModel | UserModel[]>) {
   // 1件のみ取得する
   const userID = base.getQuery('user_id');
   if (userID) {
-    let userIDN = NaN;
-    try {
-      userIDN = parseInt(userID);
-    } catch (e) {
+    const userIDN = parseInt(userID);
+    if (Number.isNaN(userIDN)) {
       throw new ApiError(400, 'userid is parse failed');
     }
 
@@ -33,16 +31,12 @@ async function handler(base: AuthedBase<UserModel | UserModel[]>) {
   const offset = base.getQuery('offset') || '0';
   const limit = base.getQuery('limit') || '50';
 
-  let offsetInt = NaN;
-  let limitInt = NaN;
-  try {
-    offsetInt = parseInt(offset);
-  } catch (e) {
+  const offsetInt = parseInt(offset);
+  if (Number.isNaN(offsetInt)) {
     throw new ApiError(400, 'offset is parse failed');
   }
-  try {
-    limitInt = parseInt(limit);
-  } catch (e) {
+  const limitInt = parseInt(limit);
+  if (Number.isNaN(limitInt)) {
     throw new ApiError(400, 'limit is parse failed');
   }
 

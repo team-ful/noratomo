@@ -19,13 +19,9 @@ async function handler(base: AuthedBase<void>) {
     throw new ApiError(400, 'id require');
   }
 
-  let id = NaN;
-  try {
-    id = parseInt(_id);
-  } catch (e) {
-    if (e instanceof Error) {
-      throw new ApiError(400, 'id is not number');
-    }
+  const id = parseInt(_id);
+  if (Number.isNaN(id)) {
+    throw new ApiError(400, 'id is not number');
   }
 
   await deleteNoraQuestionByID(await base.db(), id);
