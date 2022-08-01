@@ -129,10 +129,10 @@ export const createShopModel = (options?: Partial<ShopModel>): ShopModel => {
     lat: options?.lat || randomInt(50),
     lon: options?.lon || randomInt(50),
     genre_name: options?.genre_name || randomText(10),
-    genre_catch: options?.genre_catch || randomText(10),
+    genre_catch: options?.genre_catch || null,
     gender: options?.gender || false,
     site_url: options?.site_url || randomText(20),
-    photo_url: options?.photo_url || randomText(20),
+    photo_url: options?.photo_url || null,
     hotpepper_id: options?.hotpepper_id || randomText(10),
   };
 };

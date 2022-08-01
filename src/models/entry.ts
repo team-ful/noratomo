@@ -16,7 +16,7 @@ export interface EntryModel {
 
   date: Date;
 
-  body: string;
+  body: string | null;
 
   is_closed: boolean;
 }
@@ -28,7 +28,7 @@ class Entry implements EntryModel {
   readonly shop_id: number;
   readonly number_of_people: number;
   readonly date: Date;
-  readonly body: string;
+  readonly body: string | null;
   readonly is_closed: boolean;
 
   constructor(init: DefaultObject | EntryModel) {
@@ -38,7 +38,7 @@ class Entry implements EntryModel {
     this.shop_id = init.shop_id as number;
     this.number_of_people = init.number_of_people as number;
     this.date = new Date(init.date as Date | string);
-    this.body = init.body as string;
+    this.body = init.body as string | null;
     this.is_closed = Boolean(init.is_closed);
   }
 }
