@@ -213,11 +213,7 @@ export interface ShopLite {
   // 店舗URL
   urls: {
     // PC向け
-    pc: {
-      l: string;
-      m: string;
-      s: string;
-    };
+    pc: string;
   };
 }
 
