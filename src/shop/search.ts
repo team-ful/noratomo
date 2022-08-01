@@ -1,13 +1,10 @@
 import config from '../../config';
-import {ApiError} from '../base/apiError';
 import Base from '../base/base';
-import {
-  GourmetRequest,
-  GourmetResponseLite,
-} from '../models/api/hotpepper/gourmet';
+import {GourmetResponseLite} from '../models/api/hotpepper/gourmet';
 import {HotPepper} from '../services/api/hotpepper/hotpepper';
 
 /**
+ * 店を検索する
  *
  * @param {Base} base - base
  */
