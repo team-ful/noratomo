@@ -1,4 +1,5 @@
 import {URL} from 'url';
+import {HotpepperRequestApi} from './common';
 
 /**
  * ホットペッパーグルメサーチAPIのリクエストクエリ
@@ -48,9 +49,9 @@ export interface GourmetRequest extends HotpepperRequestApi {
   keyword?: string;
 
   // 位置
-  lat?: number;
-  lon?: number;
-  // lat, lonからの検索範囲を指定する
+  lat?: string;
+  lng?: string;
+  // lat, lngからの検索範囲を指定する
   // 1: 300m, 2: 500m, 3: 1000m(default), 4: 2000m, 5: 3000m
   range?: 1 | 2 | 3 | 4 | 5;
   // 測地系 world: 世界測地系(default), tokyo: 旧日本測地系
@@ -157,10 +158,6 @@ export interface GourmetRequest extends HotpepperRequestApi {
   format?: 'xml' | 'json' | 'jsonp';
 }
 
-export interface HotpepperRequestApi {
-  key: string;
-}
-
 export interface GourmetResponseLite {
   results: {
     api_version: string;
@@ -186,7 +183,7 @@ export interface ShopLite {
 
   // 位置
   lat: number;
-  lon: number;
+  lng: number;
 
   // 料金備考
   budget_memo: string;
@@ -216,11 +213,7 @@ export interface ShopLite {
   // 店舗URL
   urls: {
     // PC向け
-    pc: {
-      l: string;
-      m: string;
-      s: string;
-    };
+    pc: string;
   };
 }
 

@@ -18,13 +18,10 @@ async function handler(base: AuthedBase<NoraQuestionModel[]>) {
   const _limit = base.getQuery('limit');
   let limit;
   if (_limit) {
-    try {
-      limit = parseInt(_limit);
-    } catch (e) {
-      if (e instanceof Error) {
-        // パースに失敗したら400を返す
-        throw new ApiError(400, e.message);
-      }
+    limit = parseInt(_limit);
+    if (Number.isNaN(limit)) {
+      // パースに失敗したら400を返す
+      throw new ApiError(400, 'parse error');
     }
   }
 

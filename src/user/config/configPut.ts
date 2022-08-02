@@ -47,10 +47,8 @@ export async function setConfigHandler(base: AuthedBase<void>) {
     option['user_name'] = userName;
   }
   if (age) {
-    let a = NaN;
-    try {
-      a = parseInt(age);
-    } catch (e) {
+    const a = parseInt(age);
+    if (Number.isNaN(a)) {
       throw new ApiError(400, 'parse failed');
     }
 
@@ -58,14 +56,7 @@ export async function setConfigHandler(base: AuthedBase<void>) {
     option['age'] = a;
   }
   if (gender) {
-    let g = Gender.NotNone;
-    try {
-      g = ge(parseInt(gender));
-    } catch (e) {
-      throw new ApiError(400, 'parse failed');
-    }
-
-    option['gender'] = g;
+    option['gender'] = ge(parseInt(gender));
   }
 
   await updateUser(await base.db(), base.user.id, option);

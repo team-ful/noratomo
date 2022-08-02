@@ -1,8 +1,10 @@
 import {randomBytes, randomInt} from 'crypto';
 import {Device} from '../base/base';
 import {CertModel} from '../models/cret';
+import {EntryModel} from '../models/entry';
 import {LoginHistoryModel} from '../models/loginHistory';
 import {SessionModel} from '../models/session';
+import {ShopModel} from '../models/shop';
 import {UserModel} from '../models/user';
 import {randomText} from '../utils/random';
 
@@ -110,5 +112,46 @@ export const createLoginHistoryModel = (
     browser_name: options?.browser_name || 'Chrome',
     login_date: options?.login_date || loginDate,
     'INET6_NTOA(ip_address)': options?.ip_address || '203.0.113.0', // 203.0.113.0はテスト用のIPアドレス
+  };
+};
+
+/**
+ * ダミーのショップオブジェクトを作成する
+ *
+ * @param {Partial<ShopModel>} options - オプション
+ * @returns {ShopModel} ショップモデル
+ */
+export const createShopModel = (options?: Partial<ShopModel>): ShopModel => {
+  return {
+    id: options?.id || randomInt(1000000),
+    name: options?.name || randomText(10),
+    address: options?.address || randomText(20),
+    lat: options?.lat || randomInt(50),
+    lon: options?.lon || randomInt(50),
+    genre_name: options?.genre_name || randomText(10),
+    genre_catch: options?.genre_catch || null,
+    gender: options?.gender || false,
+    site_url: options?.site_url || randomText(20),
+    photo_url: options?.photo_url || null,
+    hotpepper_id: options?.hotpepper_id || randomText(20),
+  };
+};
+
+/**
+ * ダミーのentryオブジェクトを作成する
+ *
+ * @param {Partial<EntryModel>} options - オプション
+ * @returns {EntryModel} entry model
+ */
+export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
+  return {
+    id: options?.id || randomInt(1000000),
+    owner_user_id: options?.owner_user_id || randomInt(1000000),
+    title: options?.title || randomText(20),
+    shop_id: options?.shop_id || randomInt(1000000),
+    number_of_people: options?.number_of_people || 1, // 設計上1になる
+    date: options?.date || dbDate(new Date(Date.now())),
+    body: options?.body || randomText(30),
+    is_closed: options?.is_closed || false,
   };
 };

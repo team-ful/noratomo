@@ -2,7 +2,7 @@ import {URL} from 'url';
 import {
   GourmetRequest,
   parse,
-} from '../../../../src/services/api/hotpepper/gourmet';
+} from '../../../../src/models/api/hotpepper/gourmet';
 
 describe('gourmet', () => {
   const endpoint = new URL(
@@ -29,5 +29,24 @@ describe('gourmet', () => {
     expect(parsed.searchParams.get('count')).toBe(String(sample1.count));
 
     expect(parsed.searchParams.get('child')).toBeNull();
+  });
+
+  test('エンコードされる', () => {
+    const query: GourmetRequest = {
+      key: 'aaaa',
+      keyword: '日本語の文章',
+    };
+
+    const parsed = parse(endpoint, query);
+
+    expect(parsed.toString()).not.toEqual(
+      expect.stringMatching(/日本語の文章/)
+    );
+
+    expect(parsed.toString()).toEqual(
+      expect.stringMatching(
+        /%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%81%AE%E6%96%87%E7%AB%A0/
+      )
+    );
   });
 });

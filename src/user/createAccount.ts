@@ -119,16 +119,14 @@ export class CreateAccountByPassword {
     this.mail = mail;
     this.password = password;
 
-    try {
-      this.age = parseInt(age);
-    } catch (e) {
+    this.age = parseInt(age);
+    if (Number.isNaN(this.age)) {
       throw new ApiError(400, 'parse failed age');
     }
 
-    try {
-      this.gender = pg(parseInt(gender));
-    } catch (e) {
-      throw new ApiError(400, 'parse failed aender');
+    this.gender = pg(parseInt(gender));
+    if (Number.isNaN(this.gender)) {
+      throw new ApiError(400, 'parse failed gender');
     }
   }
 

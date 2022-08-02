@@ -1,0 +1,37 @@
+{
+    "results": {
+        "api_version": "1.26",
+        "results_available": 1,
+        "results_returned": "1",
+        "results_start": 1,
+        "shop": [
+            {
+                "access": "ＪＲ武蔵野線越谷レイクタウン駅北口より徒歩約18分  ",
+                "address": "埼玉県越谷市レイクタウン３－1－1　イオンレイクタウンMORI",
+                "budget_memo": "",
+                "catch": "",
+                "food": {},
+                "genre": {
+                    "catch": "にゃにゃにゃ",
+                    "name": "カフェ・スイーツ"
+                },
+                "id": "J000787115",
+                "lat": 35.8820392884,
+                "lng": 139.8280217533,
+                "name": "にゃにゃにゃ イオンレイクタウン店",
+                "other_memo": "",
+                "photo": {
+                    "pc": {
+                        "l": "https://imgfp.hotp.jp/IMGH/aaaa.jpg",
+                        "m": "https://imgfp.hotp.jp/IMGH/aaaa.jpg",
+                        "s": "https://imgfp.hotp.jp/IMGH/aaaa.jpg"
+                    }
+                },
+                "shop_detail_memo": "",
+                "urls": {
+                    "pc": "https://example.com"
+                }
+            }
+        ]
+    }
+}
