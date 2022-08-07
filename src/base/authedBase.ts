@@ -149,19 +149,13 @@ class AuthedBase<T> extends Base<T> {
     });
   }
 
-  // 履歴を取得する
-  get checkLoginHistory() {
-    if (this._loginhistory) {
-      return this._loginhistory;
-    } else {
-      throw new ApiError(500, 'error');
-    }
-  }
-
   //履歴を返す
   public async getLoginHistory() {
-    const logHis = this.checkLoginHistory;
-    return logHis;
+    const findLogHis = await findLoginHistoriesByUserID(
+      await this.db(),
+      this.user.id
+    );
+    return {name: 'hoge'};
   }
 }
 
