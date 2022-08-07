@@ -1,6 +1,8 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import config from '../../config';
+import LoginHistory from '../models/loginHistory';
 import User from '../models/user';
+import {findLoginHistoriesByUserID} from '../services/loginHistory';
 import {
   deleteRefreshByRefreshToken,
   deleteRefreshBySessionToken,
@@ -20,6 +22,7 @@ import Base from './base';
  */
 class AuthedBase<T> extends Base<T> {
   private _user?: User;
+  private _loginhistory?: LoginHistory;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     super(req, res);
@@ -144,6 +147,21 @@ class AuthedBase<T> extends Base<T> {
     await updateUser(await this.db(), this.user.id, {
       avatar_url: newURL,
     });
+  }
+
+  // 履歴を取得する
+  get checkLoginHistory() {
+    if (this._loginhistory) {
+      return this._loginhistory;
+    } else {
+      throw new ApiError(500, 'error');
+    }
+  }
+
+  //履歴を返す
+  public async getLoginHistory() {
+    const logHis = this.checkLoginHistory;
+    return logHis;
   }
 }
 
