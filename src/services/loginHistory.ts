@@ -29,7 +29,7 @@ export async function findLoginHistoriesByUserID(
     ])
     .from('login_history')
     .where('user_id', userID)
-    .limit(50)
+    .limit(limit ?? 50)
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
