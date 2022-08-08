@@ -1,3 +1,4 @@
+import AuthedBase from '../base/authedBase';
 import {Device} from '../base/base';
 import {DefaultObject} from '../db/operator';
 
@@ -67,6 +68,10 @@ class LoginHistory implements LoginHistoryModel {
       default:
         return Device.Desktop;
     }
+  }
+
+  private json(log: LoginHistory) {
+    return JSON.stringify(log);
   }
 }
 

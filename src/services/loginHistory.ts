@@ -8,10 +8,12 @@ import LoginHistory from '../models/loginHistory';
  *
  * @param {DBOperator} db - database
  * @param {number} userID - user id
+ * @param limit
  */
 export async function findLoginHistoriesByUserID(
   db: DBOperator,
-  userID: number
+  userID: number,
+  limit?: number
 ): Promise<LoginHistory[] | null> {
   const query = sql
     .select([
@@ -30,6 +32,7 @@ export async function findLoginHistoriesByUserID(
     .from('login_history')
     .where('user_id', userID)
     .limit(limit ?? 50)
+    .orderBy('login_date')
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);

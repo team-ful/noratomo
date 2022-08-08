@@ -1,8 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import config from '../../config';
-import LoginHistory from '../models/loginHistory';
 import User from '../models/user';
-import {findLoginHistoriesByUserID} from '../services/loginHistory';
+
 import {
   deleteRefreshByRefreshToken,
   deleteRefreshBySessionToken,
@@ -22,7 +21,6 @@ import Base from './base';
  */
 class AuthedBase<T> extends Base<T> {
   private _user?: User;
-  private _loginhistory?: LoginHistory;
 
   constructor(req: NextApiRequest, res: NextApiResponse<T>) {
     super(req, res);
@@ -149,14 +147,16 @@ class AuthedBase<T> extends Base<T> {
     });
   }
 
-  //履歴を返す
-  public async getLoginHistory() {
-    const findLogHis = await findLoginHistoriesByUserID(
-      await this.db(),
-      this.user.id
-    );
-    return {name: 'hoge'};
-  }
+  // //履歴を返す
+  // private _loginhistory?: LoginHistory;
+
+  // public async getLoginHistory() {
+  //   const findLogHis = await findLoginHistoriesByUserID(
+  //     await this.db(),
+  //     this.user.id
+  //   );
+  //   return findLogHis;
+  // }
 }
 
 export default AuthedBase;
