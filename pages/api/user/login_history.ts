@@ -2,7 +2,7 @@ import AuthedBase from '../../../src/base/authedBase';
 import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
 
 /**
- * ログイン履歴を過去５０件まで取得する
+ * ログイン履歴を過去50件まで取得する
  *
  * @param {AuthedBase<void>} base base
  */
