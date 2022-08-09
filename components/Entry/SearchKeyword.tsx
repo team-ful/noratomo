@@ -1,24 +1,24 @@
 import {Box, Input, InputGroup, InputRightAddon} from '@chakra-ui/react';
+import {useRouter} from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
-
-interface Props {
-  searchQuery: (q: string, page: number) => void;
-}
 
 interface Form {
   keyword: string;
 }
 
-const SearchKeywordForm: React.FC<Props> = ({searchQuery}) => {
-  const {
-    register,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<Form>();
+const SearchKeywordForm: React.FC = () => {
+  const router = useRouter();
+  const {register, handleSubmit, setValue} = useForm<Form>();
+
+  React.useEffect(() => {
+    if (typeof router.query['keyword'] === 'string') {
+      setValue('keyword', router.query['keyword']);
+    }
+  }, [router.isReady, router.query]);
 
   const onSubmit: SubmitHandler<Form> = data => {
-    searchQuery(data.keyword, 0);
+    router.push(`/entry/create/search?keyword=${data.keyword}`);
   };
 
   return (
