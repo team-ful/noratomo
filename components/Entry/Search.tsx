@@ -62,7 +62,8 @@ const SearchShop = () => {
             <SearchKeywordForm />
             <Box w="100%">
               <Text textAlign="right">
-                検索結果: {20 * page + resultsReturned}/{resultsAvailable}件
+                検索結果: {20 * (page - 1) + resultsReturned}/{resultsAvailable}
+                件
               </Text>
             </Box>
             <Box w="100%">

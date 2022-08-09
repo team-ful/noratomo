@@ -18,7 +18,9 @@ const SearchKeywordForm: React.FC = () => {
   }, [router.isReady, router.query]);
 
   const onSubmit: SubmitHandler<Form> = data => {
-    router.push(`/entry/create/search?keyword=${data.keyword}`);
+    router.push(
+      `/entry/create/search?keyword=${encodeURIComponent(data.keyword)}`
+    );
   };
 
   return (

@@ -31,11 +31,11 @@ const ShopContent: React.FC<Props> = ({shop}) => {
         <Box h="100%">
           <Badge mt="2rem">{shop.genre.name}</Badge>
           <Flex alignItems="center">
-            <Heading fontSize="1.2rem" mt=".3rem" mr=".5rem">
+            <Heading fontSize="1.2rem" mt=".3rem" mr=".5rem" maxWidth="560px">
               {shop.name}
             </Heading>
-            <Link href={shop.urls.pc} isExternal>
-              <FiExternalLink size="20px" />
+            <Link href={shop.urls.pc} isExternal mr="1rem">
+              <FiExternalLink size="15px" />
             </Link>
           </Flex>
 
