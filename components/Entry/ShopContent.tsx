@@ -8,6 +8,7 @@ import {
   Link,
   Center,
 } from '@chakra-ui/react';
+import {useRouter} from 'next/router';
 import {FiExternalLink} from 'react-icons/fi';
 import {Shop} from '../../utils/types';
 
@@ -16,6 +17,8 @@ interface Props {
 }
 
 const ShopContent: React.FC<Props> = ({shop}) => {
+  const router = useRouter();
+
   return (
     <Box
       minH="200px"
@@ -23,6 +26,10 @@ const ShopContent: React.FC<Props> = ({shop}) => {
       w="100%"
       mb="1.5rem"
       borderRadius="30px"
+      onClick={() => {
+        router.push(`/entry/create?hotpepper_id=${shop.id}`);
+      }}
+      cursor="pointer"
     >
       <Flex w="100%" minH="200px">
         <Center>
