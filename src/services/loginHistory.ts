@@ -8,7 +8,7 @@ import LoginHistory from '../models/loginHistory';
  *
  * @param {DBOperator} db - database
  * @param {number} userID - user id
- * @param limit
+ * @param {number} limit - limit
  */
 export async function findLoginHistoriesByUserID(
   db: DBOperator,

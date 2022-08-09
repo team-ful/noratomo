@@ -1,3 +1,4 @@
+import {ApiError} from 'next/dist/server/api-utils';
 import AuthedBase from '../../../src/base/authedBase';
 import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
 import LoginHistory from '../../../src/models/loginHistory';
@@ -15,19 +16,11 @@ async function handler(base: AuthedBase<LoginHistory>) {
     base.user.id,
     parseInt(limit)
   );
-  base.sendJson(loginHistory.json());
-);
+  if (loginHistory === null) {
+    throw new ApiError(500, 'error');
+  }
+  const d = loginHistory.map(x => x.json());
+  base.sendJson(d);
 }
-
-// async function handler(base: AuthedBase<LoginHistory>) {
-//   const limit = base.getQuery('limit');
-//   const loginHistory = await findLoginHistoriesByUserID(
-//     await base.db(),
-//     base.user.id,
-//     parseInt(limit)
-//   );
-
-//   base.sendJson(loginHistory.json());
-// }
 
 export default authHandlerWrapper(handler, 'GET');

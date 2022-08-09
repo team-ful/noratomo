@@ -1,4 +1,3 @@
-import AuthedBase from '../base/authedBase';
 import {Device} from '../base/base';
 import {DefaultObject} from '../db/operator';
 
@@ -15,6 +14,17 @@ export interface LoginHistoryModel {
   login_date: Date;
 
   'INET6_NTOA(ip_address)'?: string;
+}
+
+interface LoginHistoryUserInfo {
+  ip_address: string;
+  device_name: Device | null;
+  os: string | null;
+  is_phone: boolean | null;
+  is_desktop: boolean | null;
+  is_tablet: boolean | null;
+  browser_name: string | null;
+  login_date: Date;
 }
 
 class LoginHistory implements LoginHistoryModel {
@@ -70,8 +80,17 @@ class LoginHistory implements LoginHistoryModel {
     }
   }
 
-  private json(log: LoginHistory) {
-    return JSON.stringify(log);
+  public json(): LoginHistoryUserInfo {
+    return {
+      ip_address: this.ip_address,
+      device_name: this.device_name,
+      os: this.os,
+      is_phone: this.is_phone,
+      is_desktop: this.is_desktop,
+      is_tablet: this.is_tablet,
+      browser_name: this.browser_name,
+      login_date: this.login_date,
+    };
   }
 }
 
