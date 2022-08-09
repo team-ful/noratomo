@@ -9,17 +9,18 @@ import {
   PaginationSeparator,
 } from '@ajna/pagination';
 import {Box} from '@chakra-ui/react';
+import {useRouter} from 'next/router';
 import React from 'react';
 
 interface Props {
   all: number;
-  init: boolean;
-  newPage: (page: number) => void;
+  current: number;
 }
 
 const PAGE_NUMBER = 20;
 
-const Paginate: React.FC<Props> = ({all, init, newPage}) => {
+const Paginate: React.FC<Props> = ({all, current}) => {
+  const router = useRouter();
   const {currentPage, setCurrentPage, pagesCount, pages} = usePagination({
     pagesCount: Math.ceil(all / PAGE_NUMBER),
     initialState: {
@@ -32,8 +33,21 @@ const Paginate: React.FC<Props> = ({all, init, newPage}) => {
   });
 
   React.useEffect(() => {
-    setCurrentPage(1);
-  }, [init]);
+    setCurrentPage(current);
+  }, [current]);
+
+  const newPage = (page: number) => {
+    const query = router.query;
+    // pageがある場合は上書き
+    query['page'] = String(page);
+
+    const q = [];
+    for (const key in query) {
+      q.push(`${key}=${query[key]}`);
+    }
+
+    router.push(`/entry/create/search?${q.join('&')}`);
+  };
 
   return (
     <Box>
@@ -44,7 +58,7 @@ const Paginate: React.FC<Props> = ({all, init, newPage}) => {
       >
         <PaginationContainer w="full" align="center" justify="space-between">
           <PaginationPrevious
-            onClick={() => newPage(currentPage - 2)}
+            onClick={() => newPage(currentPage - 1)}
             mr="1rem"
           >
             &lt;
@@ -58,11 +72,11 @@ const Paginate: React.FC<Props> = ({all, init, newPage}) => {
                 page={page}
                 variant={page === currentPage ? 'solid' : 'ghost'}
                 width="2rem"
-                onClick={() => newPage(page - 1)}
+                onClick={() => newPage(page)}
               />
             ))}
           </PaginationPageGroup>
-          <PaginationNext onClick={() => newPage(currentPage)} ml="1rem">
+          <PaginationNext onClick={() => newPage(currentPage + 1)} ml="1rem">
             &gt;
           </PaginationNext>
         </PaginationContainer>

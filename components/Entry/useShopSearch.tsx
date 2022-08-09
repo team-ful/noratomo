@@ -5,19 +5,9 @@ interface Returns {
   shops: Shop[];
   searchQuery: (q: string, page: number) => void;
   searchLatLon: (lat: number, lon: number, range: number, page: number) => void;
-  newPage: (page: number) => void;
   load: boolean;
   resultsAvailable: number;
   resultsReturned: number;
-  page: number;
-  init: boolean;
-}
-
-interface Query {
-  keyword?: string;
-  lat?: number;
-  lon?: number;
-  range?: number;
 }
 
 const useShopSearch = (): Returns => {
@@ -25,21 +15,20 @@ const useShopSearch = (): Returns => {
   const [load, setLoad] = React.useState(false);
   const [resultsAvailable, setResultsAvailable] = React.useState(0);
   const [resultsReturned, setResultsReturned] = React.useState(0);
-  const [query, setQuery] = React.useState<Query>({});
-  const [page, setPage] = React.useState(0);
-  const [init, setInit] = React.useState(false);
 
   const searchQuery = (q: string, page: number) => {
+    if (q === '') {
+      reset();
+      return;
+    }
+
     const f = async () => {
       setLoad(true);
 
-      const res = await fetch(`/api/shop/search?keyword=${q}&page=${page}`);
+      const res = await fetch(`/api/shop/search?keyword=${q}&page=${page - 1}`);
 
       const data = (await res.json()) as Shops;
       insert(data);
-      setQuery({keyword: q});
-      setPage(0);
-      setInit(!init);
 
       setLoad(false);
     };
@@ -57,40 +46,11 @@ const useShopSearch = (): Returns => {
       setLoad(true);
 
       const res = await fetch(
-        `/api/shop/search?lat=${lat}&lon=${lon}&range=${range}&page=${page}`
+        `/api/shop/search?lat=${lat}&lon=${lon}&range=${range}&page=${page - 1}`
       );
 
       const data = (await res.json()) as Shops;
       insert(data);
-      setQuery({lat: lat, lon: lon, range: range});
-      setPage(0);
-      setInit(!init);
-
-      setLoad(false);
-    };
-
-    f();
-  };
-
-  const newPage = (page: number) => {
-    const f = async () => {
-      setLoad(true);
-      let res;
-      if (typeof query.keyword === 'string') {
-        res = await fetch(
-          `/api/shop/search?keyword=${query.keyword}&page=${page}`
-        );
-      } else if (typeof query.lat === 'number') {
-        res = await fetch(
-          `/api/shop/search?lat=${query.lat}&lon=${query.lon}&range=${query.range}&page=${page}`
-        );
-      } else {
-        return;
-      }
-
-      const data = (await res.json()) as Shops;
-      insert(data);
-      setPage(page);
 
       setLoad(false);
     };
@@ -104,16 +64,19 @@ const useShopSearch = (): Returns => {
     setShops(data.results.shop);
   };
 
+  const reset = () => {
+    setResultsAvailable(0);
+    setResultsReturned(0);
+    setShops([]);
+  };
+
   return {
     shops,
     searchQuery,
     searchLatLon,
-    newPage,
     load,
     resultsAvailable,
     resultsReturned,
-    page,
-    init,
   };
 };
 
