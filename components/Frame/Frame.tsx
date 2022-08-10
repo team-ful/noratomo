@@ -116,7 +116,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
           flexDirection="column"
           minHeight="100vh"
           maxWidth="1000px"
-          minWidth={{base: '96%', sm: 'auto'}}
+          minWidth={{base: '100%', sm: 'auto'}}
         >
           <Box>
             <Header user={user} />
