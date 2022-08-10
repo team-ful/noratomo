@@ -20,6 +20,7 @@ const SearchShop = () => {
 
   const [page, setPage] = React.useState(1);
   const [init, setInit] = React.useState(true);
+  const [isKeyword, setIsKeyword] = React.useState(true);
 
   React.useEffect(() => {
     if (!router.isReady) return;
@@ -43,12 +44,13 @@ const SearchShop = () => {
       typeof router.query['range'] === 'string'
     ) {
       searchLatLon(
-        parseInt(router.query['lat']),
-        parseInt(router.query['lon']),
+        parseFloat(router.query['lat']),
+        parseFloat(router.query['lon']),
         parseInt(router.query['range']),
         _page
       );
       setInit(true);
+      setIsKeyword(false);
     } else {
       setInit(false);
     }
@@ -59,7 +61,7 @@ const SearchShop = () => {
       {init ? (
         <Center w="100%">
           <VStack w="100%" mx=".5rem">
-            <SearchKeywordForm />
+            {isKeyword && <SearchKeywordForm />}
             <Box w="100%">
               <Text textAlign="right">
                 検索結果: {20 * (page - 1) + resultsReturned}/{resultsAvailable}
