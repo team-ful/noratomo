@@ -36,6 +36,7 @@ const EntryFormByUserEdit = () => {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: {errors, isSubmitting},
   } = methods;
 
@@ -45,6 +46,8 @@ const EntryFormByUserEdit = () => {
         message: 'お店の場所にピンを刺してください',
       });
       return;
+    } else {
+      clearErrors('map');
     }
 
     const form = new FormData();
