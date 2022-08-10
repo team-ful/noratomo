@@ -55,7 +55,7 @@ const HeaderToolbar = () => {
             icon={<IconPost size="26px" />}
             label="募集する"
             isTooltip={false}
-            href="/"
+            href="/entry/create/search"
           />
         </Center>
 
