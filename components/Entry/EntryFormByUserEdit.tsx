@@ -197,7 +197,7 @@ const EntryFormByUserEdit = () => {
               </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={Boolean(errors.body)} mt="1rem">
-              <FormLabel htmlFor="body">募集タイトル</FormLabel>
+              <FormLabel htmlFor="body">募集詳細</FormLabel>
               <Textarea
                 id="body"
                 placeholder=""
