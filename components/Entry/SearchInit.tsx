@@ -4,7 +4,7 @@ import SearchLatLon from './SearchLatLon';
 
 const SearchInit = () => {
   return (
-    <Center w="100%" minH="80vh">
+    <Center minH="80vh">
       <Box w="100%" mt="3rem">
         <Heading mb="1rem" textAlign="center">
           行きたいお店を検索しよう
@@ -13,7 +13,6 @@ const SearchInit = () => {
         <Text my="1.5rem" textAlign="center">
           もしくは、
         </Text>
-
         <SearchLatLon
           style={{width: '100%', height: '400px'}}
           center={{
