@@ -11,26 +11,18 @@ const HeaderToolbar = () => {
     <Box
       position="fixed"
       display={{base: 'block', sm: 'none'}}
-      top="0"
-      left="0"
+      bottom="5px"
       w="100%"
+      zIndex="10000"
     >
       <SimpleGrid
         columns={5}
-        position="fixed"
         w="92%"
-        left="0"
-        zIndex="10"
         mx="1rem"
         p="5px"
         borderRadius="50px"
         bg="white"
         boxShadow="-5px 5px 14px #dedede"
-        top="calc(100vh - 80px)"
-        css={{
-          // iPhoneだとdvhじゃないとツールバーが画面の外に出てしまうため重ねて定義する
-          top: 'calc(100dvh - 80px)',
-        }}
       >
         <Center>
           <MenuButton
