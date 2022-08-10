@@ -71,7 +71,7 @@ const Paginate: React.FC<Props> = ({all, current}) => {
                 key={`pagination_page_${page}`}
                 page={page}
                 variant={page === currentPage ? 'solid' : 'ghost'}
-                width="2rem"
+                width={{base: '1.5rem', sm: '2rem'}}
                 onClick={() => newPage(page)}
               />
             ))}
