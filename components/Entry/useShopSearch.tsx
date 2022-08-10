@@ -46,7 +46,9 @@ const useShopSearch = (): Returns => {
       setLoad(true);
 
       const res = await fetch(
-        `/api/shop/search?lat=${lat}&lon=${lon}&range=${range}&page=${page - 1}`
+        `/api/shop/search?lat=${String(lat)}&lon=${String(
+          lon
+        )}&range=${range}&page=${page - 1}`
       );
 
       const data = (await res.json()) as Shops;
