@@ -79,7 +79,7 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
             icon={<IconPost size="25px" />}
             label="募集する"
             isTooltip={true}
-            href="/entry/create"
+            href="/entry/create/search"
           />
         </Center>
 
