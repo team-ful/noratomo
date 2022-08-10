@@ -1,4 +1,5 @@
-import {Box, Center, VStack, Text} from '@chakra-ui/react';
+import {Box, Center, VStack, Text, Link} from '@chakra-ui/react';
+import NextLink from 'next/link';
 import {useRouter} from 'next/router';
 import React from 'react';
 import Pagination from './Pagination';
@@ -74,6 +75,11 @@ const SearchShop = () => {
               })}
             </Box>
             <Pagination all={resultsAvailable} current={page} />
+            <NextLink passHref href="/entry/create">
+              <Link as="a">
+                お店が見つからない場合は、自分でお店を追加することができます。
+              </Link>
+            </NextLink>
           </VStack>
         </Center>
       ) : (
