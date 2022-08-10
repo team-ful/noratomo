@@ -35,10 +35,18 @@ const EntryFormByUserEdit = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: {errors, isSubmitting},
   } = methods;
 
   const onSubmit: SubmitHandler<EntryForm> = async data => {
+    if (!data.map) {
+      setError('map', {
+        message: 'お店の場所にピンを刺してください',
+      });
+      return;
+    }
+
     const form = new FormData();
 
     form.append('shop_name', data.shop_name);

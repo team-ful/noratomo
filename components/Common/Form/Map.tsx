@@ -42,6 +42,7 @@ const Map: React.FC<Props> = props => {
 
   const {
     setValue,
+    clearErrors,
     formState: {errors},
   } = useFormContext<MapForm>();
 
@@ -59,6 +60,8 @@ const Map: React.FC<Props> = props => {
     setValue('map', true);
     setValue('lat', lat);
     setValue('lon', lon);
+
+    clearErrors('map');
   }, []);
 
   return (
