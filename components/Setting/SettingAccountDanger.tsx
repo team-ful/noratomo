@@ -19,6 +19,7 @@ import {useRouter} from 'next/router';
 import React from 'react';
 import {useSetRecoilState} from 'recoil';
 import {UserState} from '../../utils/atom';
+import Logout from '../Common/Logout';
 
 const SettingAccountDanger = () => {
   const router = useRouter();
@@ -30,17 +31,6 @@ const SettingAccountDanger = () => {
   const [isDelete, setIsDelete] = React.useState(false);
 
   const setUser = useSetRecoilState(UserState);
-
-  const logoutHandler = () => {
-    const f = async () => {
-      setLoad(true);
-      await fetch('/api/logout', {method: 'GET'});
-
-      changeLocate();
-    };
-
-    f();
-  };
 
   const deleteHandler = () => {
     const f = async () => {
@@ -88,26 +78,7 @@ const SettingAccountDanger = () => {
           </Button>
         </Flex>
       </Box>
-      <Modal
-        isOpen={logoutModal.isOpen}
-        onClose={logoutModal.onClose}
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>ログアウトしますか？</ModalHeader>
-          <ModalCloseButton size="lg" />
-          <ModalBody>
-            再度ログインすることで、また使用できるようになります。
-          </ModalBody>
-
-          <ModalFooter>
-            <Button onClick={logoutHandler} isLoading={load}>
-              ログアウト
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <Logout isOpen={logoutModal.isOpen} onClose={logoutModal.onClose} />
       <Modal
         isOpen={deleteModal.isOpen}
         onClose={deleteModal.onClose}

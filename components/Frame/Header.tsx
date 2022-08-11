@@ -6,12 +6,19 @@ import {
   Center,
   Avatar,
   Button,
+  Menu,
+  MenuButton as MenuB,
+  MenuList,
+  MenuDivider,
+  MenuItem,
+  useDisclosure,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
-import {Tooltip} from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
+import {TbSettings, TbUserCircle, TbLogout} from 'react-icons/tb';
 import {User} from '../../utils/types';
+import Logout from '../Common/Logout';
 import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
@@ -107,8 +114,20 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
           />
         </Center>
       </Box>
-      <Tooltip label="マイページ">
-        <Center mr=".5rem" ml=".5rem">
+      <MyPageIcon user={user} />
+    </Flex>
+  );
+});
+
+LoginIcons.displayName = 'LoginIcons';
+
+const MyPageIcon = React.memo<{user: User}>(({user}) => {
+  const logoutModal = useDisclosure();
+
+  return (
+    <Menu>
+      <Center>
+        <MenuB mx=".5rem">
           <NextLink passHref href={'/profile'}>
             <Box as="a">
               <Avatar
@@ -118,12 +137,29 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
               />
             </Box>
           </NextLink>
-        </Center>
-      </Tooltip>
-    </Flex>
+        </MenuB>
+      </Center>
+      <MenuList>
+        <NextLink passHref href="/profile">
+          <MenuItem as="a" icon={<TbUserCircle size="20px" />}>
+            プロフィール
+          </MenuItem>
+        </NextLink>
+        <NextLink passHref href="/setting/account">
+          <MenuItem as="a" icon={<TbSettings size="20px" />}>
+            設定
+          </MenuItem>
+        </NextLink>
+        <MenuDivider />
+        <MenuItem onClick={logoutModal.onOpen} icon={<TbLogout size="20px" />}>
+          ログアウト
+        </MenuItem>
+      </MenuList>
+      <Logout onClose={logoutModal.onClose} isOpen={logoutModal.isOpen} />
+    </Menu>
   );
 });
 
-LoginIcons.displayName = 'LoginIcons';
+MyPageIcon.displayName = 'MyPageIcon';
 
 export default Header;
