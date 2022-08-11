@@ -225,7 +225,7 @@ export interface ShopLite {
  * @returns {URL} リクエストURL
  */
 export function parse(endpoint: URL, q: GourmetRequest): URL {
-  const e = endpoint;
+  const e = new URL(endpoint.toString());
 
   // require
   e.searchParams.set('key', q.key);
