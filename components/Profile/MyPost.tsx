@@ -9,6 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React from 'react';
+import {AiOutlineHeart} from 'react-icons/ai';
 import {parseElapsedDate} from '../../utils/parse';
 import {Entry} from '../../utils/types';
 
@@ -88,15 +89,17 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
           </Box>
         </Box>
       </Flex>
-      <Text
-        textAlign="right"
-        mr="2rem"
-        color="gray.500"
-        fontSize=".8rem"
-        pb=".5rem"
-      >
-        {parseElapsedDate(new Date(entry.date))}
-      </Text>
+      <Flex justifyContent="right" alignItems="center" pb=".5rem">
+        <Flex mr="1rem" alignItems="center">
+          <AiOutlineHeart />
+          <Text color="gray.500" fontSize=".8rem" ml=".2rem">
+            0
+          </Text>
+        </Flex>
+        <Text textAlign="right" mr="2rem" color="gray.500" fontSize=".8rem">
+          {parseElapsedDate(new Date(entry.date))}
+        </Text>
+      </Flex>
     </Box>
   );
 };
