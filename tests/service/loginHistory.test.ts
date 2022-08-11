@@ -103,27 +103,36 @@ describe('findLoginHistoriesByUserID', () => {
   });
 
   test('取得できる', async () => {
-    const d = createLoginHistoryModel();
+    const userID = createUserID();
 
-    await base.db.test(
-      `INSERT INTO login_history (
-      user_id,
-      ip_address,
-      device_name,
-      os,
-      login_date
-    ) VALUES (?, INET6_ATON(?), ?, ?, NOW())`,
-      [d.user_id, d.ip_address, d.device_name, d.os]
-    );
+    // ログイン履歴を50作成する
+    for (let i = 0; 50 > i; i++) {
+      const d = createLoginHistoryModel({user_id: userID});
 
-    const history = await findLoginHistoriesByUserID(base.db, d.user_id);
+      await base.db.test(
+        `INSERT INTO login_history (
+        user_id,
+        ip_address,
+        device_name,
+        os,
+        login_date
+      ) VALUES (?, INET_ATON(?), ?, ?, NOW())`,
+        [d.user_id, d.ip_address, d.device_name, d.os]
+      );
+    }
 
-    expect(history).not.toBeNull();
-    expect(history?.length).toBe(1);
+    //取り出す履歴の個数を指定した時
+    const re_history = await findLoginHistoriesByUserID(base.db, userID, 2);
+    expect(re_history).not.toBeNull();
+    expect(re_history?.length).toBe(2);
 
-    if (history) {
-      expect(history[0].os).toBe(d.os);
-      expect(history[0].ip_address).toBe(d.ip_address);
+    //指定しない時
+    const history2 = await findLoginHistoriesByUserID(base.db, userID);
+    expect(history2).not.toBeNull();
+    expect(history2?.length).toBe(50);
+    if (history2) {
+      expect(history2[0].login_date >= history2[1].login_date).toBeTruthy();
+      expect(history2[0].login_date >= history2[40].login_date).toBeTruthy();
     }
   });
 });
