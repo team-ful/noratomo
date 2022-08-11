@@ -1,6 +1,6 @@
 import {PageConfig} from 'next';
 import {switchMethod} from '../../src/base/switchMethod';
-import {post} from '../../src/entry';
+import {post, get} from '../../src/entry';
 
 // multipart/form-dataはbodyParserをfalseにしないと動かない
 export const config: PageConfig = {
@@ -9,6 +9,7 @@ export const config: PageConfig = {
   },
 };
 
-export default switchMethod({
+export default switchMethod<unknown>({
   POST: post,
+  GET: get,
 });
