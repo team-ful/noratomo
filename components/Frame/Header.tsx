@@ -41,7 +41,13 @@ const Header: React.FC<Props> = ({user, noLogin}) => {
           </NextLink>
         </Center>
         <Spacer />
-        {noLogin ? <></> : user ? <LoginIcons user={user} /> : <NoLoginIcons />}
+        {noLogin || typeof user === 'undefined' ? (
+          <></>
+        ) : user ? (
+          <LoginIcons user={user} />
+        ) : (
+          <NoLoginIcons />
+        )}
       </Flex>
     </Box>
   );
