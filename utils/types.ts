@@ -82,3 +82,28 @@ export interface Shops {
     shop: Shop[];
   };
 }
+
+export interface Entry {
+  id: number;
+
+  title: string;
+  body: string | null;
+  date: Date;
+  number_of_people: number;
+  is_closed: boolean;
+  shop_id: number;
+
+  shop: {
+    address: string;
+    gender: boolean;
+    genre_catch: string | null;
+    genre_name: string;
+    hotpepper_id: string | null;
+    id: number;
+    lat: number;
+    lon: number;
+    name: string;
+    photo_url: string | null;
+    site_url: string;
+  };
+}
