@@ -23,6 +23,8 @@ describe('create', () => {
     const user = createUserModel({age: 20});
     const password = randomText(50);
 
+    const {token, answers} = await base.noraSession(400, 1);
+
     const body = {
       user_name: user.user_name,
       mail: user.mail,
@@ -30,8 +32,8 @@ describe('create', () => {
       age: user.age ?? 0,
       gender: user.gender,
 
-      token: '',
-      answers: [],
+      token: token,
+      answers: answers,
     };
 
     await testApiHandler({
@@ -62,14 +64,16 @@ describe('create', () => {
     const user = createUserModel({age: 20});
     const password = randomText(100);
 
+    const {token, answers} = await base.noraSession(400, 1);
+
     const body = {
       user_name: user.user_name,
       mail: user.mail,
       password: password,
       gender: user.gender,
 
-      token: '',
-      answers: [],
+      token: token,
+      answers: answers,
     };
 
     await testApiHandler({
@@ -94,6 +98,8 @@ describe('create', () => {
     const user = createUserModel({age: 20});
     const password = randomText(100);
 
+    const {token, answers} = await base.noraSession(400, 1);
+
     const body = {
       user_name: user.user_name,
       mail: user.mail,
@@ -101,8 +107,8 @@ describe('create', () => {
       age: '100',
       gender: user.gender,
 
-      token: '',
-      answers: [],
+      token: token,
+      answers: answers,
     };
 
     await testApiHandler({
@@ -117,6 +123,41 @@ describe('create', () => {
         });
 
         expect(res.status).toBe(400);
+      },
+    });
+  });
+
+  test('野良認証の回答スコアが足りない場合はエラー', async () => {
+    expect.hasAssertions();
+
+    const user = createUserModel({age: 20});
+    const password = randomText(50);
+
+    const {token, answers} = await base.noraSession(100, 1);
+
+    const body = {
+      user_name: user.user_name,
+      mail: user.mail,
+      password: password,
+      age: user.age ?? 0,
+      gender: user.gender,
+
+      token: token,
+      answers: answers,
+    };
+
+    await testApiHandler({
+      handler: createPasswordHandler,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+
+        expect(res.status).toBe(403);
       },
     });
   });
