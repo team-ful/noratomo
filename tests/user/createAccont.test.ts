@@ -115,8 +115,8 @@ describe('CreateAccountByPassword', () => {
       dummy.user_name,
       dummy.mail,
       password,
-      '20',
-      '0'
+      20,
+      0
     );
 
     await ca.check(base.db);
@@ -143,8 +143,8 @@ describe('CreateAccountByPassword', () => {
       dummy.user_name,
       mail,
       password,
-      '20',
-      '0'
+      20,
+      0
     );
 
     await expect(async () => {
@@ -163,8 +163,8 @@ describe('CreateAccountByPassword', () => {
       userName,
       dummy.mail,
       password,
-      '20',
-      '0'
+      20,
+      0
     );
 
     await expect(async () => {
