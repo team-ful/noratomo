@@ -1,4 +1,7 @@
-import {DefaultObject} from '../db/operator';
+import {ApiError} from '../base/apiError';
+import DBOperator, {DefaultObject} from '../db/operator';
+import {findShopById} from '../services/shop';
+import {ShopModel} from './shop';
 
 export interface EntryModel {
   id: number;
@@ -32,6 +35,10 @@ export interface ResponseEntry {
   shop_id: number;
 }
 
+export interface ShopIncludedResponseEntry extends ResponseEntry {
+  shop: ShopModel;
+}
+
 class Entry implements EntryModel {
   readonly id: number;
   readonly owner_user_id: number;
@@ -62,6 +69,23 @@ class Entry implements EntryModel {
       number_of_people: this.number_of_people,
       is_closed: this.is_closed,
       shop_id: this.shop_id,
+    };
+  }
+
+  public async jsonShopIncluded(
+    db: DBOperator
+  ): Promise<ShopIncludedResponseEntry> {
+    const entry = this.json();
+
+    const shop = await findShopById(db, this.shop_id);
+
+    if (shop === null) {
+      throw new ApiError(500, 'shop is not found');
+    }
+
+    return {
+      ...entry,
+      shop: shop,
     };
   }
 }

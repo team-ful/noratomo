@@ -18,9 +18,10 @@ const SearchKeywordForm: React.FC = () => {
   }, [router.isReady, router.query]);
 
   const onSubmit: SubmitHandler<Form> = data => {
-    router.push(
-      `/entry/create/search?keyword=${encodeURIComponent(data.keyword)}`
-    );
+    // 全角スペースで区切るとうまく検索できないため半角スペースに置き換える
+    const keyword = data.keyword.replace('　', ' ');
+
+    router.push(`/entry/create/search?keyword=${encodeURIComponent(keyword)}`);
   };
 
   return (

@@ -63,7 +63,7 @@ describe('entry', () => {
       entry.owner_user_id,
       entry.shop_id,
       entry.title,
-      entry.body
+      entry.body || ''
     );
 
     const result = await base.db.test<RowDataPacket[]>(
@@ -85,7 +85,7 @@ describe('entry', () => {
       new User(user),
       new Shop(shop),
       entry.title,
-      entry.body
+      entry.body || ''
     );
 
     const result = await base.db.test<RowDataPacket[]>(
@@ -127,7 +127,7 @@ describe('entry', () => {
 
     await updateEntry(base.db, id, {
       title: newEntry.title,
-      body: newEntry.body,
+      body: newEntry.body || '',
     });
 
     const result = await base.db.test<RowDataPacket[]>(
