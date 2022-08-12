@@ -94,6 +94,7 @@ const config: Config = {
   searchCount: 20,
 
   noraQuestionLimit: 5,
+  noraQuestionAllowScore: 300,
 };
 
 export default config;

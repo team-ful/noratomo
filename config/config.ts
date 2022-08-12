@@ -50,4 +50,5 @@ export interface Config {
   searchCount: number;
 
   noraQuestionLimit: number;
+  noraQuestionAllowScore: number;
 }
