@@ -196,6 +196,9 @@ CREATE TABLE IF NOT EXISTS `ban` (
 CREATE TABLE IF NOT EXISTS `nora_session` (
     `token` CHAR(64) NOT NULL,
     `question_ids` TEXT NOT NULL,
+
+    `created` DATETIME NOT NULL,
+    `period_date` DATETIME NOT NULL,
     PRIMARY KEY (`token`)
 );
 
