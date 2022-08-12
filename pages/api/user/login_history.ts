@@ -10,11 +10,11 @@ import {findLoginHistoriesByUserID} from '../../../src/services/loginHistory';
  * @param {AuthedBase<void>} base base
  */
 async function handler(base: AuthedBase<LoginHistory>) {
-  const limit = base.getQuery('limit', true);
+  const limit = base.getQuery('limit');
   const loginHistory = await findLoginHistoriesByUserID(
     await base.db(),
     base.user.id,
-    parseInt(limit)
+    parseInt(limit || 'undefined')
   );
   if (loginHistory === null) {
     throw new ApiError(500, 'error');
