@@ -17,6 +17,7 @@ export async function findNoraSessionByToken(
     .select('*')
     .from('nora_session')
     .where('token', token)
+    .and(sql.gte('period_date', sql('now()')))
     .limit(1)
     .toParams({placeholder: '?'});
 
@@ -45,6 +46,8 @@ export async function createNoraSession(
     .insert('nora_session', {
       token: token,
       question_ids: questionIds.join(','),
+      created: sql('NOW()'),
+      period_date: sql('DATE_ADD(NOW(), INTERVAL 1 DAY)'),
     })
     .toParams({placeholder: '?'});
 

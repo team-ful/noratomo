@@ -22,8 +22,10 @@ describe('noraSession', () => {
     await base.db.test(
       `INSERT INTO nora_session (
       token,
-      question_ids
-    ) VALUES (?, ?)`,
+      question_ids,
+      created,
+      period_date
+    ) VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))`,
       [token, '1,2']
     );
 

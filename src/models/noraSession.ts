@@ -8,6 +8,11 @@ export interface NoraSessionModel {
   question_ids: string;
 }
 
+export interface NoraSessionJson {
+  token: string;
+  question_ids: number[];
+}
+
 export class NoraSession implements NoraSessionModel {
   readonly token: string;
   readonly question_ids: string;
@@ -29,5 +34,12 @@ export class NoraSession implements NoraSessionModel {
     }
 
     return await findNoraQuestionsByIds(db, this.ids);
+  }
+
+  public json(): NoraSessionJson {
+    return {
+      token: this.token,
+      question_ids: this.ids,
+    };
   }
 }
