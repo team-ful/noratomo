@@ -10,6 +10,7 @@ import {
   deleteNoraQuestionByID,
   findAllNoraQuestion,
   findNoraQuestionById,
+  findNoraQuestionsByIds,
   findRandomNoraQuestion,
   updateNoraQuestionByID,
 } from '../../src/services/noraQuestion';
@@ -88,6 +89,36 @@ describe('noraQuestion', () => {
     });
 
     expect(q).toEqual(qq);
+  });
+
+  test('findNoraQuestionsByIds', async () => {
+    const id1 = (
+      await base.db.test<ResultSetHeader>(
+        `INSERT INTO nora_question(
+      question_title,
+      answers,
+      current_answer_index,
+      score
+    ) VALUES (?, ?, ?, ?)`,
+        [title, JSON.stringify(answers), answerIndex, score]
+      )
+    ).insertId;
+
+    const id2 = (
+      await base.db.test<ResultSetHeader>(
+        `INSERT INTO nora_question(
+      question_title,
+      answers,
+      current_answer_index,
+      score
+    ) VALUES (?, ?, ?, ?)`,
+        [title, JSON.stringify(answers), answerIndex, score]
+      )
+    ).insertId;
+
+    const questions = await findNoraQuestionsByIds(base.db, [id1, id2]);
+
+    expect(questions.length).toBe(2);
   });
 
   test('findAllNoraQuestion', async () => {
