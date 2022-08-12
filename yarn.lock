@@ -2000,6 +2000,13 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@mojotech/json-type-validation@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@mojotech/json-type-validation/-/json-type-validation-3.1.0.tgz#13357741bce0e0d7e63369bf384fd92956cc7c99"
+  integrity sha512-ThH2EbHEUCPMHhXAtmYcDi0gmV+PZak4uvuWBMiBDqUuz7gGQUrsE5o1J6kKNLDX5cXAPqsfJ7uTfTcNdCDXxA==
+  dependencies:
+    lodash.isequal "^4.5.0"
+
 "@motionone/animation@^10.10.1":
   version "10.10.1"
   resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.10.1.tgz#d3d3ecb11c6d7507a104b080f31b07be9bc7056d"
