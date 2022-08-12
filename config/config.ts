@@ -48,4 +48,6 @@ export interface Config {
 
   // 店検索の検索件数
   searchCount: number;
+
+  noraQuestionLimit: number;
 }
