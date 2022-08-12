@@ -1,7 +1,6 @@
 import {ResultSetHeader} from 'mysql2';
 import {NoraQuestionSelect} from '../../src/models/noraQuestion';
 import {NoraSession} from '../../src/models/noraSession';
-import {createNoraQuestion} from '../../src/services/noraQuestion';
 import TestBase from '../../src/tests/base';
 import {randomText} from '../../src/utils/random';
 
