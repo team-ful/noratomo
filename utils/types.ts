@@ -1,3 +1,5 @@
+import {Device} from '../src/base/base';
+
 export interface User {
   display_name: string;
   mail: string;
@@ -106,4 +108,15 @@ export interface Entry {
     photo_url: string | null;
     site_url: string;
   };
+}
+
+export interface LoginHistoryUserInfo {
+  ip_address: string;
+  device_name: Device | null;
+  os: string | null;
+  is_phone: boolean | null;
+  is_desktop: boolean | null;
+  is_tablet: boolean | null;
+  browser_name: string | null;
+  login_date: Date;
 }
