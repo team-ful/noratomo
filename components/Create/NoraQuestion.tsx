@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Flex,
-  Heading,
-  Spinner,
-} from '@chakra-ui/react';
+import {Box, Button, Center, Flex, Heading, Spinner} from '@chakra-ui/react';
 import {Step, Steps, useSteps} from 'chakra-ui-steps';
 import React from 'react';
 import {
