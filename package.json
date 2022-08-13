@@ -23,6 +23,7 @@
         "@react-google-maps/api": "^2.12.1",
         "argon2": "^0.28.7",
         "axios": "^0.27.2",
+        "chakra-ui-steps": "^1.7.4",
         "client-hints": "^0.2.2",
         "content-type": "^1.0.4",
         "cookie": "^0.5.0",
