@@ -107,3 +107,39 @@ export interface Entry {
     site_url: string;
   };
 }
+
+export interface NoraSession {
+  token: string;
+  question_ids: number[];
+}
+
+export interface NoraQuestionExternal {
+  id: number;
+
+  // 問題のタイトル
+  question_title: string;
+
+  // 答えの選択肢
+  answers: NoraQuestionSelect[];
+}
+
+export interface NoraQuestionSelect {
+  index: number;
+  answerText: string;
+}
+
+export interface NoraQuestionAnswer {
+  id: number;
+  answer_index: number;
+}
+
+export interface CreateAccountPostForm {
+  user_name: string;
+  mail: string;
+  password: string;
+  age: number;
+  gender: number;
+
+  token: string;
+  answers: NoraQuestionAnswer[];
+}

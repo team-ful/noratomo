@@ -1,7 +1,9 @@
 import {extendTheme, withDefaultColorScheme} from '@chakra-ui/react';
+import {StepsStyleConfig as Steps} from 'chakra-ui-steps';
 
 const theme = {
   components: {
+    Steps,
     CloseButton: {
       baseStyle: {
         _focus: {
