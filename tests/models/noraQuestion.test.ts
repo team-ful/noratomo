@@ -1,6 +1,7 @@
 import {randomInt} from 'crypto';
 import {
   NoraQuestion,
+  NoraQuestionExternal,
   NoraQuestionModel,
   NoraQuestionSelect,
 } from '../../src/models/noraQuestion';
@@ -114,5 +115,23 @@ describe('noraQuestion', () => {
     };
 
     expect(q.model).toEqual(m);
+  });
+
+  test('external', () => {
+    const q = new NoraQuestion({
+      id: id,
+      question_title: title,
+      answers: answers,
+      current_answer_index: answerIndex,
+      score: score,
+    });
+
+    const m: NoraQuestionExternal = {
+      id: id,
+      question_title: title,
+      answers: answers,
+    };
+
+    expect(q.external).toEqual(m);
   });
 });

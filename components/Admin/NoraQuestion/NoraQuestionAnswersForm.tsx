@@ -42,7 +42,9 @@ const NoraQuestionAnswersForm = () => {
       return;
     }
 
-    const aIndex = answers.findIndex(v => v.isAnswer);
+    const aIndex = answers.findIndex(v => {
+      return v && v.isAnswer;
+    });
 
     if (aIndex !== -1) {
       clearErrors('answers');
