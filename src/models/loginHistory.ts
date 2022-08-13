@@ -17,6 +17,7 @@ export interface LoginHistoryModel {
 }
 
 interface LoginHistoryUserInfo {
+  id: number;
   ip_address: string;
   device_name: Device | null;
   os: string | null;
@@ -82,6 +83,7 @@ class LoginHistory implements LoginHistoryModel {
 
   public json(): LoginHistoryUserInfo {
     return {
+      id: this.id,
       ip_address: this.ip_address,
       device_name: this.device_name,
       os: this.os,
