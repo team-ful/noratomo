@@ -1,4 +1,4 @@
-import LoginHistories from '../../components/Session/LoginHistories';
+import LoginHistories from '../../components/History/LoginHistories';
 import Require from '../../components/Session/Require';
 
 // pages/history/login_histories

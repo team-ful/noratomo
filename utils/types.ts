@@ -111,6 +111,7 @@ export interface Entry {
 }
 
 export interface LoginHistoryUserInfo {
+  id: number;
   ip_address: string;
   device_name: Device | null;
   os: string | null;
