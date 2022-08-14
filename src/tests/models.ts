@@ -160,6 +160,7 @@ export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
 export const createNoticeModel = (
   options?: Partial<NoticeModel>
 ): NoticeModel => {
+  const now = dbDate(new Date(Date.now()));
   return {
     id: options?.id || randomInt(1000000),
     user_id: options?.user_id || randomInt(1000000),
@@ -167,5 +168,6 @@ export const createNoticeModel = (
     text: options?.text || null,
     url: options?.url || null,
     is_read: options?.is_read || false,
+    created: options?.created || now,
   };
 };
