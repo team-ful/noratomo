@@ -16,6 +16,7 @@ import {
 import '@fontsource/permanent-marker';
 import NextLink from 'next/link';
 import React from 'react';
+import {RiFootprintLine} from 'react-icons/ri';
 import {TbSettings, TbUserCircle, TbLogout} from 'react-icons/tb';
 import {User} from '../../utils/types';
 import Logout from '../Common/Logout';
@@ -148,6 +149,11 @@ const MyPageIcon = React.memo<{user: User}>(({user}) => {
         <NextLink passHref href="/setting/account">
           <MenuItem as="a" icon={<TbSettings size="20px" />}>
             設定
+          </MenuItem>
+        </NextLink>
+        <NextLink passHref href="/history/login_histories">
+          <MenuItem as="a" icon={<RiFootprintLine size="20px" />}>
+            ログイン履歴
           </MenuItem>
         </NextLink>
         <MenuDivider />
