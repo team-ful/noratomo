@@ -16,6 +16,15 @@ export interface NoticeModel {
   created: Date;
 }
 
+export interface ExternalNotice {
+  id: number;
+  title: string;
+  is_read: boolean;
+  created: Date;
+  text?: string;
+  url?: string;
+}
+
 class Notice implements NoticeModel {
   readonly id: number;
   readonly user_id: number;
@@ -34,7 +43,18 @@ class Notice implements NoticeModel {
     this.text = init.text as string | null;
     this.url = init.url as string | null;
 
-    this.created = new Date(init.created);
+    this.created = new Date(init.created as string);
+  }
+
+  public external(): ExternalNotice {
+    return {
+      id: this.id,
+      title: this.title,
+      is_read: this.is_read,
+      created: this.created,
+      text: this.text || undefined,
+      url: this.url || undefined,
+    };
   }
 }
 
