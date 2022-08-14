@@ -8,6 +8,16 @@ export interface User {
   is_admin: boolean;
   avatar_url: string;
   join_date: Date;
+  notice: Notice[];
+}
+
+export interface Notice {
+  id: number;
+  title: string;
+  is_read: boolean;
+  created: Date;
+  text?: string;
+  url?: string;
 }
 
 export interface Question {
