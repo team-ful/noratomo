@@ -15,6 +15,7 @@ import ALoginHistory from './ALoginHistory';
 
 const LoginHistories = () => {
   const res = useGetLoginHistories();
+
   return (
     <Box w="100%" mt="3rem">
       <Heading mb="1rem" textAlign="center">

@@ -1,5 +1,4 @@
 import {Td, Tr} from '@chakra-ui/react';
-
 import {LoginHistoryUserInfo} from '../../utils/types';
 
 const ALoginHistory = ({data}: {data: LoginHistoryUserInfo}) => {
