@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `notice` (
     `text` TEXT,
     `url` VARCHAR(8190),
     `is_read` BOOLEAN,
+    `created` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
 );
 
