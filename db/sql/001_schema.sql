@@ -194,11 +194,11 @@ CREATE TABLE IF NOT EXISTS `ban` (
 -- 野良認証のセッション情報
 
 CREATE TABLE IF NOT EXISTS `nora_session` (
-    `token` INT UNSIGNED NOT NULL,
-    `total_questions` SMALLINT NOT NULL,
-    `current_question` SMALLINT NOT NULL,
-    `score` INT UNSIGNED NOT NULL,
+    `token` CHAR(64) NOT NULL,
     `question_ids` TEXT NOT NULL,
+
+    `created` DATETIME NOT NULL,
+    `period_date` DATETIME NOT NULL,
     PRIMARY KEY (`token`)
 );
 

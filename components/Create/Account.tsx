@@ -16,22 +16,30 @@ import {
   Select,
   useToast,
 } from '@chakra-ui/react';
+import {useRouter} from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler, FormProvider} from 'react-hook-form';
+import {CreateAccountPostForm, NoraQuestionAnswer} from '../../utils/types';
 import Password, {PasswordForm} from '../Common/Form/Password';
 
 interface CreateAccountForm extends PasswordForm {
   mail: string;
   user_name: string;
-  age: number;
-  gender: number;
+  age: string;
+  gender: string;
 }
 
-const CreateAccount = () => {
+interface Props {
+  token: string;
+  answers: NoraQuestionAnswer[];
+}
+
+const CreateAccount: React.FC<Props> = ({token, answers}) => {
   const [pwOk, setPWOK] = React.useState(false);
   const [load, setLoad] = React.useState(false);
 
   const toast = useToast();
+  const router = useRouter();
 
   const methods = useForm<CreateAccountForm>();
   const {
@@ -55,18 +63,24 @@ const CreateAccount = () => {
 
     const f = async () => {
       setLoad(true);
+
+      const body: CreateAccountPostForm = {
+        user_name: data.user_name,
+        mail: data.mail,
+        password: data.password,
+        age: parseInt(data.age),
+        gender: parseInt(data.gender),
+
+        token: token,
+        answers: answers,
+      };
+
       const res = await fetch('/api/create/password', {
         method: 'POST',
         headers: {
-          'content-type': 'application/x-www-form-urlencoded',
+          'content-type': 'application/json',
         },
-        body: `user_name=${encodeURIComponent(
-          data.user_name
-        )}&password=${encodeURIComponent(
-          data.password
-        )}&mail=${encodeURIComponent(data.mail)}&age=${encodeURIComponent(
-          data.age
-        )}&gender=${encodeURIComponent(data.gender)}`,
+        body: JSON.stringify(body),
       });
 
       setLoad(false);
@@ -74,6 +88,12 @@ const CreateAccount = () => {
       // TODO: ログインできないときになにかしたい
       if (res.ok) {
         window.location.href = '/hello';
+      } else if (res.status === 403) {
+        toast({
+          status: 'error',
+          title: '野良認証に失敗しました',
+        });
+        router.replace('/');
       } else {
         toast({
           status: 'error',

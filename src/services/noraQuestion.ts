@@ -133,6 +133,26 @@ export async function findNoraQuestionById(
 }
 
 /**
+ * 複数IDを指定して野良認証問題を取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number[]} ids - 野良認証問題のID
+ */
+export async function findNoraQuestionsByIds(
+  db: DBOperator,
+  ids: number[]
+): Promise<NoraQuestion[]> {
+  const query = select('*')
+    .from('nora_question')
+    .where(sql.in('id', ids))
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new NoraQuestion(v));
+}
+
+/**
  *
  * @param {DBOperator} db - database
  * @param {number} limit - limit
