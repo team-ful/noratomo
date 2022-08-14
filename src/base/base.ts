@@ -1,5 +1,13 @@
 import {ParsedUrlQuery} from 'querystring';
 import {URL} from 'url';
+import {
+  Decoder,
+  object,
+  string,
+  optional,
+  number,
+  boolean,
+} from '@mojotech/json-type-validation';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import {serialize, CookieSerializeOptions} from 'cookie';
@@ -260,9 +268,10 @@ class Base<T> {
    * Content-Type: application/json
    * のデータを取得する
    *
+   * @param {Decoder} decoder - decoder. 定義することでjsonの型のバリデーションチェックを行う
    * @returns {object} json
    */
-  public getPostJson<T extends Object>(): T {
+  public getPostJson<T extends Object>(decoder?: Decoder<T>): T {
     if (
       !this.checkContentType('application/json') &&
       !this.checkContentType('application/ld+json')
@@ -270,7 +279,17 @@ class Base<T> {
       throw new ApiError(400, 'no application/(id+)?json');
     }
 
-    return this.req.body as T;
+    const body = this.req.body as T;
+
+    if (decoder) {
+      try {
+        return decoder.runWithException(body);
+      } catch (e) {
+        throw new ApiError(400, 'Illegal form json value');
+      }
+    }
+
+    return body;
   }
 
   /**
