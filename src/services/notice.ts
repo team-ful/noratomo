@@ -79,3 +79,30 @@ export async function findNoticeByUserId(
 
   return rows.map(v => new Notice(v));
 }
+
+/**
+ * UserIDで未読の通知を取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} userId - user id
+ * @param {number} limit - 取得量
+ */
+export async function findNoReadNoticeByUserId(
+  db: DBOperator,
+  userId: number,
+  limit?: number
+): Promise<Notice[]> {
+  let query = sql
+    .select('*')
+    .from('notice')
+    .where(sql.and({user_id: userId, is_read: false}))
+    .orderBy('created');
+
+  if (typeof limit !== 'undefined') {
+    query = query.limit(limit);
+  }
+
+  const rows = await db.multi(query.toParams({placeholder: '?'}));
+
+  return rows.map(v => new Notice(v));
+}

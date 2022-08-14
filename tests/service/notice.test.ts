@@ -1,6 +1,7 @@
 import {ResultSetHeader, RowDataPacket} from 'mysql2';
 import {
   createNotice,
+  findNoReadNoticeByUserId,
   findNoticeByUserId,
   read,
 } from '../../src/services/notice';
@@ -58,6 +59,28 @@ describe('notice', () => {
     );
 
     expect(noticesLimit.length).toBe(2);
+  });
+
+  test('findNoReadNoticeByUserId', async () => {
+    const noticeModel = createNoticeModel({is_read: true});
+
+    for (let i = 0; 1 > i; i++) {
+      await base.db.test(
+        'INSERT INTO notice (user_id, title, is_read, created) VALUES (?, ?, ?, NOW())',
+        [noticeModel.user_id, noticeModel.title, noticeModel.is_read]
+      );
+    }
+    await base.db.test(
+      'INSERT INTO notice (user_id, title, is_read, created) VALUES (?, ?, ?, NOW())',
+      [noticeModel.user_id, noticeModel.title, false]
+    );
+
+    const notices = await findNoReadNoticeByUserId(
+      base.db,
+      noticeModel.user_id
+    );
+
+    expect(notices.length).toBe(1);
   });
 
   test('read', async () => {
