@@ -3,6 +3,7 @@ import {Device} from '../base/base';
 import {CertModel} from '../models/cret';
 import {EntryModel} from '../models/entry';
 import {LoginHistoryModel} from '../models/loginHistory';
+import {NoticeModel} from '../models/notice';
 import {SessionModel} from '../models/session';
 import {ShopModel} from '../models/shop';
 import {UserModel} from '../models/user';
@@ -153,5 +154,18 @@ export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
     date: options?.date || dbDate(new Date(Date.now())),
     body: options?.body || randomText(30),
     is_closed: options?.is_closed || false,
+  };
+};
+
+export const createNoticeModel = (
+  options?: Partial<NoticeModel>
+): NoticeModel => {
+  return {
+    id: options?.id || randomInt(1000000),
+    user_id: options?.user_id || randomInt(1000000),
+    title: options?.title || randomText(10),
+    text: options?.text || null,
+    url: options?.url || null,
+    is_read: options?.is_read || false,
   };
 };
