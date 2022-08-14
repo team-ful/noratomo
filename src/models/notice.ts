@@ -12,6 +12,8 @@ export interface NoticeModel {
   url: string | null;
 
   is_read: boolean;
+
+  created: Date;
 }
 
 class Notice implements NoticeModel {
@@ -21,6 +23,7 @@ class Notice implements NoticeModel {
   readonly text: string | null;
   readonly url: string | null;
   readonly is_read: boolean;
+  readonly created: Date;
 
   constructor(init: DefaultObject | NoticeModel) {
     this.id = init.id as number;
@@ -30,6 +33,8 @@ class Notice implements NoticeModel {
 
     this.text = init.text as string | null;
     this.url = init.url as string | null;
+
+    this.created = new Date(init.created);
   }
 }
 
