@@ -18,6 +18,7 @@ describe('loginHistory', () => {
     const l = new LoginHistory(loginHistory);
 
     expect(l.json()).toEqual({
+      id: loginHistory.id,
       ip_address: loginHistory.ip_address,
       device_name: loginHistory.device_name,
       os: loginHistory.os,

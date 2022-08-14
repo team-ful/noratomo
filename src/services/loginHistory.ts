@@ -32,7 +32,7 @@ export async function findLoginHistoriesByUserID(
     .from('login_history')
     .where('user_id', userID)
     .limit(limit ?? 50)
-    .orderBy('login_date')
+    .orderBy('login_date desc')
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
