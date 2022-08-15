@@ -16,6 +16,16 @@ export interface NoraQuestionModel {
   score: number;
 }
 
+export interface NoraQuestionExternal {
+  id: number;
+
+  // 問題のタイトル
+  question_title: string;
+
+  // 答えの選択肢
+  answers: NoraQuestionSelect[];
+}
+
 export interface NoraQuestionSelect {
   index: number;
   answerText: string;
@@ -69,6 +79,14 @@ export class NoraQuestion implements NoraQuestionModel {
       answers: this.answers,
       current_answer_index: this.current_answer_index,
       score: this.score,
+    };
+  }
+
+  get external(): NoraQuestionExternal {
+    return {
+      id: this.id,
+      question_title: this.question_title,
+      answers: this.answers,
     };
   }
 }

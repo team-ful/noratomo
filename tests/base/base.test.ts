@@ -1,5 +1,6 @@
 import fs from 'fs';
 import {URL} from 'url';
+import {object, string} from '@mojotech/json-type-validation';
 import {serialize} from 'cookie';
 import FormData from 'form-data';
 import {PageConfig} from 'next';
@@ -343,6 +344,46 @@ describe('getPostJson', () => {
           method: 'POST',
           headers: {
             'content-type': 'text/plain',
+          },
+          body: JSON.stringify(query),
+        });
+
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('型を定義するとバリデーションチェックを行う', async () => {
+    const query = {test: 'hoge'};
+
+    expect.hasAssertions();
+
+    const decoder = object({
+      test: string(),
+    });
+
+    const noValidDecoder = object({
+      nyaa: string(),
+    });
+
+    const handler = async (base: Base<void>) => {
+      const json = base.getPostJson(decoder);
+      expect(json).toEqual(query);
+
+      expect(() => base.getPostJson(noValidDecoder)).toThrow(
+        'Illegal form json value'
+      );
+    };
+
+    const h = handlerWrapper(handler, 'POST');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch({
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
           },
           body: JSON.stringify(query),
         });
