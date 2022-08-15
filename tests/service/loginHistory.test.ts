@@ -134,7 +134,7 @@ describe('findLoginHistoriesByUserID', () => {
       /* 最初の方の値が等価になってしまっている。
       ログイン記録の作成間隔が短すぎて同じ日時になってしまっているから丸めで同じになっていると思われる */
       expect(history2[0].login_date >= history2[1].login_date).toBeTruthy();
-      expect(history2[0].login_date > history2[49].login_date).toBeTruthy();
+      expect(history2[0].login_date >= history2[49].login_date).toBeTruthy();
     }
   });
 });
