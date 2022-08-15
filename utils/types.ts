@@ -110,7 +110,6 @@ export interface Entry {
   };
 }
 
-
 export interface LoginHistoryUserInfo {
   id: number;
   ip_address: string;
@@ -157,5 +156,4 @@ export interface CreateAccountPostForm {
 
   token: string;
   answers: NoraQuestionAnswer[];
-
 }
