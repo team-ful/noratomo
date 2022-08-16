@@ -71,8 +71,6 @@ export async function createNoticeAllUser(
     .from('user')
     .toParams({placeholder: '?'});
 
-  console.log(query.text);
-
   await db.execute(query);
 }
 
