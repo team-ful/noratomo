@@ -105,7 +105,7 @@ export async function findNoticeByUserId(
     .select('*')
     .from('notice')
     .where('user_id', userId)
-    .orderBy('created');
+    .orderBy('created DESC');
 
   if (typeof limit !== 'undefined') {
     query = query.limit(limit);
@@ -132,7 +132,7 @@ export async function findNoReadNoticeByUserId(
     .select('*')
     .from('notice')
     .where(sql.and({user_id: userId, is_read: false}))
-    .orderBy('created');
+    .orderBy('created DESC');
 
   if (typeof limit !== 'undefined') {
     query = query.limit(limit);
