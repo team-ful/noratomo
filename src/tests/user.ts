@@ -80,12 +80,17 @@ export class TestUser {
     );
   }
 
-  async notice(db: DBOperator, title: string, body?: string, url?: string) {
+  async notice(
+    db: DBOperator,
+    title: string,
+    body?: string,
+    url?: string
+  ): Promise<number> {
     if (typeof this.user === 'undefined') {
       throw new Error('user is undefined');
     }
 
-    await createNotice(db, this.user.id, title, body, url);
+    return await createNotice(db, this.user.id, title, body, url);
   }
 
   get cateiruSSOId() {

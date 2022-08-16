@@ -1,6 +1,7 @@
 import {switchMethod} from '../../../src/base/switchMethod';
-import {get} from '../../../src/user/notice';
+import {get, put} from '../../../src/user/notice';
 
-export default switchMethod({
+export default switchMethod<unknown>({
   GET: get,
+  PUT: put,
 });
