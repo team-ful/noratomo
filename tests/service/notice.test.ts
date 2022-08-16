@@ -1,6 +1,7 @@
 import {ResultSetHeader, RowDataPacket} from 'mysql2';
 import {
   createNotice,
+  createNoticeAllUser,
   findNoReadNoticeByUserId,
   findNoticeByUserId,
   read,
@@ -101,5 +102,34 @@ describe('notice', () => {
 
     expect(row.length).toBe(1);
     expect(row[0]['is_read']).toBe(1);
+  });
+
+  test('createNoticeAllUser', async () => {
+    const user = await base.newUser();
+
+    const noticeModel = createNoticeModel({user_id: user.user?.id});
+
+    let row = await base.db.test<RowDataPacket[]>(
+      'SELECT * FROM notice WHERE user_id =?',
+      [user.user?.id]
+    );
+
+    const beforeLen = row.length;
+
+    await createNoticeAllUser(base.db, noticeModel.title);
+
+    await createNoticeAllUser(
+      base.db,
+      noticeModel.title,
+      noticeModel.text || '',
+      noticeModel.url || ''
+    );
+
+    row = await base.db.test<RowDataPacket[]>(
+      'SELECT * FROM notice WHERE user_id =?',
+      [user.user?.id]
+    );
+
+    expect(row.length).toBe(beforeLen + 2);
   });
 });

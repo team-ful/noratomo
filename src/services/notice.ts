@@ -39,6 +39,44 @@ export async function createNotice(
 }
 
 /**
+ *
+ * 全ユーザーに対して通知を送信する
+ *
+ * @param {DBOperator} db - database
+ * @param {string} title - notice title
+ * @param {string} bodyText - notice body
+ * @param {string} url - notice url
+ */
+export async function createNoticeAllUser(
+  db: DBOperator,
+  title: string,
+  bodyText?: string,
+  url?: string
+) {
+  const columnsName = ['user_id', 'title'];
+  const columns = [sql.val(title)];
+
+  if (typeof bodyText !== 'undefined') {
+    columnsName.push('text');
+    columns.push(sql.val(bodyText));
+  }
+  if (typeof url !== 'undefined') {
+    columnsName.push('url');
+    columns.push(sql.val(url));
+  }
+
+  const query = sql
+    .insertInto('notice', columnsName)
+    .select('id', ...columns)
+    .from('user')
+    .toParams({placeholder: '?'});
+
+  console.log(query.text);
+
+  await db.execute(query);
+}
+
+/**
  * 通知を既読にする
  *
  * @param {DBOperator} db - database
