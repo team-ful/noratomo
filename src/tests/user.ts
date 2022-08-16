@@ -8,6 +8,7 @@ import {Session} from '../models/session';
 import User, {UserModel} from '../models/user';
 import {setCert} from '../services/cert';
 import {createLoginHistory} from '../services/loginHistory';
+import {createNotice} from '../services/notice';
 import {createSession} from '../services/session';
 import {createTestUser} from '../services/user';
 import {randomText} from '../utils/random';
@@ -77,6 +78,14 @@ export class TestUser {
       d.is_desktop || false,
       d.browser_name || 'Chrome'
     );
+  }
+
+  async notice(db: DBOperator, title: string, body?: string, url?: string) {
+    if (typeof this.user === 'undefined') {
+      throw new Error('user is undefined');
+    }
+
+    await createNotice(db, this.user.id, title, body, url);
   }
 
   get cateiruSSOId() {
