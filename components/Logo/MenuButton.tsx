@@ -6,23 +6,34 @@ interface Props {
   icon: React.ReactNode;
   label: string;
   isTooltip: boolean;
-  href: string;
+  href?: string;
 }
 
+const MenuLink: React.FC<{children: React.ReactNode; href: string}> = ({
+  children,
+  href,
+}) => {
+  return (
+    <NextLink passHref href={href}>
+      <Link>{children}</Link>
+    </NextLink>
+  );
+};
+
 const MenuButton: React.FC<Props> = ({icon, label, isTooltip, href}) => {
-  const MenuLink: React.FC<{children: React.ReactNode}> = ({children}) => {
+  if (typeof href === 'undefined') {
     return (
-      <NextLink passHref href={href}>
-        <Link>{children}</Link>
-      </NextLink>
+      <Tooltip label={label}>
+        <Box cursor="pointer">{icon}</Box>
+      </Tooltip>
     );
-  };
+  }
 
   if (isTooltip) {
     return (
       <Tooltip label={label}>
         <Box>
-          <MenuLink>{icon}</MenuLink>
+          <MenuLink href={href}>{icon}</MenuLink>
         </Box>
       </Tooltip>
     );
@@ -30,7 +41,7 @@ const MenuButton: React.FC<Props> = ({icon, label, isTooltip, href}) => {
 
   return (
     <VStack margin-top="0px">
-      <MenuLink>{icon}</MenuLink>
+      <MenuLink href={href}>{icon}</MenuLink>
       <Text fontSize="sm">{label}</Text>
     </VStack>
   );

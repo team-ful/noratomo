@@ -1,12 +1,15 @@
 import {Box, Center, SimpleGrid} from '@chakra-ui/react';
+import React from 'react';
+import {User} from '../../utils/types';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
 import IconPost from '../Logo/IconPost';
 import IconSearch from '../Logo/IconSearch';
 import MenuButton from '../Logo/MenuButton';
 import NoticeExist from '../Logo/NoticeExist';
+import NoticeNotExist from '../Logo/NoticeNotExist';
 
-const HeaderToolbar = () => {
+const HeaderToolbar: React.FC<{user: User}> = ({user}) => {
   return (
     <Box
       position="fixed"
@@ -53,10 +56,16 @@ const HeaderToolbar = () => {
 
         <Center>
           <MenuButton
-            icon={<NoticeExist size="23px" />}
+            icon={
+              user.notice.length !== 0 ? (
+                <NoticeExist size="25px" />
+              ) : (
+                <NoticeNotExist size="25px" />
+              )
+            }
             label="通知"
             isTooltip={false}
-            href="/"
+            href="/notice"
           />
         </Center>
 

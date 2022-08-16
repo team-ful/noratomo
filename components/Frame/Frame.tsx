@@ -24,7 +24,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
             <Box mx={{base: '.5rem', lg: '2rem'}}>
               <Header user={user} />
             </Box>
-            {user && <HeaderToolbar />}
+            {user && <HeaderToolbar user={user} />}
             {children}
           </Box>
           <Box marginTop="auto">
@@ -93,7 +93,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
           >
             <Box>
               <Header user={user} />
-              <HeaderToolbar />
+              {user && <HeaderToolbar user={user} />}
               <Center>
                 <Box w="100%">
                   <UserProfile />
@@ -120,7 +120,7 @@ export const Frame = React.memo<{children: React.ReactNode; router: Router}>(
         >
           <Box>
             <Header user={user} />
-            {user && <HeaderToolbar />}
+            {user && <HeaderToolbar user={user} />}
             {children}
           </Box>
           <Box marginTop="auto">
