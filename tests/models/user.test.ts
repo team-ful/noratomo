@@ -1,5 +1,4 @@
 import User, {UserModel} from '../../src/models/user';
-import {createNotice} from '../../src/services/notice';
 import TestBase from '../../src/tests/base';
 import {
   createNoticeModel,

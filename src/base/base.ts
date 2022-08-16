@@ -1,13 +1,6 @@
 import {ParsedUrlQuery} from 'querystring';
 import {URL} from 'url';
-import {
-  Decoder,
-  object,
-  string,
-  optional,
-  number,
-  boolean,
-} from '@mojotech/json-type-validation';
+import {Decoder} from '@mojotech/json-type-validation';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import {serialize, CookieSerializeOptions} from 'cookie';

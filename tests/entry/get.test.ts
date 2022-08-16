@@ -1,7 +1,6 @@
 import {testApiHandler} from 'next-test-api-route-handler';
 import h from '../../src/entry/get';
-import Entry from '../../src/models/entry';
-import {createEntry, createEntryRow} from '../../src/services/entry';
+import {createEntryRow} from '../../src/services/entry';
 import {createShop} from '../../src/services/shop';
 import TestBase from '../../src/tests/base';
 import {createEntryModel, createShopModel} from '../../src/tests/models';
