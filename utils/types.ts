@@ -110,7 +110,7 @@ export interface Entry {
   };
 }
 
-export interface LoginHistoryUserInfo {
+export interface LoginHistoryUserElements {
   id: number;
   ip_address: string;
   device_name: Device | null;

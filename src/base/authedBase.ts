@@ -146,17 +146,6 @@ class AuthedBase<T> extends Base<T> {
       avatar_url: newURL,
     });
   }
-
-  // //履歴を返す
-  // private _loginhistory?: LoginHistory;
-
-  // public async getLoginHistory() {
-  //   const findLogHis = await findLoginHistoriesByUserID(
-  //     await this.db(),
-  //     this.user.id
-  //   );
-  //   return findLogHis;
-  // }
 }
 
 export default AuthedBase;

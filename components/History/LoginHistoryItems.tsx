@@ -1,7 +1,7 @@
 import {Td, Tr} from '@chakra-ui/react';
-import {LoginHistoryUserInfo} from '../../utils/types';
+import {LoginHistoryUserElements} from '../../utils/types';
 
-const ALoginHistory = ({data}: {data: LoginHistoryUserInfo}) => {
+const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
   const date = data.login_date.toString();
 
   return (
@@ -12,4 +12,4 @@ const ALoginHistory = ({data}: {data: LoginHistoryUserInfo}) => {
     </Tr>
   );
 };
-export default ALoginHistory;
+export default LoginHistoryItems;

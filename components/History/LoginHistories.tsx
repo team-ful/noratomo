@@ -11,10 +11,10 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import useGetLoginHistories from '../Session/useGetLoginHistories';
-import ALoginHistory from './ALoginHistory';
+import LoginHistoryItems from './LoginHistoryItems';
 
 const LoginHistories = () => {
-  const res = useGetLoginHistories();
+  const LoginHistories_arr = useGetLoginHistories();
 
   return (
     <Box w="100%" mt="3rem">
@@ -33,8 +33,8 @@ const LoginHistories = () => {
           </Thead>
 
           <Tbody>
-            {res.map(data => {
-              return <ALoginHistory data={data} key={data.id} />;
+            {LoginHistories_arr.map(data => {
+              return <LoginHistoryItems data={data} key={data.id} />;
             })}
           </Tbody>
           <Tfoot>

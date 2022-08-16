@@ -16,7 +16,7 @@ export interface LoginHistoryModel {
   'INET6_NTOA(ip_address)'?: string;
 }
 
-interface LoginHistoryUserInfo {
+interface LoginHistoryUserElements {
   id: number;
   ip_address: string;
   device_name: Device | null;
@@ -81,7 +81,7 @@ class LoginHistory implements LoginHistoryModel {
     }
   }
 
-  public json(): LoginHistoryUserInfo {
+  public json(): LoginHistoryUserElements {
     return {
       id: this.id,
       ip_address: this.ip_address,

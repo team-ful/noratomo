@@ -5,9 +5,10 @@ import LoginHistory from '../../../src/models/loginHistory';
 import {findLoginHistoriesByUserID} from '../../../src/services/loginHistory';
 
 /**
- * ログイン履歴を過去50件まで取得する
+ * ログイン履歴を引数limitで指定した分だけ取得する。
+ * 引数を指定しない場合は、デフォルトで５０件まで。
  *
- * @param {AuthedBase<void>} base base
+ * @param {AuthedBase<void>} base -base
  */
 async function handler(base: AuthedBase<LoginHistory>) {
   const limit = base.getQuery('limit');
