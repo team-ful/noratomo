@@ -1,5 +1,3 @@
-import {Device} from '../src/base/base';
-
 export interface User {
   display_name: string;
   mail: string;
@@ -108,6 +106,16 @@ export interface Entry {
     photo_url: string | null;
     site_url: string;
   };
+}
+
+export enum Device {
+  Console = 'Console',
+  Mobile = 'Mobile',
+  Tablet = 'Tablet',
+  Desktop = 'Desktop',
+  SmartTV = 'SmartTV',
+  Wearable = 'Wearable',
+  Embedded = 'Embedded',
 }
 
 export interface LoginHistoryUserElements {

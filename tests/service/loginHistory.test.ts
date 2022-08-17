@@ -108,7 +108,6 @@ describe('findLoginHistoriesByUserID', () => {
     // ログイン履歴を50作成する
     for (let i = 0; 50 > i; i++) {
       const d = createLoginHistoryModel({user_id: userID});
-
       await base.db.test(
         `INSERT INTO login_history (
         user_id,
@@ -116,7 +115,7 @@ describe('findLoginHistoriesByUserID', () => {
         device_name,
         os,
         login_date
-      ) VALUES (?, INET_ATON(?), ?, ?, NOW())`,
+      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ${i} HOUR))`,
         [d.user_id, d.ip_address, d.device_name, d.os]
       );
     }
@@ -131,10 +130,61 @@ describe('findLoginHistoriesByUserID', () => {
     expect(history2).not.toBeNull();
     expect(history2?.length).toBe(50);
     if (history2) {
-      /* 最初の方の値が等価になってしまっている。
-      ログイン記録の作成間隔が短すぎて同じ日時になってしまっているから丸めで同じになっていると思われる */
-      expect(history2[0].login_date >= history2[1].login_date).toBeTruthy();
-      expect(history2[0].login_date >= history2[49].login_date).toBeTruthy();
+      expect(history2[0].login_date > history2[1].login_date).toBeTruthy();
+      expect(history2[0].login_date > history2[49].login_date).toBeTruthy();
+    }
+    if (history2 && re_history) {
+      expect(history2[0].login_date).toEqual(re_history[0].login_date);
+    }
+
+    //もう１０件ログインをバラバラに追加して、最新のログインから取得できているか調べる。
+    for (let i = 0; 10 > i; i++) {
+      const d = createLoginHistoryModel({user_id: userID});
+      if (i % 2 === 0) {
+        await base.db.test(
+          `INSERT INTO login_history (
+        user_id,
+        ip_address,
+        device_name,
+        os,
+        login_date
+      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ${i} HOUR))`,
+          [d.user_id, d.ip_address, d.device_name, d.os]
+        );
+      } else {
+        await base.db.test(
+          `INSERT INTO login_history (
+          user_id,
+          ip_address,
+          device_name,
+          os,
+          login_date
+        ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ${-i} HOUR))`,
+          [d.user_id, d.ip_address, d.device_name, d.os]
+        );
+      }
+    }
+    // 指定するとき
+    const over50_history = await findLoginHistoriesByUserID(base.db, userID, 2);
+    expect(over50_history).not.toBeNull();
+    expect(over50_history?.length).toBe(2);
+
+    //指定しない時
+    const over50history2 = await findLoginHistoriesByUserID(base.db, userID);
+    expect(over50history2).not.toBeNull();
+    expect(over50history2?.length).toBe(50);
+    if (over50history2) {
+      expect(
+        over50history2[0].login_date > over50history2[1].login_date
+      ).toBeTruthy();
+
+      expect(
+        over50history2[1].login_date > over50history2[2].login_date
+      ).toBeTruthy();
+
+      expect(
+        over50history2[0].login_date > over50history2[49].login_date
+      ).toBeTruthy();
     }
   });
 });
