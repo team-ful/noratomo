@@ -30,6 +30,13 @@ const AdminTop = () => {
             <Button as="a">全ユーザー参照</Button>
           </NextLink>
         </Flex>
+        <Flex alignItems="center" mt="1.5rem">
+          <Text>全ユーザ通知送信</Text>
+          <Spacer />
+          <NextLink passHref href="/admin/notice">
+            <Button as="a">全ユーザ通知送信</Button>
+          </NextLink>
+        </Flex>
       </Box>
     </Center>
   );

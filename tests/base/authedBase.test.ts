@@ -285,7 +285,7 @@ describe('login', () => {
     expect.hasAssertions();
 
     const handler = async (base: AuthedBase<void>) => {
-      const u = base.getPublicUserData();
+      const u = await base.getPublicUserData();
       const ua = base.user;
 
       expect(u).toEqual({
@@ -298,6 +298,7 @@ describe('login', () => {
         is_admin: ua.is_admin,
         avatar_url: ua.avatar_url,
         join_date: ua.join_date,
+        notice: [],
       });
     };
 

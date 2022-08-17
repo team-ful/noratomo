@@ -1,5 +1,10 @@
 import User, {UserModel} from '../../src/models/user';
-import {createUserModel, dbDate} from '../../src/tests/models';
+import TestBase from '../../src/tests/base';
+import {
+  createNoticeModel,
+  createUserModel,
+  dbDate,
+} from '../../src/tests/models';
 
 describe('is', () => {
   let user1: UserModel;
@@ -64,5 +69,52 @@ describe('isSeniority', () => {
 
     expect(first.isSeniority(second)).toBe(false);
     expect(second.isSeniority(first)).toBe(false);
+  });
+});
+
+describe('notice', () => {
+  const base = new TestBase();
+
+  beforeAll(async () => {
+    await base.connection();
+
+    const user = await base.newUser();
+
+    const noticeModel = createNoticeModel({
+      is_read: true,
+      user_id: user.user?.id,
+    });
+
+    for (let i = 0; 2 > i; i++) {
+      await base.db.test(
+        'INSERT INTO notice (user_id, title, is_read, created) VALUES (?, ?, ?, NOW())',
+        [noticeModel.user_id, noticeModel.title, noticeModel.is_read]
+      );
+    }
+    await base.db.test(
+      'INSERT INTO notice (user_id, title, is_read, created) VALUES (?, ?, ?, NOW())',
+      [noticeModel.user_id, noticeModel.title, false]
+    );
+  });
+
+  afterAll(async () => {
+    await base.end();
+  });
+
+  test('get all', async () => {
+    const user = base.users[0].user;
+
+    const notices = await user?.notice(base.db, true);
+    expect(notices?.length).toBe(3);
+
+    const noticesLimit = await user?.notice(base.db, true, 2);
+    expect(noticesLimit?.length).toBe(2);
+  });
+
+  test('get no read', async () => {
+    const user = base.users[0].user;
+
+    const notices = await user?.notice(base.db, false);
+    expect(notices?.length).toBe(1);
   });
 });

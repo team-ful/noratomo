@@ -118,8 +118,10 @@ class AuthedBase<T> extends Base<T> {
   }
 
   // 公開可能なユーザ情報を返す
-  public getPublicUserData() {
+  public async getPublicUserData() {
     const u = this.user;
+
+    const notice = await this.user.notice(await this.db(), false, 10);
 
     return {
       display_name: u.display_name,
@@ -131,6 +133,7 @@ class AuthedBase<T> extends Base<T> {
       is_admin: u.is_admin,
       avatar_url: u.avatar_url,
       join_date: u.join_date,
+      notice: notice.map(v => v.external()),
     };
   }
 

@@ -42,6 +42,7 @@ describe('me', () => {
           is_admin: base.users[0].user?.is_admin,
           avatar_url: base.users[0].user?.avatar_url,
           join_date: base.users[0].user?.join_date.toISOString(),
+          notice: [],
         });
       },
     });

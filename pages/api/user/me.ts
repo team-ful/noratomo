@@ -7,7 +7,7 @@ import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
  * @param {AuthedBase<void>} base base
  */
 async function handler(base: AuthedBase<void>) {
-  base.sendJson(base.getPublicUserData());
+  base.sendJson(await base.getPublicUserData());
 }
 
 export default authHandlerWrapper(handler, 'GET');

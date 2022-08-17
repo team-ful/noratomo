@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS `notice` (
     `title` VARCHAR(512) NOT NULL,
     `text` TEXT,
     `url` VARCHAR(8190),
-    `is_read` BOOLEAN,
+    `is_read` BOOLEAN DEFAULT 0,
+    `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 );
 
