@@ -6,8 +6,7 @@ export const UserState = atom<User | null | undefined>({
   default: undefined,
 });
 
-export const LoginHistoryUserElementsState =
-  atom<LoginHistoryUserElements | null>({
-    key: 'LoginHistroyUserElements',
-    default: undefined,
-  });
+export const LoginHistoryUserElementsState = atom<LoginHistoryUserElements>({
+  key: 'LoginHistroyUserElements',
+  default: undefined,
+});

@@ -14,7 +14,7 @@ import useGetLoginHistories from '../Session/useGetLoginHistories';
 import LoginHistoryItems from './LoginHistoryItems';
 
 const LoginHistories = () => {
-  const LoginHistories_arr = useGetLoginHistories();
+  const loginHistories = useGetLoginHistories();
 
   return (
     <Box w="100%" mt="3rem">
@@ -33,7 +33,7 @@ const LoginHistories = () => {
           </Thead>
 
           <Tbody>
-            {LoginHistories_arr.map(data => {
+            {loginHistories.map(data => {
               return <LoginHistoryItems data={data} key={data.id} />;
             })}
           </Tbody>

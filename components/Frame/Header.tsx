@@ -16,9 +16,7 @@ import {
 import '@fontsource/permanent-marker';
 import NextLink from 'next/link';
 import React from 'react';
-
 import {RiFootprintLine} from 'react-icons/ri';
-
 import {TbSettings, TbUserCircle, TbLogout} from 'react-icons/tb';
 import {User} from '../../utils/types';
 import Logout from '../Common/Logout';

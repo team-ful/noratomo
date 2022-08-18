@@ -14,7 +14,7 @@ export async function findLoginHistoriesByUserID(
   db: DBOperator,
   userID: number,
   limit?: number
-): Promise<LoginHistory[] | null> {
+): Promise<LoginHistory[]> {
   const query = sql
     .select([
       'id',
@@ -36,10 +36,6 @@ export async function findLoginHistoriesByUserID(
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
-
-  if (rows.length === 0) {
-    return null;
-  }
 
   return rows.map(v => new LoginHistory(v));
 }

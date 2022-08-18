@@ -1,7 +1,6 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import config from '../../config';
 import User from '../models/user';
-
 import {
   deleteRefreshByRefreshToken,
   deleteRefreshBySessionToken,
