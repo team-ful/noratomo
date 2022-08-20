@@ -134,7 +134,7 @@ export async function findEntryByUserId(
     .select('*')
     .from('entry')
     .where('owner_user_id', userId)
-    .orderBy('date')
+    .orderBy('date desc')
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
