@@ -154,3 +154,10 @@ export interface CreateAccountPostForm {
   token: string;
   answers: NoraQuestionAnswer[];
 }
+
+export interface NumberOf {
+  evaluations: number;
+  entry: number;
+  meet: number;
+  application: number;
+}
