@@ -4,6 +4,7 @@ import {authHandlerWrapper} from '../base/handlerWrapper';
 import {ResponseEntry} from '../models/entry';
 import {HotPepper} from '../services/api/hotpepper/hotpepper';
 import {createEntryRow, findEntryById} from '../services/entry';
+import {insertNumberOf} from '../services/numberOf';
 import {
   createShop,
   createShopUserDefined,
@@ -86,6 +87,9 @@ async function entryPostHandler(base: AuthedBase<ResponseEntry>) {
     title,
     body || ''
   );
+
+  // entry++ する
+  await insertNumberOf(await base.db(), base.user.id, 0, 1);
 
   const entry = await findEntryById(await base.db(), entryId);
   if (entry === null) {
