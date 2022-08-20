@@ -38,12 +38,12 @@ interface Props {
   user: User | undefined | null;
 }
 
-const Header: React.FC<Props> = ({user, noLogin}) => {
+const Header = React.memo<Props>(({user, noLogin}) => {
   return (
     <Box width="100%" height="3.5rem">
       <Flex height="100%">
         <Center height="100%">
-          <NextLink passHref href="/">
+          <NextLink passHref href={user ? '/home' : '/'}>
             <Heading
               fontSize="2rem"
               fontFamily="Permanent Marker"
@@ -65,7 +65,9 @@ const Header: React.FC<Props> = ({user, noLogin}) => {
       </Flex>
     </Box>
   );
-};
+});
+
+Header.displayName = 'Header';
 
 const NoLoginIcons = React.memo(() => {
   return (
@@ -123,7 +125,7 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
             icon={<IconHome size="25px" />}
             label="ホーム"
             isTooltip={true}
-            href="/"
+            href={user ? '/home' : '/'}
           />
         </Center>
 
@@ -138,78 +140,91 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
 
         <Center m=".5rem">
           <Menu>
-            <MenuB>
-              <MenuButton
-                icon={
-                  user.notice.length !== 0 ? (
-                    <NoticeExist size="25px" />
-                  ) : (
-                    <NoticeNotExist size="25px" />
-                  )
-                }
-                label="通知"
-                isTooltip={true}
-              />
-            </MenuB>
-            <MenuList p="0" w="300px">
-              <Box>
-                <Heading fontSize="1.2rem" textAlign="center" py=".8rem">
-                  未読通知
-                </Heading>
-                <Divider />
-                {user.notice.map(v => {
-                  return (
-                    <Box
-                      key={v.id}
-                      w="100%"
-                      borderBottom="1px"
-                      borderColor="gray.200"
-                    >
-                      <Flex alignItems="center" mr=".5rem">
-                        <Box mb="1rem">
-                          <Text
-                            mt=".5rem"
-                            mx=".5rem"
-                            fontSize="1rem"
-                            maxW="230px"
-                            textOverflow="ellipsis"
-                            whiteSpace="nowrap"
-                            overflow="hidden"
+            {({onClose}) => {
+              return (
+                <>
+                  <MenuB>
+                    <MenuButton
+                      icon={
+                        user.notice.length !== 0 ? (
+                          <NoticeExist size="25px" />
+                        ) : (
+                          <NoticeNotExist size="25px" />
+                        )
+                      }
+                      label="通知"
+                      isTooltip={true}
+                    />
+                  </MenuB>
+                  <MenuList p="0" w="300px">
+                    <Box>
+                      <Heading fontSize="1.2rem" textAlign="center" py=".8rem">
+                        未読通知
+                      </Heading>
+                      <Divider />
+                      {user.notice.map(v => {
+                        return (
+                          <Box
+                            key={v.id}
+                            w="100%"
+                            borderBottom="1px"
+                            borderColor="gray.200"
                           >
-                            {v.title}
-                          </Text>
-                          {typeof v.text !== 'undefined' && (
-                            <Text
-                              fontSize=".8rem"
-                              color="gray.500"
-                              mx=".5rem"
-                              maxW="230px"
-                              textOverflow="ellipsis"
-                              whiteSpace="nowrap"
-                              overflow="hidden"
-                            >
-                              {v.text}
-                            </Text>
-                          )}
-                        </Box>
-                        <Spacer />
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => readNotice(v.id)}
-                        >
-                          既読
-                        </Button>
-                      </Flex>
-                    </Box>
-                  );
-                })}
+                            <Flex alignItems="center" mr=".5rem">
+                              <Box mb="1rem">
+                                <Text
+                                  mt=".5rem"
+                                  mx=".5rem"
+                                  fontSize="1rem"
+                                  maxW="230px"
+                                  textOverflow="ellipsis"
+                                  whiteSpace="nowrap"
+                                  overflow="hidden"
+                                >
+                                  {v.title}
+                                </Text>
+                                {typeof v.text !== 'undefined' && (
+                                  <Text
+                                    fontSize=".8rem"
+                                    color="gray.500"
+                                    mx=".5rem"
+                                    maxW="230px"
+                                    textOverflow="ellipsis"
+                                    whiteSpace="nowrap"
+                                    overflow="hidden"
+                                  >
+                                    {v.text}
+                                  </Text>
+                                )}
+                              </Box>
+                              <Spacer />
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => readNotice(v.id)}
+                              >
+                                既読
+                              </Button>
+                            </Flex>
+                          </Box>
+                        );
+                      })}
 
-                <Text w="100%" textAlign="center" my=".7rem">
-                  <Link href="/notice">すべて表示</Link>
-                </Text>
-              </Box>
-            </MenuList>
+                      <Text
+                        w="100%"
+                        textAlign="center"
+                        my=".7rem"
+                        onClick={onClose}
+                      >
+                        <NextLink passHref href="/notice">
+                          <Link>すべて表示</Link>
+                        </NextLink>
+                      </Text>
+                    </Box>
+                  </MenuList>
+                </>
+              );
+            }}
           </Menu>
         </Center>
 
