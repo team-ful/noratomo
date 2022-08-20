@@ -9,6 +9,7 @@ import {
   createEntry,
   createEntryRow,
   deleteEntryByUserId,
+  findAllEntries,
   findEntryById,
   findEntryByShopId,
   findEntryByUserId,
@@ -204,6 +205,21 @@ describe('entry', () => {
     const results = await findEntryByShopId(base.db, shopId);
 
     expect(results.length).toBe(2);
+  });
+
+  test('findAllEntries', async () => {
+    const ids: number[] = [];
+    for (let i = 0; 10 > i; i++) {
+      const entry = createEntryModel();
+      ids.push(await ce(base.db, entry));
+    }
+
+    const entries = await findAllEntries(base.db, 10, 0);
+
+    expect(entries.length).toBe(10);
+
+    // 直近追加したエントリのid10件がすべてある = 最新のものを取得できている
+    expect(entries.find(v => ids.includes(v.id))).toBeTruthy();
   });
 
   test('deleteEntryByUserId', async () => {
