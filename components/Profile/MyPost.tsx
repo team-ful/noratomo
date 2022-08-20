@@ -77,7 +77,7 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
         <Flex mr="1rem" alignItems="center">
           <AiOutlineHeart />
           <Text color="gray.500" fontSize=".8rem" ml=".2rem">
-            0
+            {entry.request_people ?? '-'}
           </Text>
         </Flex>
         <Text textAlign="right" mr="2rem" color="gray.500" fontSize=".8rem">
