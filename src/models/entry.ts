@@ -22,6 +22,8 @@ export interface EntryModel {
   body: string | null;
 
   is_closed: boolean;
+
+  request_people: number;
 }
 
 export interface ResponseEntry {
@@ -33,6 +35,7 @@ export interface ResponseEntry {
   number_of_people: number;
   is_closed: boolean;
   shop_id: number;
+  request_people: number;
 }
 
 export interface ShopIncludedResponseEntry extends ResponseEntry {
@@ -48,6 +51,7 @@ class Entry implements EntryModel {
   readonly date: Date;
   readonly body: string | null;
   readonly is_closed: boolean;
+  readonly request_people: number;
 
   constructor(init: DefaultObject | EntryModel) {
     this.id = init.id as number;
@@ -58,6 +62,7 @@ class Entry implements EntryModel {
     this.date = new Date(init.date as Date | string);
     this.body = init.body as string | null;
     this.is_closed = Boolean(init.is_closed);
+    this.request_people = init.request_people as number;
   }
 
   public json(): ResponseEntry {
@@ -69,6 +74,7 @@ class Entry implements EntryModel {
       number_of_people: this.number_of_people,
       is_closed: this.is_closed,
       shop_id: this.shop_id,
+      request_people: this.request_people,
     };
   }
 

@@ -102,6 +102,7 @@ export interface Entry {
   number_of_people: number;
   is_closed: boolean;
   shop_id: number;
+  request_people: number;
 
   shop: {
     address: string;
