@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `date` DATETIME NOT NULL,
     `body` TEXT,
     `is_closed` BOOLEAN NOT NULL,
+    `request_people` INT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
