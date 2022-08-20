@@ -903,3 +903,51 @@ describe('checkMethod', () => {
     });
   });
 });
+
+describe('cache', () => {
+  test('max-ageが指定できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.cache(600);
+
+      expect(base.res.getHeader('cache-control')).toBe('max-age=600');
+
+      base.cache(200);
+
+      expect(base.res.getHeader('cache-control')).toBe('max-age=200');
+    };
+
+    const h = handlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+
+  test('max-ageとstale-while-revalidateが指定できる', async () => {
+    expect.hasAssertions();
+
+    const handler = async (base: Base<void>) => {
+      base.cache(600, 300);
+
+      expect(base.res.getHeader('cache-control')).toBe(
+        'max-age=600, stale-while-revalidate=300'
+      );
+    };
+
+    const h = handlerWrapper(handler, 'GET');
+
+    await testApiHandler({
+      handler: h,
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(200);
+      },
+    });
+  });
+});

@@ -559,6 +559,16 @@ class Base<T> {
       throw new ApiError(400, 'That HTTP method is not supported');
     }
   }
+
+  public cache(maxAge: number, staleWhileRevalidate?: number) {
+    const cacheTexts = [`max-age=${maxAge}`];
+
+    if (typeof staleWhileRevalidate !== 'undefined') {
+      cacheTexts.push(`stale-while-revalidate=${staleWhileRevalidate}`);
+    }
+
+    this.res.setHeader('Cache-Control', cacheTexts.join(', '));
+  }
 }
 
 export default Base;
