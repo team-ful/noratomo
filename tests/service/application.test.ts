@@ -1,4 +1,3 @@
-import {mode} from '@chakra-ui/theme-tools';
 import {ResultSetHeader, RowDataPacket} from 'mysql2';
 import {ApplicationModel} from '../../src/models/application';
 import {
@@ -9,11 +8,7 @@ import {
   findApplicationsByUserId,
 } from '../../src/services/application';
 import TestBase from '../../src/tests/base';
-import {
-  createApplicationModel,
-  createEntryModel,
-  createUserModel,
-} from '../../src/tests/models';
+import {createApplicationModel, createUserModel} from '../../src/tests/models';
 
 describe('application', () => {
   const base = new TestBase();
