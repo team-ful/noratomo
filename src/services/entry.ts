@@ -164,6 +164,31 @@ export async function findEntryByShopId(
 }
 
 /**
+ * 全エントリを取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} limit - limit
+ * @param {number} offset - offset
+ */
+export async function findAllEntries(
+  db: DBOperator,
+  limit: number,
+  offset: number
+): Promise<Entry[]> {
+  const query = sql
+    .select('*')
+    .from('entry')
+    .orderBy('date desc')
+    .limit(limit)
+    .offset(offset)
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new Entry(v));
+}
+
+/**
  * user idのentryをすべて削除する
  *
  * @param {DBOperator} db - database
