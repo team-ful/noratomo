@@ -8,6 +8,13 @@ export interface NumberOfModel {
   application: number;
 }
 
+export interface External {
+  evaluations: number;
+  entry: number;
+  meet: number;
+  application: number;
+}
+
 export class NumberOf implements NumberOfModel {
   readonly user_id: number;
   readonly evaluations: number;
@@ -21,5 +28,14 @@ export class NumberOf implements NumberOfModel {
     this.entry = init.entry as number;
     this.meet = init.meet as number;
     this.application = init.application as number;
+  }
+
+  public external(): External {
+    return {
+      evaluations: this.evaluations,
+      entry: this.entry,
+      meet: this.meet,
+      application: this.application,
+    };
   }
 }
