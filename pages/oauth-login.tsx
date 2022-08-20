@@ -3,7 +3,7 @@ import Require from '../components/Session/Require';
 
 const LoginOauth = () => {
   return (
-    <Require path="/" loginRequire={false}>
+    <Require path="/home" loginRequire={false}>
       <Center h="80vh">
         <Box>
           <Heading color="orange.400">管理者向けログイン</Heading>
