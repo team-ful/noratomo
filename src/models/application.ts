@@ -9,6 +9,7 @@ export interface ApplicationModel {
   user_id: number;
   apply_date: Date;
   is_met: boolean;
+  is_closed: boolean;
 }
 
 export class Application implements ApplicationModel {
@@ -17,6 +18,7 @@ export class Application implements ApplicationModel {
   readonly user_id: number;
   readonly apply_date: Date;
   readonly is_met: boolean;
+  readonly is_closed: boolean;
 
   constructor(init: DefaultObject | ApplicationModel) {
     this.id = init.id as number;
@@ -24,6 +26,7 @@ export class Application implements ApplicationModel {
     this.user_id = init.user_id as number;
     this.apply_date = new Date(init.apply_date as string);
     this.is_met = Boolean(init.is_met);
+    this.is_closed = Boolean(init.is_closed);
   }
 
   public async getEntry(db: DBOperator): Promise<Entry> {

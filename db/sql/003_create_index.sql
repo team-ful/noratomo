@@ -43,7 +43,6 @@ CREATE INDEX `meet_apply_user_id_index` ON meet(apply_user_id);
 CREATE INDEX `meet_find_id_index` ON meet(find_id);
 
 -- application table
-CREATE INDEX `application_shop_id_index` ON application(shop_id);
 CREATE INDEX `application_user_id_index` ON application(user_id);
 CREATE INDEX `application_entry_id_index` ON application(entry_id);
 

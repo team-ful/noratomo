@@ -179,8 +179,9 @@ CREATE TABLE IF NOT EXISTS `application` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     `entry_id` INT UNSIGNED NOT NULL,
-    `apply_date` DATETIME NOT NULL,
-    `is_met` BOOLEAN NOT NULL,
+    `apply_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `is_met` BOOLEAN NOT NULL DEFAULT 0,
+    `is_closed` BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
