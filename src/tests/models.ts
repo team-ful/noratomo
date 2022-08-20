@@ -154,6 +154,7 @@ export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
     date: options?.date || dbDate(new Date(Date.now())),
     body: options?.body || randomText(30),
     is_closed: options?.is_closed || false,
+    request_people: options?.request_people || 0,
   };
 };
 
