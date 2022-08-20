@@ -1,4 +1,11 @@
-import {Link, Tooltip, Text, Box, VStack} from '@chakra-ui/react';
+import {
+  Link,
+  Tooltip,
+  Text,
+  Box,
+  VStack,
+  MenuButton as MenuB,
+} from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
 
@@ -20,10 +27,20 @@ const MenuLink: React.FC<{children: React.ReactNode; href: string}> = ({
   );
 };
 
+export const MenuButtonMenu: React.FC<Props> = ({icon, label}) => {
+  return (
+    <Tooltip label={label} borderRadius="10px">
+      <MenuB>
+        <Box cursor="pointer">{icon}</Box>
+      </MenuB>
+    </Tooltip>
+  );
+};
+
 const MenuButton: React.FC<Props> = ({icon, label, isTooltip, href}) => {
   if (typeof href === 'undefined') {
     return (
-      <Tooltip label={label}>
+      <Tooltip label={label} borderRadius="10px">
         <Box cursor="pointer">{icon}</Box>
       </Tooltip>
     );
@@ -31,7 +48,7 @@ const MenuButton: React.FC<Props> = ({icon, label, isTooltip, href}) => {
 
   if (isTooltip) {
     return (
-      <Tooltip label={label}>
+      <Tooltip label={label} borderRadius="10px">
         <Box>
           <MenuLink href={href}>{icon}</MenuLink>
         </Box>

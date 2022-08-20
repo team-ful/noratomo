@@ -67,7 +67,7 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
             >
               {entry.shop.name}・{entry.shop.address}
             </Text>
-            <Text mt=".5rem" as="pre" whiteSpace="pre-wrap" maxW="500px">
+            <Text mt=".5rem" whiteSpace="pre-wrap" maxW="500px">
               {entry.body}
             </Text>
           </Box>

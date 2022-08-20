@@ -16,6 +16,7 @@ import {
   Divider,
   Link,
   useToast,
+  Tooltip,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import NextLink from 'next/link';
@@ -29,7 +30,7 @@ import Avater from '../Logo/Avater';
 import IconChat from '../Logo/IconChat';
 import IconHome from '../Logo/IconHome';
 import IconPost from '../Logo/IconPost';
-import MenuButton from '../Logo/MenuButton';
+import MenuButton, {MenuButtonMenu} from '../Logo/MenuButton';
 import NoticeExist from '../Logo/NoticeExist';
 import NoticeNotExist from '../Logo/NoticeNotExist';
 
@@ -143,19 +144,17 @@ const LoginIcons = React.memo<{user: User}>(({user}) => {
             {({onClose}) => {
               return (
                 <>
-                  <MenuB>
-                    <MenuButton
-                      icon={
-                        user.notice.length !== 0 ? (
-                          <NoticeExist size="25px" />
-                        ) : (
-                          <NoticeNotExist size="25px" />
-                        )
-                      }
-                      label="通知"
-                      isTooltip={true}
-                    />
-                  </MenuB>
+                  <MenuButtonMenu
+                    icon={
+                      user.notice.length !== 0 ? (
+                        <NoticeExist size="25px" />
+                      ) : (
+                        <NoticeNotExist size="25px" />
+                      )
+                    }
+                    label="通知"
+                    isTooltip={true}
+                  />
                   <MenuList p="0" w="300px">
                     <Box>
                       <Heading fontSize="1.2rem" textAlign="center" py=".8rem">
