@@ -88,9 +88,10 @@ CREATE TABLE IF NOT EXISTS `report` (
 
 CREATE TABLE IF NOT EXISTS `number_of` (
     `user_id` INT UNSIGNED UNIQUE NOT NULL,
-    `evaluations` MEDIUMINT UNSIGNED,
-    `meet` MEDIUMINT UNSIGNED,
-    `application` MEDIUMINT UNSIGNED,
+    `evaluations` MEDIUMINT UNSIGNED DEFAULT 0,
+    `entry` MEDIUMINT UNSIGNED DEFAULT 0,
+    `meet` MEDIUMINT UNSIGNED DEFAULT 0,
+    `application` MEDIUMINT UNSIGNED DEFAULT 0,
     PRIMARY KEY (`user_id`)
 );
 
