@@ -211,6 +211,33 @@ export async function findEntriesByIds(
 }
 
 /**
+ * エントリのnumber_of_peopleを変更する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} id - entry id
+ * @param {number} numberOfPeople - 差
+ */
+export async function updateRequestPeople(
+  db: DBOperator,
+  id: number,
+  numberOfPeople: number
+) {
+  const update: {[key: string]: unknown} = {};
+  if (numberOfPeople > 0) {
+    update['request_people'] = sql('request_people + ?', numberOfPeople);
+  } else {
+    update['request_people'] = sql('request_people - ?', -numberOfPeople);
+  }
+
+  const query = sql
+    .update('entry', update)
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.execute(query);
+}
+
+/**
  * user idのentryをすべて削除する
  *
  * @param {DBOperator} db - database

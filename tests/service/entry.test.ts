@@ -15,6 +15,7 @@ import {
   findEntryByShopId,
   findEntryByUserId,
   updateEntry,
+  updateRequestPeople,
 } from '../../src/services/entry';
 import TestBase from '../../src/tests/base';
 import {
@@ -233,6 +234,29 @@ describe('entry', () => {
     const entries = await findEntriesByIds(base.db, ids);
 
     expect(entries.every(v => ids.includes(v.id))).toBeTruthy();
+  });
+
+  test('updateRequestPeople', async () => {
+    const entry = createEntryModel();
+    const id = await ce(base.db, entry);
+
+    await updateRequestPeople(base.db, id, 20);
+
+    let result = await base.db.test<RowDataPacket[]>(
+      'SELECT * FROM entry WHERE id = ?',
+      [id]
+    );
+    expect(result[0].request_people).toBe(20);
+
+    await updateRequestPeople(base.db, id, -15);
+
+    result = await base.db.test<RowDataPacket[]>(
+      'SELECT * FROM entry WHERE id = ?',
+      [id]
+    );
+    expect(result[0].request_people).toBe(5);
+
+    expect(updateRequestPeople(base.db, randomInt(1000), 20)).rejects.toThrow();
   });
 
   test('deleteEntryByUserId', async () => {
