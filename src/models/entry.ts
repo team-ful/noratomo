@@ -42,6 +42,11 @@ export interface ShopIncludedResponseEntry extends ResponseEntry {
   shop: ShopModel;
 }
 
+export interface ShopIdAndRequestDataIncludedResponseEntry
+  extends ShopIncludedResponseEntry {
+  is_owner: boolean;
+}
+
 class Entry implements EntryModel {
   readonly id: number;
   readonly owner_user_id: number;
