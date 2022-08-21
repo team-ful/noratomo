@@ -8,7 +8,6 @@ import {
   Heading,
   Tooltip,
   Spinner,
-  useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import {AiOutlineHeart, AiFillHeart} from 'react-icons/ai';

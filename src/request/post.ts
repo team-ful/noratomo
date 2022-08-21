@@ -1,7 +1,10 @@
 import {ApiError} from '../base/apiError';
 import AuthedBase from '../base/authedBase';
 import {authHandlerWrapper} from '../base/handlerWrapper';
-import {createApplication} from '../services/application';
+import {
+  createApplication,
+  findApplicationByEntryIdAndUserId,
+} from '../services/application';
 import {updateRequestPeople} from '../services/entry';
 import {insertNumberOf} from '../services/numberOf';
 
@@ -15,6 +18,15 @@ async function postRequestHandler(base: AuthedBase<void>) {
   const numberId = parseInt(id);
   if (isNaN(numberId)) {
     throw new ApiError(400, 'id is failed');
+  }
+
+  const application = await findApplicationByEntryIdAndUserId(
+    await base.db(),
+    base.user.id,
+    numberId
+  );
+  if (application !== null) {
+    throw new ApiError(400, 'application is already exists');
   }
 
   try {

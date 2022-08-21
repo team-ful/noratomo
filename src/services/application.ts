@@ -39,6 +39,35 @@ export async function findApplicationsByUserId(
 }
 
 /**
+ * すでにリクエストが作成されているのかをみるためのもの
+ *
+ * @param {DBOperator} db - database
+ * @param {number} userId - user id
+ * @param {number} entryId - entry id
+ */
+export async function findApplicationByEntryIdAndUserId(
+  db: DBOperator,
+  userId: number,
+  entryId: number
+) {
+  const query = sql
+    .select('*')
+    .from('application')
+    .where('user_id', userId)
+    .and('entry_id', entryId)
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const row = await db.one(query);
+
+  if (row === null) {
+    return null;
+  }
+
+  return new Application(row);
+}
+
+/**
  * applicationを作成する
  *
  * @param {DBOperator} db - database

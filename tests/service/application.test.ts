@@ -1,3 +1,4 @@
+import {randomInt} from 'crypto';
 import {ResultSetHeader, RowDataPacket} from 'mysql2';
 import {ApplicationModel} from '../../src/models/application';
 import {
@@ -6,9 +7,14 @@ import {
   deleteApplicationById,
   deleteApplicationByUserId,
   findApplicationsByUserId,
+  findApplicationByEntryIdAndUserId,
 } from '../../src/services/application';
 import TestBase from '../../src/tests/base';
-import {createApplicationModel, createUserModel} from '../../src/tests/models';
+import {
+  createApplicationModel,
+  createEntryModel,
+  createUserModel,
+} from '../../src/tests/models';
 
 describe('application', () => {
   const base = new TestBase();
@@ -90,6 +96,45 @@ describe('application', () => {
     );
     expect(metAndClosedApplication.length).toBe(1);
     expect(metAndClosedApplication[0].id).toBe(metAndClosedId);
+  });
+
+  test('findApplicationByEntryIdAndUserId', async () => {
+    const user = createUserModel();
+    const entry = createEntryModel();
+
+    const model = createApplicationModel({
+      user_id: user.id,
+      entry_id: entry.id,
+    });
+    await create(model);
+
+    let application = await findApplicationByEntryIdAndUserId(
+      base.db,
+      user.id,
+      entry.id
+    );
+    expect(application).not.toBeNull();
+
+    application = await findApplicationByEntryIdAndUserId(
+      base.db,
+      randomInt(100000),
+      entry.id
+    );
+    expect(application).toBeNull();
+
+    application = await findApplicationByEntryIdAndUserId(
+      base.db,
+      user.id,
+      randomInt(100000)
+    );
+    expect(application).toBeNull();
+
+    application = await findApplicationByEntryIdAndUserId(
+      base.db,
+      randomInt(100000),
+      randomInt(100000)
+    );
+    expect(application).toBeNull();
   });
 
   test('deleteApplicationById', async () => {
