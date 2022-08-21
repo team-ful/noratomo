@@ -8,16 +8,20 @@ import {
   Heading,
   Tooltip,
   Spinner,
+  useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import {AiOutlineHeart, AiFillHeart} from 'react-icons/ai';
 import useSWR from 'swr';
 import {parseElapsedDate} from '../../utils/parse';
 import {fetcher} from '../../utils/swr';
-import {Entry} from '../../utils/types';
+import {HomeEntry} from '../../utils/types';
 
 const HomePage = () => {
-  const {data, error} = useSWR<Entry[], string>('/api/all_entries', fetcher);
+  const {data, error} = useSWR<HomeEntry[], string>(
+    '/api/all_entries',
+    fetcher
+  );
 
   if (error) {
     return (
@@ -57,16 +61,30 @@ const HomePage = () => {
   );
 };
 
-const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
+const EntryContent: React.FC<{entry: HomeEntry}> = ({entry}) => {
   const [click, setClick] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const handleClick = () => {
-    if (click) {
-      // 追加
+  const f = async (deleteOrAdd: boolean) => {
+    let res;
+    if (deleteOrAdd) {
+      res = await fetch(`/api/request?id=${entry.id}`, {method: 'POST'});
     } else {
-      // 削除
+      res = await fetch(`/api/request?id=${entry.id}`, {method: 'DELETE'});
     }
+
+    if (!res.ok) {
+      console.error(await res.text());
+      setClick(false);
+    }
+  };
+
+  const handleClick = () => {
+    if (entry.is_owner) {
+      return;
+    }
+
+    f(!click);
 
     setClick(!click);
   };
@@ -74,7 +92,11 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
   return (
     <Tooltip
       hasArrow
-      label="タップしてリクエストしよう！"
+      label={
+        entry.is_owner
+          ? '自分で作成した募集です！'
+          : 'タップしてリクエストしよう！'
+      }
       placement="left"
       fontSize="1rem"
       borderRadius="10px"
@@ -92,13 +114,16 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
         ref={ref}
         onClick={handleClick}
         transition=".2s"
+        bgColor={entry.is_owner ? 'gray.300' : 'white'}
       >
         <Flex w="100%" minH="180px" pr=".5rem">
           <Center>
             <Avatar size="lg" src={entry.shop.photo_url || ''} mx="1rem" />
           </Center>
           <Box>
-            <Badge mt="2rem">{entry.shop.genre_name}</Badge>
+            <Badge mt="2rem" bgColor={entry.is_owner ? 'gray.400' : ''}>
+              {entry.shop.genre_name}
+            </Badge>
             <Flex alignItems="center">
               <Heading fontSize="1.2rem" mt=".3rem" mr=".5rem" maxWidth="560px">
                 {entry.title}

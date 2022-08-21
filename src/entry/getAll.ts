@@ -2,7 +2,7 @@ import AuthedBase from '../base/authedBase';
 import {authHandlerWrapper} from '../base/handlerWrapper';
 import {ShopIncludedResponseEntry} from '../models/entry';
 import {findAllEntries} from '../services/entry';
-import {fillShop} from './entry';
+import {fillShopAndRequest} from './entry';
 
 const LIMIT = 30;
 const OFFSET = 0;
@@ -20,7 +20,11 @@ async function getAllEntriesHandler(
 ) {
   const entries = await findAllEntries(await base.db(), LIMIT, OFFSET);
 
-  const responseEntries = await fillShop(await base.db(), entries);
+  const responseEntries = await fillShopAndRequest(
+    await base.db(),
+    entries,
+    base.user.id
+  );
 
   base.cache(DAY_SECOND, HOUR_SECOND);
   base.sendJson(responseEntries);
