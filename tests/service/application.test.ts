@@ -2,7 +2,7 @@ import {ResultSetHeader, RowDataPacket} from 'mysql2';
 import {ApplicationModel} from '../../src/models/application';
 import {
   createApplication,
-  deleteApplicationByEntryId,
+  deleteApplicationByUserIdAndEntryId,
   deleteApplicationById,
   deleteApplicationByUserId,
   findApplicationsByUserId,
@@ -133,7 +133,7 @@ describe('application', () => {
     expect(deletedRow.length).toBe(0);
   });
 
-  test('deleteApplicationByEntryId', async () => {
+  test('deleteApplicationByUserIdAndEntryId', async () => {
     const model = createApplicationModel();
     await create(model);
     await create(model);
@@ -144,7 +144,11 @@ describe('application', () => {
     );
     expect(rows.length).toBe(2);
 
-    await deleteApplicationByEntryId(base.db, model.entry_id);
+    await deleteApplicationByUserIdAndEntryId(
+      base.db,
+      model.entry_id,
+      model.user_id
+    );
 
     const deletedRow = await base.db.test<RowDataPacket[]>(
       'SELECT * FROM application WHERE user_id = ?',
