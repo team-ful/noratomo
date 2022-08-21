@@ -21,6 +21,11 @@ async function getRequestEntriesHandler(
     {limit: LIMIT}
   );
 
+  if (requests.length === 0) {
+    base.sendJson([]);
+    return;
+  }
+
   const entryIds = requests.map(v => v.entry_id);
   const entries = await findEntriesByIds(await base.db(), entryIds);
 
