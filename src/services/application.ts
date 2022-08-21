@@ -98,14 +98,17 @@ export async function deleteApplicationByUserId(
  *
  * @param {DBOperator} db - database
  * @param {number} entryId - entry id
+ * @param {number} userId - user id
  */
-export async function deleteApplicationByEntryId(
+export async function deleteApplicationByUserIdAndEntryId(
   db: DBOperator,
-  entryId: number
+  entryId: number,
+  userId: number
 ) {
   const query = sql
     .delete('application')
     .where('entry_id', entryId)
+    .and('user_id', userId)
     .toParams({placeholder: '?'});
 
   await db.execute(query);

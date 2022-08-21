@@ -178,6 +178,7 @@ export async function findAllEntries(
   const query = sql
     .select('*')
     .from('entry')
+    .where('is_closed', false)
     .orderBy('date desc')
     .limit(limit)
     .offset(offset)
