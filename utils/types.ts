@@ -119,6 +119,10 @@ export interface Entry {
   };
 }
 
+export interface HomeEntry extends Entry {
+  is_owner: boolean;
+}
+
 export interface NoraSession {
   token: string;
   question_ids: number[];
