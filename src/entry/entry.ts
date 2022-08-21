@@ -4,9 +4,7 @@ import Entry, {
   ShopIncludedResponseEntry,
 } from '../models/entry';
 import {ShopModel} from '../models/shop';
-import User from '../models/user';
 import {findApplicationsByUserId} from '../services/application';
-import {findEntryByUserId} from '../services/entry';
 
 /**
  * エントリに店情報を突っ込む
