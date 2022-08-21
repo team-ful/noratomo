@@ -190,6 +190,27 @@ export async function findAllEntries(
 }
 
 /**
+ * 複数のIDを指定して取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} ids - idのリスト
+ */
+export async function findEntriesByIds(
+  db: DBOperator,
+  ids: number[]
+): Promise<Entry[]> {
+  const query = sql
+    .select('*')
+    .from('entry')
+    .where(sql.in('id', ...ids))
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new Entry(v));
+}
+
+/**
  * user idのentryをすべて削除する
  *
  * @param {DBOperator} db - database
