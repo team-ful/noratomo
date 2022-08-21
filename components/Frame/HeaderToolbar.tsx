@@ -32,7 +32,7 @@ const HeaderToolbar: React.FC<{user: User}> = ({user}) => {
             icon={<IconHome size="23px" />}
             label="ホーム"
             isTooltip={false}
-            href="/"
+            href={user ? '/home' : '/'}
           />
         </Center>
 

@@ -102,6 +102,7 @@ export interface Entry {
   number_of_people: number;
   is_closed: boolean;
   shop_id: number;
+  request_people: number;
 
   shop: {
     address: string;
@@ -116,6 +117,10 @@ export interface Entry {
     photo_url: string | null;
     site_url: string;
   };
+}
+
+export interface HomeEntry extends Entry {
+  is_owner: boolean;
 }
 
 export interface NoraSession {
@@ -152,4 +157,11 @@ export interface CreateAccountPostForm {
 
   token: string;
   answers: NoraQuestionAnswer[];
+}
+
+export interface NumberOf {
+  evaluations: number;
+  entry: number;
+  meet: number;
+  application: number;
 }

@@ -1,5 +1,6 @@
 import {randomBytes, randomInt} from 'crypto';
 import {Device} from '../base/base';
+import {ApplicationModel} from '../models/application';
 import {CertModel} from '../models/cret';
 import {EntryModel} from '../models/entry';
 import {LoginHistoryModel} from '../models/loginHistory';
@@ -154,6 +155,7 @@ export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
     date: options?.date || dbDate(new Date(Date.now())),
     body: options?.body || randomText(30),
     is_closed: options?.is_closed || false,
+    request_people: options?.request_people || 0,
   };
 };
 
@@ -169,5 +171,20 @@ export const createNoticeModel = (
     url: options?.url || null,
     is_read: options?.is_read || false,
     created: options?.created || now,
+  };
+};
+
+export const createApplicationModel = (
+  options?: Partial<ApplicationModel>
+): ApplicationModel => {
+  const now = dbDate(new Date(Date.now()));
+
+  return {
+    id: options?.id || randomInt(1000000),
+    user_id: options?.user_id || randomInt(1000000),
+    entry_id: options?.entry_id || randomInt(1000000),
+    apply_date: options?.apply_date || now,
+    is_met: options?.is_met || false,
+    is_closed: options?.is_closed || false,
   };
 };

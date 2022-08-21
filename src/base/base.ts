@@ -567,7 +567,11 @@ class Base<T> {
       cacheTexts.push(`stale-while-revalidate=${staleWhileRevalidate}`);
     }
 
+    const d = new Date(Date.now());
+    d.setSeconds(d.getSeconds() + maxAge);
+
     this.res.setHeader('Cache-Control', cacheTexts.join(', '));
+    this.res.setHeader('Expires', d.toUTCString());
   }
 }
 

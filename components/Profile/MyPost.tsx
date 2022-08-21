@@ -67,7 +67,7 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
             >
               {entry.shop.name}・{entry.shop.address}
             </Text>
-            <Text mt=".5rem" as="pre" whiteSpace="pre-wrap" maxW="500px">
+            <Text mt=".5rem" whiteSpace="pre-wrap" maxW="500px">
               {entry.body}
             </Text>
           </Box>
@@ -77,7 +77,7 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
         <Flex mr="1rem" alignItems="center">
           <AiOutlineHeart />
           <Text color="gray.500" fontSize=".8rem" ml=".2rem">
-            0
+            {entry.request_people ?? '-'}
           </Text>
         </Flex>
         <Text textAlign="right" mr="2rem" color="gray.500" fontSize=".8rem">
