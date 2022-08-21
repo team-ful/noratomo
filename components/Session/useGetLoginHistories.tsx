@@ -5,6 +5,7 @@ import {LoginHistoryUserElements} from '../../utils/types';
 const useGetLoginHistories = (): LoginHistoryUserElements[] => {
   const [logs, setLogs] = React.useState<LoginHistoryUserElements[]>([]);
   const toast = useToast();
+
   const f = async () => {
     const res = await fetch('/api/user/login_history');
     if (!res.ok) {
@@ -19,7 +20,9 @@ const useGetLoginHistories = (): LoginHistoryUserElements[] => {
     setLogs(data);
   };
 
-  f();
+  React.useEffect(() => {
+    f();
+  }, []);
 
   return logs;
 };

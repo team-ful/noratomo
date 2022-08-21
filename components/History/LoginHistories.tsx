@@ -1,5 +1,6 @@
 import {
   Box,
+  Center,
   Heading,
   Table,
   TableCaption,
@@ -26,9 +27,18 @@ const LoginHistories = () => {
           <TableCaption>test</TableCaption>
           <Thead>
             <Tr>
-              <Th>ログイン日時</Th>
-              <Th>ログイン端末</Th>
-              <Th>IPアドレス</Th>
+              <Th>
+                <Center>ログイン日時</Center>
+              </Th>
+              <Th>
+                <Center>ログイン端末</Center>
+              </Th>
+              <Th>
+                <Center>ブラウザ/OS</Center>
+              </Th>
+              <Th>
+                <Center>IPアドレス</Center>
+              </Th>
             </Tr>
           </Thead>
 
@@ -39,9 +49,18 @@ const LoginHistories = () => {
           </Tbody>
           <Tfoot>
             <Tr>
-              <Th>ログイン日時</Th>
-              <Th>ログイン端末</Th>
-              <Th>IPアドレス</Th>
+              <Th>
+                <Center>ログイン日時</Center>
+              </Th>
+              <Th>
+                <Center>ログイン端末</Center>
+              </Th>
+              <Th>
+                <Center>ブラウザ/OS</Center>
+              </Th>
+              <Th>
+                <Center>IPアドレス</Center>
+              </Th>
             </Tr>
           </Tfoot>
         </Table>
