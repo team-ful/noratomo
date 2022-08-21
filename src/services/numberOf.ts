@@ -86,8 +86,6 @@ export async function updateNumberOf(
     .where('user_id', userId)
     .toParams({placeholder: '?'});
 
-  console.log(query);
-
   await db.execute(query);
 }
 
@@ -103,7 +101,7 @@ function insertUpdateColumns(
   columnName: string,
   target?: number
 ) {
-  if (typeof target !== 'undefined') {
+  if (typeof target !== 'undefined' && target !== 0) {
     if (target > 0) {
       values[columnName] = sql(`${columnName} + ?`, target);
     } else {
