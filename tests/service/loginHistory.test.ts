@@ -104,7 +104,6 @@ describe('findLoginHistoriesByUserID', () => {
 
   test('取得できる', async () => {
     const userID = createUserID();
-
     // ログイン履歴を50作成する
     for (let i = 0; 50 > i; i++) {
       const d = createLoginHistoryModel({user_id: userID});
@@ -115,30 +114,46 @@ describe('findLoginHistoriesByUserID', () => {
         device_name,
         os,
         login_date
-      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ${i} HOUR))`,
-        [d.user_id, d.ip_address, d.device_name, d.os]
+      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ? HOUR))`,
+        [d.user_id, d.ip_address, d.device_name, d.os, i]
       );
     }
 
     //取り出す履歴の個数を指定した時
-    const re_history = await findLoginHistoriesByUserID(base.db, userID, 2);
-    expect(re_history).not.toBeNull();
-    expect(re_history?.length).toBe(2);
+    const reHistory = await findLoginHistoriesByUserID(base.db, userID, 2);
+    expect(reHistory).not.toBeNull();
+    expect(reHistory?.length).toBe(2);
 
     //指定しない時
-    const history2 = await findLoginHistoriesByUserID(base.db, userID);
-    expect(history2).not.toBeNull();
-    expect(history2?.length).toBe(50);
-    if (history2) {
-      expect(history2[0].login_date > history2[1].login_date).toBeTruthy();
-      expect(history2[0].login_date > history2[49].login_date).toBeTruthy();
+    const historyUnspecifiedLimit = await findLoginHistoriesByUserID(
+      base.db,
+      userID
+    );
+    expect(historyUnspecifiedLimit).not.toBeNull();
+    expect(historyUnspecifiedLimit?.length).toBe(50);
+    if (historyUnspecifiedLimit) {
+      expect(
+        historyUnspecifiedLimit[0].login_date >
+          historyUnspecifiedLimit[1].login_date
+      ).toBeTruthy();
+      expect(
+        historyUnspecifiedLimit[0].login_date >
+          historyUnspecifiedLimit[49].login_date
+      ).toBeTruthy();
     }
-    if (history2 && re_history) {
-      expect(history2[0].login_date).toEqual(re_history[0].login_date);
+    if (historyUnspecifiedLimit && reHistory) {
+      expect(historyUnspecifiedLimit[0].login_date).toEqual(
+        reHistory[0].login_date
+      );
+    } else {
+      throw new Error('db error');
     }
+  });
 
-    //もう１０件ログインをバラバラに追加して、最新のログインから取得できているか調べる。
-    for (let i = 0; 10 > i; i++) {
+  test('最新のログインから取得できている', async () => {
+    const userID = createUserID();
+    //50件以上のログインをバラバラに追加して、最新のログインから取得できているか調べる。
+    for (let i = 0; 51 > i; i++) {
       const d = createLoginHistoryModel({user_id: userID});
       if (i % 2 === 0) {
         await base.db.test(
@@ -148,8 +163,8 @@ describe('findLoginHistoriesByUserID', () => {
         device_name,
         os,
         login_date
-      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ${i} HOUR))`,
-          [d.user_id, d.ip_address, d.device_name, d.os]
+      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ? HOUR))`,
+          [d.user_id, d.ip_address, d.device_name, d.os, i]
         );
       } else {
         await base.db.test(
@@ -159,31 +174,38 @@ describe('findLoginHistoriesByUserID', () => {
           device_name,
           os,
           login_date
-        ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ${-i} HOUR))`,
-          [d.user_id, d.ip_address, d.device_name, d.os]
+        ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ? HOUR))`,
+          [d.user_id, d.ip_address, d.device_name, d.os, -i]
         );
       }
     }
     // 指定するとき
-    const over50_history = await findLoginHistoriesByUserID(base.db, userID, 2);
-    expect(over50_history).not.toBeNull();
-    expect(over50_history?.length).toBe(2);
+    const over50History = await findLoginHistoriesByUserID(base.db, userID, 2);
+    expect(over50History).not.toBeNull();
+    if (over50History) {
+      expect(
+        over50History[0].login_date > over50History[1].login_date
+      ).toBeTruthy();
+    }
 
     //指定しない時
-    const over50history2 = await findLoginHistoriesByUserID(base.db, userID);
-    expect(over50history2).not.toBeNull();
-    expect(over50history2?.length).toBe(50);
-    if (over50history2) {
+    const over50historyUnspecifiedLimit = await findLoginHistoriesByUserID(
+      base.db,
+      userID
+    );
+    expect(over50historyUnspecifiedLimit).not.toBeNull();
+    if (over50historyUnspecifiedLimit) {
       expect(
-        over50history2[0].login_date > over50history2[1].login_date
+        over50historyUnspecifiedLimit[0].login_date >
+          over50historyUnspecifiedLimit[1].login_date
       ).toBeTruthy();
-
       expect(
-        over50history2[1].login_date > over50history2[2].login_date
+        over50historyUnspecifiedLimit[1].login_date >
+          over50historyUnspecifiedLimit[2].login_date
       ).toBeTruthy();
-
       expect(
-        over50history2[0].login_date > over50history2[49].login_date
+        over50historyUnspecifiedLimit[0].login_date >
+          over50historyUnspecifiedLimit[49].login_date
       ).toBeTruthy();
     }
   });
