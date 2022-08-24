@@ -1,29 +1,17 @@
-import {useToast} from '@chakra-ui/react';
-import React from 'react';
+import useSWR from 'swr';
+import {fetcher} from '../../utils/swr';
 import {LoginHistoryUserElements} from '../../utils/types';
 
-const useGetLoginHistories = (): LoginHistoryUserElements[] => {
-  const [logs, setLogs] = React.useState<LoginHistoryUserElements[]>([]);
-  const toast = useToast();
+const useGetLoginHistories = () => {
+  const {data, error} = useSWR<LoginHistoryUserElements[], string>(
+    '/api/user/login_history',
+    fetcher<LoginHistoryUserElements[]>
+  );
 
-  const f = async () => {
-    const res = await fetch('/api/user/login_history');
-    if (!res.ok) {
-      toast({
-        status: 'error',
-        title: await res.text(),
-      });
-      return;
-    }
-
-    const data = (await res.json()) as LoginHistoryUserElements[];
-    setLogs(data);
+  return {
+    data: data,
+    error: error,
   };
-
-  React.useEffect(() => {
-    f();
-  }, []);
-
-  return logs;
 };
+
 export default useGetLoginHistories;
