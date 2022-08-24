@@ -3,7 +3,6 @@ import {
   Center,
   Heading,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Tfoot,
@@ -30,7 +29,6 @@ const LoginHistories = () => {
         </Heading>
         <TableContainer>
           <Table variant="simple">
-            <TableCaption>test</TableCaption>
             <Thead>
               <Tr>
                 <Th>
