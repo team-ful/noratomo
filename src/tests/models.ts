@@ -1,8 +1,10 @@
 import {randomBytes, randomInt} from 'crypto';
 import {Device} from '../base/base';
+import {ApplicationModel} from '../models/application';
 import {CertModel} from '../models/cret';
 import {EntryModel} from '../models/entry';
 import {LoginHistoryModel} from '../models/loginHistory';
+import {NoticeModel} from '../models/notice';
 import {SessionModel} from '../models/session';
 import {ShopModel} from '../models/shop';
 import {UserModel} from '../models/user';
@@ -152,6 +154,37 @@ export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
     number_of_people: options?.number_of_people || 1, // 設計上1になる
     date: options?.date || dbDate(new Date(Date.now())),
     body: options?.body || randomText(30),
+    is_closed: options?.is_closed || false,
+    request_people: options?.request_people || 0,
+  };
+};
+
+export const createNoticeModel = (
+  options?: Partial<NoticeModel>
+): NoticeModel => {
+  const now = dbDate(new Date(Date.now()));
+  return {
+    id: options?.id || randomInt(1000000),
+    user_id: options?.user_id || randomInt(1000000),
+    title: options?.title || randomText(10),
+    text: options?.text || null,
+    url: options?.url || null,
+    is_read: options?.is_read || false,
+    created: options?.created || now,
+  };
+};
+
+export const createApplicationModel = (
+  options?: Partial<ApplicationModel>
+): ApplicationModel => {
+  const now = dbDate(new Date(Date.now()));
+
+  return {
+    id: options?.id || randomInt(1000000),
+    user_id: options?.user_id || randomInt(1000000),
+    entry_id: options?.entry_id || randomInt(1000000),
+    apply_date: options?.apply_date || now,
+    is_met: options?.is_met || false,
     is_closed: options?.is_closed || false,
   };
 };

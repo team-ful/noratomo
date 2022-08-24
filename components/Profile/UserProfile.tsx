@@ -10,11 +10,15 @@ import {
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
+import useSWR from 'swr';
+import {fetcher} from '../../utils/swr';
+import {NumberOf} from '../../utils/types';
 import Avater from '../Logo/Avater';
 import useUser from '../Session/useUser';
 
 // ユーザーのプロフィールのみを表示
 const UserProfile = React.memo(() => {
+  const {data} = useSWR<NumberOf>('/api/user/number_of', fetcher);
   const user = useUser();
 
   return (
@@ -52,21 +56,21 @@ const UserProfile = React.memo(() => {
             >
               <SimpleGrid columns={3} spacing={5} w="300px">
                 <Box>
-                  <Text textAlign="center">10</Text>
+                  <Text textAlign="center">{data?.entry ?? '-'}</Text>
                   <Heading fontSize="1rem" textAlign="center">
                     募集
                   </Heading>
                 </Box>
 
                 <Box>
-                  <Text textAlign="center">10</Text>
+                  <Text textAlign="center">{data?.application ?? '-'}</Text>
                   <Heading fontSize="1rem" textAlign="center">
                     いいね
                   </Heading>
                 </Box>
 
                 <Box>
-                  <Text textAlign="center">10</Text>
+                  <Text textAlign="center">{data?.meet ?? '-'}</Text>
                   <Heading fontSize="1rem" textAlign="center">
                     マッチ
                   </Heading>

@@ -4,6 +4,7 @@ declare module 'mysql-bricks' {
   interface InsertStatement extends sql.InsertStatement {
     onDuplicateKeyUpdate(values: any): this;
     ignore(): this;
+    from(values: string): this;
   }
 
   interface UpdateStatement extends sql.UpdateStatement {

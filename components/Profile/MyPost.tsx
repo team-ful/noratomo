@@ -1,7 +1,6 @@
 import {
   Center,
   Box,
-  useToast,
   Flex,
   Badge,
   Heading,
@@ -10,40 +9,25 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import {AiOutlineHeart} from 'react-icons/ai';
+import useSWR from 'swr';
 import {parseElapsedDate} from '../../utils/parse';
+import {fetcher} from '../../utils/swr';
 import {Entry} from '../../utils/types';
 
 const MyPost = () => {
-  const toast = useToast();
+  const {data, error} = useSWR<Entry[], string>('/api/entry', fetcher<Entry[]>);
 
-  const [entries, setEntries] = React.useState<Entry[] | null>(null);
-
-  React.useEffect(() => {
-    const f = async () => {
-      const res = await fetch('/api/entry');
-
-      if (res.ok) {
-        const e = (await res.json()) as Entry[];
-        setEntries(e.reverse());
-      } else {
-        toast({
-          status: 'error',
-          title: '募集を取得できませんでした',
-          description: await res.text(),
-        });
-      }
-    };
-
-    f();
-  }, []);
+  if (error) {
+    return <>{error}</>;
+  }
 
   return (
     <Box mt="2rem" mx={{base: '.5rem', md: '0'}}>
-      {entries === null ? (
+      {typeof data === 'undefined' ? (
         <></>
       ) : (
         <>
-          {entries.map(v => {
+          {data.reverse().map(v => {
             return <EntryContent entry={v} key={v.id} />;
           })}
         </>
@@ -83,7 +67,7 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
             >
               {entry.shop.name}・{entry.shop.address}
             </Text>
-            <Text mt=".5rem" as="pre" whiteSpace="pre-wrap" maxW="500px">
+            <Text mt=".5rem" whiteSpace="pre-wrap" maxW="500px">
               {entry.body}
             </Text>
           </Box>
@@ -93,7 +77,7 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
         <Flex mr="1rem" alignItems="center">
           <AiOutlineHeart />
           <Text color="gray.500" fontSize=".8rem" ml=".2rem">
-            0
+            {entry.request_people ?? '-'}
           </Text>
         </Flex>
         <Text textAlign="right" mr="2rem" color="gray.500" fontSize=".8rem">

@@ -1,5 +1,7 @@
-import {DefaultObject} from '../db/operator';
+import DBOperator, {DefaultObject} from '../db/operator';
+import {findNoReadNoticeByUserId, findNoticeByUserId} from '../services/notice';
 import {gender, Gender} from './common';
+import Notice from './notice';
 
 export interface UserModel {
   // ユーザを識別するID
@@ -101,6 +103,25 @@ class User implements UserModel {
       Date.parse(this.join_date.toISOString());
 
     return diff > 0;
+  }
+
+  /**
+   * ユーザの通知
+   *
+   * @param {DBOperator} db - database
+   * @param {boolean} includeRead - trueの場合、既読の通知も返す
+   * @param {number} limit - optional. 取得個数
+   * @returns {Notice[]} - 通知
+   */
+  public async notice(
+    db: DBOperator,
+    includeRead: boolean,
+    limit?: number
+  ): Promise<Notice[]> {
+    if (includeRead) {
+      return await findNoticeByUserId(db, this.id, limit);
+    }
+    return await findNoReadNoticeByUserId(db, this.id, limit);
   }
 }
 

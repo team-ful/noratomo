@@ -10,14 +10,8 @@ import useShopSearch from './useShopSearch';
 
 const SearchShop = () => {
   const router = useRouter();
-  const {
-    shops,
-    searchQuery,
-    searchLatLon,
-    load,
-    resultsAvailable,
-    resultsReturned,
-  } = useShopSearch();
+  const {shops, searchQuery, searchLatLon, resultsAvailable, resultsReturned} =
+    useShopSearch();
 
   const [page, setPage] = React.useState(1);
   const [init, setInit] = React.useState(true);

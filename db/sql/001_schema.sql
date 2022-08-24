@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS `notice` (
     `title` VARCHAR(512) NOT NULL,
     `text` TEXT,
     `url` VARCHAR(8190),
-    `is_read` BOOLEAN,
+    `is_read` BOOLEAN DEFAULT 0,
+    `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 );
 
@@ -87,9 +88,10 @@ CREATE TABLE IF NOT EXISTS `report` (
 
 CREATE TABLE IF NOT EXISTS `number_of` (
     `user_id` INT UNSIGNED UNIQUE NOT NULL,
-    `evaluations` MEDIUMINT UNSIGNED,
-    `meet` MEDIUMINT UNSIGNED,
-    `application` MEDIUMINT UNSIGNED,
+    `evaluations` MEDIUMINT UNSIGNED DEFAULT 0,
+    `entry` MEDIUMINT UNSIGNED DEFAULT 0,
+    `meet` MEDIUMINT UNSIGNED DEFAULT 0,
+    `application` MEDIUMINT UNSIGNED DEFAULT 0,
     PRIMARY KEY (`user_id`)
 );
 
@@ -134,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `date` DATETIME NOT NULL,
     `body` TEXT,
     `is_closed` BOOLEAN NOT NULL,
+    `request_people` INT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
@@ -175,12 +178,11 @@ CREATE TABLE IF NOT EXISTS `meet` (
 
 CREATE TABLE IF NOT EXISTS `application` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `shop_id` INT UNSIGNED NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     `entry_id` INT UNSIGNED NOT NULL,
-    `body` TEXT,
-    `apply_date` DATETIME NOT NULL,
-    `is_meeted` BOOLEAN NOT NULL,
+    `apply_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `is_met` BOOLEAN NOT NULL DEFAULT 0,
+    `is_closed` BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 

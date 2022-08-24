@@ -1,13 +1,6 @@
 import {ParsedUrlQuery} from 'querystring';
 import {URL} from 'url';
-import {
-  Decoder,
-  object,
-  string,
-  optional,
-  number,
-  boolean,
-} from '@mojotech/json-type-validation';
+import {Decoder} from '@mojotech/json-type-validation';
 import {ClientHints} from 'client-hints';
 import {parse, ParsedMediaType} from 'content-type';
 import {serialize, CookieSerializeOptions} from 'cookie';
@@ -565,6 +558,20 @@ class Base<T> {
     if (typeof m !== 'string' || _m?.toLocaleLowerCase() !== m.toLowerCase()) {
       throw new ApiError(400, 'That HTTP method is not supported');
     }
+  }
+
+  public cache(maxAge: number, staleWhileRevalidate?: number) {
+    const cacheTexts = [`max-age=${maxAge}`];
+
+    if (typeof staleWhileRevalidate !== 'undefined') {
+      cacheTexts.push(`stale-while-revalidate=${staleWhileRevalidate}`);
+    }
+
+    const d = new Date(Date.now());
+    d.setSeconds(d.getSeconds() + maxAge);
+
+    this.res.setHeader('Cache-Control', cacheTexts.join(', '));
+    this.res.setHeader('Expires', d.toUTCString());
   }
 }
 

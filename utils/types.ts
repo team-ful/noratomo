@@ -8,6 +8,16 @@ export interface User {
   is_admin: boolean;
   avatar_url: string;
   join_date: Date;
+  notice: Notice[];
+}
+
+export interface Notice {
+  id: number;
+  title: string;
+  is_read: boolean;
+  created: Date;
+  text?: string;
+  url?: string;
 }
 
 export interface Question {
@@ -92,6 +102,7 @@ export interface Entry {
   number_of_people: number;
   is_closed: boolean;
   shop_id: number;
+  request_people: number;
 
   shop: {
     address: string;
@@ -106,6 +117,10 @@ export interface Entry {
     photo_url: string | null;
     site_url: string;
   };
+}
+
+export interface HomeEntry extends Entry {
+  is_owner: boolean;
 }
 
 export enum Device {
@@ -164,4 +179,11 @@ export interface CreateAccountPostForm {
 
   token: string;
   answers: NoraQuestionAnswer[];
+}
+
+export interface NumberOf {
+  evaluations: number;
+  entry: number;
+  meet: number;
+  application: number;
 }

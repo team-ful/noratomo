@@ -5,6 +5,7 @@ import {testApiHandler} from 'next-test-api-route-handler';
 import config from '../../config';
 import {post} from '../../src/entry';
 import {findEntryById} from '../../src/services/entry';
+import {findNumberOfByUserId} from '../../src/services/numberOf';
 import {createShop, findShopById} from '../../src/services/shop';
 import TestBase from '../../src/tests/base';
 import {createEntryModel, createShopModel} from '../../src/tests/models';
@@ -130,6 +131,13 @@ describe('post', () => {
         // DBからshopを引く（新しく追加されているはず）
         const newShop = await findShopById(base.db, newEntryFromDB.shop_id);
         expect(newShop?.name).toBe('にゃにゃにゃ イオンレイクタウン店');
+
+        const numberOf = await findNumberOfByUserId(
+          base.db,
+          base.users[0].user?.id || 0
+        );
+        expect(numberOf).not.toBeNull();
+        expect(numberOf?.entry).toBe(1);
       },
     });
   });

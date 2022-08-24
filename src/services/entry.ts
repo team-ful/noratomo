@@ -134,7 +134,7 @@ export async function findEntryByUserId(
     .select('*')
     .from('entry')
     .where('owner_user_id', userId)
-    .orderBy('date')
+    .orderBy('date desc')
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
@@ -161,6 +161,80 @@ export async function findEntryByShopId(
   const rows = await db.multi(query);
 
   return rows.map(v => new Entry(v));
+}
+
+/**
+ * 全エントリを取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} limit - limit
+ * @param {number} offset - offset
+ */
+export async function findAllEntries(
+  db: DBOperator,
+  limit: number,
+  offset: number
+): Promise<Entry[]> {
+  const query = sql
+    .select('*')
+    .from('entry')
+    .where('is_closed', false)
+    .orderBy('date desc')
+    .limit(limit)
+    .offset(offset)
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new Entry(v));
+}
+
+/**
+ * 複数のIDを指定して取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} ids - idのリスト
+ */
+export async function findEntriesByIds(
+  db: DBOperator,
+  ids: number[]
+): Promise<Entry[]> {
+  const query = sql
+    .select('*')
+    .from('entry')
+    .where(sql.in('id', ...ids))
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new Entry(v));
+}
+
+/**
+ * エントリのnumber_of_peopleを変更する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} id - entry id
+ * @param {number} numberOfPeople - 差
+ */
+export async function updateRequestPeople(
+  db: DBOperator,
+  id: number,
+  numberOfPeople: number
+) {
+  const update: {[key: string]: unknown} = {};
+  if (numberOfPeople > 0) {
+    update['request_people'] = sql('request_people + ?', numberOfPeople);
+  } else {
+    update['request_people'] = sql('request_people - ?', -numberOfPeople);
+  }
+
+  const query = sql
+    .update('entry', update)
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.execute(query);
 }
 
 /**

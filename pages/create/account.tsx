@@ -3,7 +3,7 @@ import Require from '../../components/Session/Require';
 
 const Account = () => {
   return (
-    <Require loginRequire={false} path="/">
+    <Require loginRequire={false} path="/home">
       <Create />
     </Require>
   );

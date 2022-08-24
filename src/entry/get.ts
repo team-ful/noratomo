@@ -1,8 +1,8 @@
 import AuthedBase from '../base/authedBase';
 import {authHandlerWrapper} from '../base/handlerWrapper';
 import {ShopIncludedResponseEntry} from '../models/entry';
-import {ShopModel} from '../models/shop';
 import {findEntryByUserId} from '../services/entry';
+import {fillShop} from './entry';
 
 /**
  * 自分が投稿した募集を取得する
@@ -12,23 +12,7 @@ import {findEntryByUserId} from '../services/entry';
 async function getEntryHandler(base: AuthedBase<ShopIncludedResponseEntry[]>) {
   const entries = await findEntryByUserId(await base.db(), base.user.id);
 
-  const shops: {[id: string]: ShopModel} = {};
-  const responseEntries: ShopIncludedResponseEntry[] = [];
-
-  // 各entryにshopを突っ込む
-  for (const entry of entries) {
-    const shop = shops[entry.shop_id];
-    if (shop) {
-      responseEntries.push({
-        ...entry.json(),
-        shop: shop,
-      });
-    } else {
-      const e = await entry.jsonShopIncluded(await base.db());
-      shops[e.shop_id] = e.shop;
-      responseEntries.push(e);
-    }
-  }
+  const responseEntries = await fillShop(await base.db(), entries);
 
   base.sendJson(responseEntries);
 }
