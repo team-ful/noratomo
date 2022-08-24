@@ -1,4 +1,5 @@
 import {RowDataPacket} from 'mysql2/promise';
+import SqlBricks from 'sql-bricks';
 import {Device} from '../../src/base/base';
 import {
   createLoginHistory,
@@ -104,20 +105,30 @@ describe('findLoginHistoriesByUserID', () => {
 
   test('取得できる', async () => {
     const userID = createUserID();
-    // ログイン履歴を50作成する
+    const d = createLoginHistoryModel({user_id: userID});
+    const values = [];
+    const sql = SqlBricks;
     for (let i = 0; 50 > i; i++) {
-      const d = createLoginHistoryModel({user_id: userID});
-      await base.db.test(
-        `INSERT INTO login_history (
-        user_id,
-        ip_address,
-        device_name,
-        os,
-        login_date
-      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ? HOUR))`,
-        [d.user_id, d.ip_address, d.device_name, d.os, i]
-      );
+      values.push([
+        d.user_id,
+        sql('INET_ATON(?)', d.ip_address),
+        d.device_name,
+        d.os,
+        sql('DATE_ADD(NOW(), INTERVAL ? HOUR)', i),
+      ]);
     }
+    const query = sql
+      .insertInto(
+        'login_history',
+        'user_id',
+        'ip_address',
+        'device_name',
+        'os',
+        'login_date'
+      )
+      .values(values)
+      .toParams({placeholder: '?'});
+    await base.db.execute(query);
 
     //取り出す履歴の個数を指定した時
     const reHistory = await findLoginHistoriesByUserID(base.db, userID, 2);
@@ -153,32 +164,30 @@ describe('findLoginHistoriesByUserID', () => {
   test('最新のログインから取得できている', async () => {
     const userID = createUserID();
     //50件以上のログインをバラバラに追加して、最新のログインから取得できているか調べる。
-    for (let i = 0; 51 > i; i++) {
-      const d = createLoginHistoryModel({user_id: userID});
-      if (i % 2 === 0) {
-        await base.db.test(
-          `INSERT INTO login_history (
-        user_id,
-        ip_address,
-        device_name,
-        os,
-        login_date
-      ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ? HOUR))`,
-          [d.user_id, d.ip_address, d.device_name, d.os, i]
-        );
-      } else {
-        await base.db.test(
-          `INSERT INTO login_history (
-          user_id,
-          ip_address,
-          device_name,
-          os,
-          login_date
-        ) VALUES (?, INET_ATON(?), ?, ?, DATE_ADD(now(), INTERVAL ? HOUR))`,
-          [d.user_id, d.ip_address, d.device_name, d.os, -i]
-        );
-      }
+    const d = createLoginHistoryModel({user_id: userID});
+    const values = [];
+    const sql = SqlBricks;
+    for (let i = 0; 54 > i; i++) {
+      values.push([
+        d.user_id,
+        sql('INET_ATON(?)', d.ip_address),
+        d.device_name,
+        d.os,
+        sql('DATE_ADD(NOW(), INTERVAL ? HOUR)', i % 2 ? i : -i),
+      ]);
     }
+    const query = sql
+      .insertInto(
+        'login_history',
+        'user_id',
+        'ip_address',
+        'device_name',
+        'os',
+        'login_date'
+      )
+      .values(values)
+      .toParams({placeholder: '?'});
+    await base.db.execute(query);
     // 指定するとき
     const over50History = await findLoginHistoriesByUserID(base.db, userID, 2);
     expect(over50History).not.toBeNull();
