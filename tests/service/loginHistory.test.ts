@@ -1,5 +1,5 @@
 import {RowDataPacket} from 'mysql2/promise';
-import SqlBricks from 'sql-bricks';
+import sql from 'mysql-bricks';
 import {Device} from '../../src/base/base';
 import {
   createLoginHistory,
