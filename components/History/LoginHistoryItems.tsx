@@ -24,7 +24,7 @@ const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
       </Td>
       <Td>
         <Center>
-          {data.browser_name} / {data.os}
+          {data.browser_name ?? '不明なブラウザ'} / {data.os ?? '不明なOS'}
         </Center>
       </Td>
       <Td>{data.ip_address}</Td>
