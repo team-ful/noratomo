@@ -1,5 +1,5 @@
-import {RowDataPacket} from 'mysql2/promise';
 import sql from 'mysql-bricks';
+import {RowDataPacket} from 'mysql2/promise';
 import {Device} from '../../src/base/base';
 import {
   createLoginHistory,
@@ -165,7 +165,6 @@ describe('findLoginHistoriesByUserID', () => {
     //50件以上のログインをバラバラに追加して、最新のログインから取得できているか調べる。
     const d = createLoginHistoryModel({user_id: userID});
     const values = [];
-    const sql = SqlBricks;
     for (let i = 0; 54 > i; i++) {
       values.push([
         d.user_id,
