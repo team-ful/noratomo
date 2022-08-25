@@ -107,7 +107,6 @@ describe('findLoginHistoriesByUserID', () => {
     const userID = createUserID();
     const d = createLoginHistoryModel({user_id: userID});
     const values = [];
-    const sql = SqlBricks;
     for (let i = 0; 50 > i; i++) {
       values.push([
         d.user_id,
