@@ -10,10 +10,24 @@ import {
   Tr,
   Text,
 } from '@chakra-ui/react';
-import useGetLoginHistories from '../Session/useGetLoginHistories';
+import useSWR from 'swr';
+import {fetcher} from '../../utils/swr';
+import {LoginHistoryUserElements} from '../../utils/types';
 import LoginHistoryItems from './LoginHistoryItems';
 
 const LoginHistories = () => {
+  const useGetLoginHistories = () => {
+    const {data, error} = useSWR<LoginHistoryUserElements[], string>(
+      '/api/user/login_history',
+      fetcher<LoginHistoryUserElements[]>
+    );
+
+    return {
+      data: data,
+      error: error,
+    };
+  };
+
   const loginHistories = useGetLoginHistories();
   if (loginHistories.error) {
     return <Text>ログインエラー</Text>;
