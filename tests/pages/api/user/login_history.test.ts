@@ -1,14 +1,7 @@
-import {send} from 'process';
 import {testApiHandler} from 'next-test-api-route-handler';
-import {BaseNextRequest} from 'next/dist/server/base-http';
 import login_historyHandler from '../../../../pages/api/user/login_history';
-import AuthedBase from '../../../../src/base/base';
 import {findLoginHistoriesByUserID} from '../../../../src/services/loginHistory';
 import TestBase from '../../../../src/tests/base';
-
-/**
- *@param {AuthedBase<void>} bbase -bbase
- */
 
 describe('login_history', () => {
   const base = new TestBase();
@@ -25,7 +18,7 @@ describe('login_history', () => {
     await base.end();
   });
 
-  test('login_history', async () => {
+  test('dbからデータを取得できている', async () => {
     expect.hasAssertions();
 
     await testApiHandler({
@@ -45,8 +38,9 @@ describe('login_history', () => {
             base.users[0].user?.id
           );
           const d = findedLoginHistory.map(x => x.json());
+          const dJson = JSON.stringify(d);
 
-          expect(await res.json()).toEqual(d);
+          expect(await res.json()).toStrictEqual(JSON.parse(dJson));
         }
       },
     });
