@@ -4,7 +4,6 @@ import {
   Table,
   TableContainer,
   Tbody,
-  Tfoot,
   Th,
   Thead,
   Tr,
