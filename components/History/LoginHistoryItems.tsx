@@ -12,7 +12,12 @@ const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
     <Tr>
       <Td>
         <Center>
-          <Tooltip label={parsedDate} placement="top">
+          <Tooltip
+            label={parsedDate}
+            placement="top"
+            hasArrow
+            borderRadius="10px"
+          >
             {elaParsedDate}
           </Tooltip>
         </Center>
