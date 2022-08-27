@@ -1,5 +1,5 @@
+import sql from 'mysql-bricks';
 import {RowDataPacket} from 'mysql2/promise';
-import SqlBricks from 'sql-bricks';
 import {Device} from '../../src/base/base';
 import {
   createLoginHistory,
@@ -107,7 +107,6 @@ describe('findLoginHistoriesByUserID', () => {
     const userID = createUserID();
     const d = createLoginHistoryModel({user_id: userID});
     const values = [];
-    const sql = SqlBricks;
     for (let i = 0; 50 > i; i++) {
       values.push([
         d.user_id,
@@ -130,10 +129,15 @@ describe('findLoginHistoriesByUserID', () => {
       .toParams({placeholder: '?'});
     await base.db.execute(query);
 
-    //取り出す履歴の個数を指定した時
+    //取り出す履歴の個数を指定した時 0以上
     const reHistory = await findLoginHistoriesByUserID(base.db, userID, 2);
     expect(reHistory).not.toBeNull();
     expect(reHistory?.length).toBe(2);
+
+    //0を指定した時 通らん。 -> findByUserId は0 ?? 50 で 0はNULL合体演算子の処理で50で処理する。
+    const noneHistory = await findLoginHistoriesByUserID(base.db, userID, 0);
+    expect(noneHistory).not.toBeNull();
+    expect(noneHistory?.length).toBe(50);
 
     //指定しない時
     const historyUnspecifiedLimit = await findLoginHistoriesByUserID(
@@ -166,7 +170,6 @@ describe('findLoginHistoriesByUserID', () => {
     //50件以上のログインをバラバラに追加して、最新のログインから取得できているか調べる。
     const d = createLoginHistoryModel({user_id: userID});
     const values = [];
-    const sql = SqlBricks;
     for (let i = 0; 54 > i; i++) {
       values.push([
         d.user_id,

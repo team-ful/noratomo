@@ -12,26 +12,25 @@ import {findLoginHistoriesByUserID} from '../../../src/services/loginHistory';
  */
 async function handler(base: AuthedBase<LoginHistory>) {
   const limit = base.getQuery('limit');
+  let loginHistories;
   if (limit) {
     const parseLimit = parseInt(limit);
     if (isNaN(parseLimit)) {
       new ApiError(400, 'bad argument');
     }
-    const loginHistories = await findLoginHistoriesByUserID(
+    loginHistories = await findLoginHistoriesByUserID(
       await base.db(),
       base.user.id,
       parseLimit
     );
-    const d = loginHistories.map(x => x.json());
-    base.sendJson(d);
   } else {
-    const loginHistories = await findLoginHistoriesByUserID(
+    loginHistories = await findLoginHistoriesByUserID(
       await base.db(),
       base.user.id
     );
-    const d = loginHistories.map(x => x.json());
-    base.sendJson(d);
   }
+  const d = loginHistories.map(x => x.json());
+  base.sendJson(d);
 }
 
 export default authHandlerWrapper(handler, 'GET');

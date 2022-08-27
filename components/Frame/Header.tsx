@@ -16,7 +16,6 @@ import {
   Divider,
   Link,
   useToast,
-  Tooltip,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import NextLink from 'next/link';
