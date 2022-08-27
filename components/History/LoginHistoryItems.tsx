@@ -1,4 +1,4 @@
-import {Center, Td, Tooltip, Tr} from '@chakra-ui/react';
+import {Box, Center, Td, Tooltip, Tr} from '@chakra-ui/react';
 import {parseDate, parseElapsedDate} from '../../utils/parse';
 import {LoginHistoryUserElements} from '../../utils/types';
 import DeviceIcon from './DeviceIcon';
@@ -11,26 +11,23 @@ const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
   return (
     <Tr>
       <Td>
-        <Center>
-          <Tooltip
-            label={parsedDate}
-            placement="top"
-            hasArrow
-            borderRadius="10px"
-          >
-            {elaParsedDate}
-          </Tooltip>
-        </Center>
+        <Tooltip
+          label={parsedDate}
+          placement="top"
+          hasArrow
+          borderRadius="10px"
+        >
+          <Center>{elaParsedDate}</Center>
+        </Tooltip>
       </Td>
       <Td>
         <Center>
           <DeviceIcon item={data} />
+          <Box> / {data.os ?? '不明なOS'}</Box>
         </Center>
       </Td>
       <Td>
-        <Center>
-          {data.browser_name ?? '不明なブラウザ'} / {data.os ?? '不明なOS'}
-        </Center>
+        <Center>{data.browser_name ?? '不明なブラウザ'}</Center>
       </Td>
       <Td>{data.ip_address}</Td>
     </Tr>
