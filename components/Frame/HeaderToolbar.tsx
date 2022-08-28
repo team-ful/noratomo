@@ -14,7 +14,7 @@ const HeaderToolbar: React.FC<{user: User}> = ({user}) => {
     <Box
       position="fixed"
       display={{base: 'block', sm: 'none'}}
-      bottom="5px"
+      bottom="10px"
       w="100%"
       zIndex="10000"
     >
