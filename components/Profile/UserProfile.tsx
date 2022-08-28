@@ -82,21 +82,21 @@ const UserProfile = React.memo(() => {
         <Box display={{base: 'block', sm: 'none'}} mx=".5rem" mt=".5rem">
           <SimpleGrid columns={3} spacing={5}>
             <Box>
-              <Text textAlign="center">10</Text>
+              <Text textAlign="center">{data?.entry ?? '-'}</Text>
               <Heading textAlign="center" size="md">
                 募集
               </Heading>
             </Box>
 
             <Box>
-              <Text textAlign="center">10</Text>
+              <Text textAlign="center">{data?.application ?? '-'}</Text>
               <Heading textAlign="center" size="md">
                 いいね
               </Heading>
             </Box>
 
             <Box>
-              <Text textAlign="center">10</Text>
+              <Text textAlign="center">{data?.meet ?? '-'}</Text>
               <Heading textAlign="center" size="md">
                 マッチ
               </Heading>
