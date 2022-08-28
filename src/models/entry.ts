@@ -23,7 +23,7 @@ export interface EntryModel {
 
   is_closed: boolean;
 
-  request_people: number;
+  request_people?: number;
 }
 
 export interface ResponseEntry {
@@ -56,7 +56,7 @@ class Entry implements EntryModel {
   readonly date: Date;
   readonly body: string | null;
   readonly is_closed: boolean;
-  readonly request_people: number;
+  readonly request_people: number | undefined;
 
   constructor(init: DefaultObject | EntryModel) {
     this.id = init.id as number;
@@ -67,7 +67,10 @@ class Entry implements EntryModel {
     this.date = new Date(init.date as Date | string);
     this.body = init.body as string | null;
     this.is_closed = Boolean(init.is_closed);
-    this.request_people = init.request_people as number;
+
+    if (typeof init.request_people === 'number') {
+      this.request_people = init.request_people;
+    }
   }
 
   public json(): ResponseEntry {
@@ -79,7 +82,7 @@ class Entry implements EntryModel {
       number_of_people: this.number_of_people,
       is_closed: this.is_closed,
       shop_id: this.shop_id,
-      request_people: this.request_people,
+      request_people: this.request_people ?? 0, // とりあえず0にする
     };
   }
 

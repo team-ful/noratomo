@@ -15,10 +15,10 @@ import {
   findEntryByShopId,
   findEntryByUserId,
   updateEntry,
-  updateRequestPeople,
 } from '../../src/services/entry';
 import TestBase from '../../src/tests/base';
 import {
+  createApplicationModel,
   createEntryModel,
   createShopModel,
   createUserModel,
@@ -187,12 +187,25 @@ describe('entry', () => {
     const entry1 = createEntryModel({owner_user_id: userId});
     const entry2 = createEntryModel({owner_user_id: userId});
 
-    await ce(base.db, entry1);
-    await ce(base.db, entry2);
+    entry1.id = await ce(base.db, entry1);
+    entry2.id = await ce(base.db, entry2);
 
-    const results = await findEntryByUserId(base.db, userId);
+    let results = await findEntryByUserId(base.db, userId);
 
     expect(results.length).toBe(2);
+    expect(results[0].request_people).toBe(0);
+
+    // applicationが正しくjoinされているか確認する
+    for (const entry of [entry1, entry2]) {
+      const application = createApplicationModel({entry_id: entry.id});
+      await base.db.test(
+        'INSERT INTO application (user_id, entry_id) VALUES (?, ?)',
+        [application.user_id, application.entry_id]
+      );
+    }
+
+    results = await findEntryByUserId(base.db, userId);
+    expect(results[0].request_people).toBe(1);
   });
 
   test('findEntryByShopId', async () => {
@@ -213,12 +226,25 @@ describe('entry', () => {
     const ids: number[] = [];
     for (let i = 0; 10 > i; i++) {
       const entry = createEntryModel();
-      ids.push(await ce(base.db, entry));
+      const id = await ce(base.db, entry);
+      ids.push(id);
+
+      // 半分にapplicationを入れる
+      if (i % 2 === 0) {
+        const application = createApplicationModel({entry_id: id});
+        await base.db.test(
+          'INSERT INTO application (user_id, entry_id) VALUES (?, ?)',
+          [application.user_id, application.entry_id]
+        );
+      }
     }
 
     const entries = await findAllEntries(base.db, 10, 0);
 
     expect(entries.length).toBe(10);
+
+    // 1つあれば正しく取得されている
+    expect(entries.find(v => v.request_people === 1)).toBeTruthy();
   });
 
   test('findEntriesByIds', async () => {
@@ -228,34 +254,22 @@ describe('entry', () => {
       ids.push(await ce(base.db, entry));
     }
 
+    // applicationがあるentry
+    const entry = createEntryModel();
+    const id = await ce(base.db, entry);
+    ids.push(id);
+    const application = createApplicationModel({entry_id: id});
+    await base.db.test(
+      'INSERT INTO application (user_id, entry_id) VALUES (?, ?)',
+      [application.user_id, application.entry_id]
+    );
+
     const entries = await findEntriesByIds(base.db, ids);
 
     expect(entries.every(v => ids.includes(v.id))).toBeTruthy();
-  });
 
-  test('updateRequestPeople', async () => {
-    const entry = createEntryModel();
-    const id = await ce(base.db, entry);
-
-    await updateRequestPeople(base.db, id, 20);
-
-    let result = await base.db.test<RowDataPacket[]>(
-      'SELECT * FROM entry WHERE id = ?',
-      [id]
-    );
-    expect(result[0].request_people).toBe(20);
-
-    await updateRequestPeople(base.db, id, -15);
-
-    result = await base.db.test<RowDataPacket[]>(
-      'SELECT * FROM entry WHERE id = ?',
-      [id]
-    );
-    expect(result[0].request_people).toBe(5);
-
-    await expect(
-      updateRequestPeople(base.db, randomInt(1000), 20)
-    ).resolves.not.toThrow();
+    // applicationも正しく引けているかどうか
+    expect(entries.find(v => v.id === id)?.request_people).toBe(1);
   });
 
   test('deleteEntryByUserId', async () => {
