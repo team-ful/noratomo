@@ -239,12 +239,22 @@ describe('entry', () => {
       }
     }
 
-    const entries = await findAllEntries(base.db, 10, 0);
+    const entry = createEntryModel();
+    const id = await ce(base.db, entry);
+    const application = createApplicationModel({entry_id: id});
+    await base.db.test(
+      'INSERT INTO application (user_id, entry_id) VALUES (?, ?)',
+      [application.user_id, application.entry_id]
+    );
+
+    const entries = await findAllEntries(base.db, application.user_id, 10, 0);
 
     expect(entries.length).toBe(10);
 
     // 1つあれば正しく取得されている
     expect(entries.find(v => v.request_people === 1)).toBeTruthy();
+
+    expect(entries.find(v => v.id === id)).toBeFalsy();
   });
 
   test('findEntriesByIds', async () => {

@@ -176,14 +176,32 @@ export async function findEntryByShopId(
  * request_peopleも引く
  *
  * @param {DBOperator} db - database
+ * @param {number} userId - 除外するUserID。このユーザがいいねをつけているものは取得しない
  * @param {number} limit - limit
  * @param {number} offset - offset
  */
 export async function findAllEntries(
   db: DBOperator,
+  userId: number,
   limit: number,
   offset: number
 ): Promise<Entry[]> {
+  // SELECT entry.*, COUNT(application.id) as request_people
+  // FROM entry
+  //     LEFT JOIN application
+  //         ON entry.id = application.entry_id
+  // WHERE entry.is_closed = ?
+  //     AND NOT EXISTS (
+  //         SELECT *
+  //         FROM application
+  //         WHERE application.entry_id = entry.id
+  //             AND application.user_id = ?
+  //             AND is_met = 0
+  //             AND is_closed = 0)
+  // GROUP BY entry.id
+  // ORDER BY entry.date desc
+  // LIMIT 10;
+
   const query = sql
     .select('entry.*', 'COUNT(application.id) as request_people')
     .from('entry')
@@ -191,6 +209,19 @@ export async function findAllEntries(
     .on('entry.id', 'application.entry_id')
     .groupBy('entry.id')
     .where('entry.is_closed', false)
+    .and(
+      sql.not(
+        sql.exists(
+          sql
+            .select('user_id')
+            .from('application')
+            .where(sql('application.entry_id = entry.id'))
+            .and('application.user_id', userId)
+            .and(sql('is_met = 0'))
+            .and(sql('is_closed = 0'))
+        )
+      )
+    )
     .orderBy('entry.date desc')
     .limit(limit)
     .offset(offset)

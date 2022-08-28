@@ -18,7 +18,12 @@ const HOUR_SECOND = 3600;
 async function getAllEntriesHandler(
   base: AuthedBase<ShopIncludedResponseEntry[]>
 ) {
-  const entries = await findAllEntries(await base.db(), LIMIT, OFFSET);
+  const entries = await findAllEntries(
+    await base.db(),
+    base.user.id,
+    LIMIT,
+    OFFSET
+  );
 
   const responseEntries = await fillShopAndRequest(
     await base.db(),
