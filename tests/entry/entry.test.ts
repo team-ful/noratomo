@@ -120,7 +120,6 @@ describe('entry', () => {
       user.user?.id || NaN
     );
 
-    expect(shopIncludeEntry.length).toBe(2);
     // is_ownerフラグが正しく立っている
     expect(
       shopIncludeEntry.find(v => v.id === entry1.id && v.is_owner)
