@@ -97,6 +97,8 @@ export async function closeEntry(db: DBOperator, id: number) {
 /**
  * Entry id からentryを取得する
  *
+ * request_peopleは引かない
+ *
  * @param {DBOperator} db - database
  * @param {number} id - entry id
  */
@@ -123,6 +125,8 @@ export async function findEntryById(
 /**
  * user_idからentryを取得する
  *
+ * request_peopleも引く
+ *
  * @param {DBOperator} db - database
  * @param {number} userId - user id
  */
@@ -131,10 +135,13 @@ export async function findEntryByUserId(
   userId: number
 ): Promise<Entry[]> {
   const query = sql
-    .select('*')
+    .select('entry.*', 'COUNT(application.id) as request_people')
     .from('entry')
-    .where('owner_user_id', userId)
-    .orderBy('date desc')
+    .leftOuterJoin('application')
+    .on('entry.id', 'application.entry_id')
+    .groupBy('entry.id')
+    .where('entry.owner_user_id', userId)
+    .orderBy('entry.date desc')
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
@@ -166,20 +173,56 @@ export async function findEntryByShopId(
 /**
  * 全エントリを取得する
  *
+ * request_peopleも引く
+ *
  * @param {DBOperator} db - database
+ * @param {number} userId - 除外するUserID。このユーザがいいねをつけているものは取得しない
  * @param {number} limit - limit
  * @param {number} offset - offset
  */
 export async function findAllEntries(
   db: DBOperator,
+  userId: number,
   limit: number,
   offset: number
 ): Promise<Entry[]> {
+  // SELECT entry.*, COUNT(application.id) as request_people
+  // FROM entry
+  //     LEFT JOIN application
+  //         ON entry.id = application.entry_id
+  // WHERE entry.is_closed = ?
+  //     AND NOT EXISTS (
+  //         SELECT *
+  //         FROM application
+  //         WHERE application.entry_id = entry.id
+  //             AND application.user_id = ?
+  //             AND is_met = 0
+  //             AND is_closed = 0)
+  // GROUP BY entry.id
+  // ORDER BY entry.date desc
+  // LIMIT 10;
+
   const query = sql
-    .select('*')
+    .select('entry.*', 'COUNT(application.id) as request_people')
     .from('entry')
-    .where('is_closed', false)
-    .orderBy('date desc')
+    .leftOuterJoin('application')
+    .on('entry.id', 'application.entry_id')
+    .groupBy('entry.id')
+    .where('entry.is_closed', false)
+    .and(
+      sql.not(
+        sql.exists(
+          sql
+            .select('user_id')
+            .from('application')
+            .where(sql('application.entry_id = entry.id'))
+            .and('application.user_id', userId)
+            .and(sql('is_met = 0'))
+            .and(sql('is_closed = 0'))
+        )
+      )
+    )
+    .orderBy('entry.date desc')
     .limit(limit)
     .offset(offset)
     .toParams({placeholder: '?'});
@@ -192,6 +235,8 @@ export async function findAllEntries(
 /**
  * 複数のIDを指定して取得する
  *
+ * request_peopleも引く
+ *
  * @param {DBOperator} db - database
  * @param {number} ids - idのリスト
  */
@@ -200,41 +245,17 @@ export async function findEntriesByIds(
   ids: number[]
 ): Promise<Entry[]> {
   const query = sql
-    .select('*')
+    .select('entry.*', 'COUNT(application.id) as request_people')
     .from('entry')
-    .where(sql.in('id', ...ids))
+    .leftOuterJoin('application')
+    .on('entry.id', 'application.entry_id')
+    .groupBy('entry.id')
+    .where(sql.in('entry.id', ...ids))
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
 
   return rows.map(v => new Entry(v));
-}
-
-/**
- * エントリのnumber_of_peopleを変更する
- *
- * @param {DBOperator} db - database
- * @param {number} id - entry id
- * @param {number} numberOfPeople - 差
- */
-export async function updateRequestPeople(
-  db: DBOperator,
-  id: number,
-  numberOfPeople: number
-) {
-  const update: {[key: string]: unknown} = {};
-  if (numberOfPeople > 0) {
-    update['request_people'] = sql('request_people + ?', numberOfPeople);
-  } else {
-    update['request_people'] = sql('request_people - ?', -numberOfPeople);
-  }
-
-  const query = sql
-    .update('entry', update)
-    .where('id', id)
-    .toParams({placeholder: '?'});
-
-  await db.execute(query);
 }
 
 /**

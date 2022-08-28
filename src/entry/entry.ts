@@ -4,10 +4,11 @@ import Entry, {
   ShopIncludedResponseEntry,
 } from '../models/entry';
 import {ShopModel} from '../models/shop';
-import {findApplicationsByUserId} from '../services/application';
 
 /**
  * エントリに店情報を突っ込む
+ *
+ * TODO: SQLでJOINしたい
  *
  * @param {DBOperator} db - database
  * @param {Entry[]} entries - エントリ
@@ -50,17 +51,8 @@ export async function fillShopAndRequest(
 ) {
   const shops: {[id: string]: ShopModel} = {};
   const responseEntries: ShopIdAndRequestDataIncludedResponseEntry[] = [];
-  const myRequestEntries = await findApplicationsByUserId(db, userId, {
-    is_met: false,
-    is_closed: false,
-  });
 
   for (const entry of entries) {
-    // 自分がリクエストつけたものはスルーする
-    if (myRequestEntries.find(v => v.entry_id === entry.id)) {
-      continue;
-    }
-
     let newE: Partial<ShopIdAndRequestDataIncludedResponseEntry>;
 
     // shopを代入する
