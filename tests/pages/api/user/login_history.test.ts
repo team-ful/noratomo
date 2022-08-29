@@ -85,8 +85,8 @@ describe('login_history', () => {
       requestPatcher: async req => {
         req.headers = {
           cookie: base.users[0].sessionCookie,
-          limit: '0',
         };
+        req.url = '?limit=10';
       },
       test: async ({fetch}) => {
         const res = await fetch();
@@ -97,7 +97,8 @@ describe('login_history', () => {
           //なので、ここでは50のlimit指定する。
           const findedLoginHistory = await findLoginHistoriesByUserID(
             base.db,
-            base.users[0].user?.id
+            base.users[0].user?.id,
+            10
           );
           const d = findedLoginHistory.map(x => x.json());
           const dJson = JSON.stringify(d);
@@ -106,10 +107,27 @@ describe('login_history', () => {
           そのため、用意したデータはただDBから持ってくるだけだと、Jsonへの変換とパースがされていない
           ため、期待するデータに合わせるために、stringify(),parse()を行っている。
           */
-          expect(await res.json()).toStrictEqual(JSON.parse(dJson));
+          expect(await res.json()).toEqual(JSON.parse(dJson));
         } else {
           throw new Error('レスポンスまたはユーザの取得に失敗');
         }
+      },
+    });
+  });
+  test('異常なlimitでは履歴を取得できない', async () => {
+    expect.hasAssertions();
+
+    await testApiHandler({
+      handler: login_historyHandler,
+      requestPatcher: async req => {
+        req.headers = {
+          cookie: base.users[0].sessionCookie,
+        };
+        req.url = '?limit=0';
+      },
+      test: async ({fetch}) => {
+        const res = await fetch();
+        expect(res.status).toBe(400);
       },
     });
   });
