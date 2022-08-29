@@ -103,7 +103,7 @@ describe('login_history', () => {
           const d = findedLoginHistory.map(x => x.json());
           const dJson = JSON.stringify(d);
           /*res.json()ではapiから受け取ったJsonデータをparseする。
-          JsonはDateの区別をしないので、日付が違う形式に変換された上でStringとして処理される。
+          JsonはDateの区別をしないので、日付が違う形式(ISO 8601)に変換された上でStringとして処理される。
           そのため、用意したデータはただDBから持ってくるだけだと、Jsonへの変換とパースがされていない
           ため、期待するデータに合わせるために、stringify(),parse()を行っている。
           */

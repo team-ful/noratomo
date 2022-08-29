@@ -15,6 +15,7 @@ async function handler(base: AuthedBase<LoginHistory>) {
   let loginHistories;
   if (typeof limit !== 'undefined') {
     const parseLimit = parseInt(limit);
+    //[memo] parseIntなのですべて整数になるから小数点は考えなくてよい
     if (isNaN(parseLimit) || parseLimit < 1) {
       throw new ApiError(400, 'bad argument');
     } else {
