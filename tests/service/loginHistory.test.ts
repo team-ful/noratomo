@@ -134,7 +134,7 @@ describe('findLoginHistoriesByUserID', () => {
     expect(reHistory).not.toBeNull();
     expect(reHistory?.length).toBe(2);
 
-    //0を指定した時 通らん。 -> findByUserId は0 ?? 50 で 0はNULL合体演算子の処理で50で処理する。
+    //0を指定した時 
     const noneHistory = await findLoginHistoriesByUserID(base.db, userID, 0);
     expect(noneHistory).not.toBeNull();
     expect(noneHistory?.length).toBe(50);
