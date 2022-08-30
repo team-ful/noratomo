@@ -28,18 +28,16 @@ const LoginHistories = () => {
   }
   if (typeof data === 'undefined') {
     return (
-      <Box>
-        <Center h="100%">
-          <Spinner
-            mt="40%"
-            thickness="4px"
-            speed="0.50s"
-            emptyColor="gray.200"
-            color="orange.500"
-            size="xl"
-          />
-        </Center>
-      </Box>
+      <Center h="100%">
+        <Spinner
+          mt="40%"
+          thickness="4px"
+          speed="0.50s"
+          emptyColor="gray.200"
+          color="orange.500"
+          size="xl"
+        />
+      </Center>
     );
   } else {
     return (
