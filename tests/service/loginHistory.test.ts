@@ -130,14 +130,14 @@ describe('findLoginHistoriesByUserID', () => {
     await base.db.execute(query);
 
     //取り出す履歴の個数を指定した時 0以上
-    const reHistory = await findLoginHistoriesByUserID(base.db, userID, 2);
-    expect(reHistory).not.toBeNull();
-    expect(reHistory?.length).toBe(2);
+    const limit2History = await findLoginHistoriesByUserID(base.db, userID, 2);
+    expect(limit2History).not.toBeNull();
+    expect(limit2History?.length).toBe(2);
 
-    //0を指定した時 
+    //0を指定した時
     const noneHistory = await findLoginHistoriesByUserID(base.db, userID, 0);
     expect(noneHistory).not.toBeNull();
-    expect(noneHistory?.length).toBe(50);
+    expect(noneHistory?.length).toBe(0);
 
     //指定しない時
     const historyUnspecifiedLimit = await findLoginHistoriesByUserID(
@@ -156,9 +156,9 @@ describe('findLoginHistoriesByUserID', () => {
           historyUnspecifiedLimit[49].login_date
       ).toBeTruthy();
     }
-    if (historyUnspecifiedLimit && reHistory) {
+    if (historyUnspecifiedLimit && limit2History) {
       expect(historyUnspecifiedLimit[0].login_date).toEqual(
-        reHistory[0].login_date
+        limit2History[0].login_date
       );
     } else {
       throw new Error('db error');

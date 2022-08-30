@@ -66,7 +66,7 @@ describe('login_history', () => {
           const d = findedLoginHistory.map(x => x.json());
           const dJson = JSON.stringify(d);
           /*res.json()ではapiから受け取ったJsonデータをparseする。
-          JsonはDateの区別をしないので、日付が違う形式に変換された上でStringとして処理される。
+          JsonはDateの区別をしないので、日付が違う形式(ISO 8601)に変換された上でStringとして処理される。
           そのため、用意したデータはただDBから持ってくるだけだと、Jsonへの変換とパースがされていない
           ため、期待するデータに合わせるために、stringify(),parse()を行っている。
           */
@@ -93,8 +93,6 @@ describe('login_history', () => {
 
         expect(res.status).toBe(200);
         if (res.status && base.users[0].user?.id) {
-          //上のクエリでlimitを0で指定した場合は、handolerで50個として認識される
-          //なので、ここでは50のlimit指定する。
           const findedLoginHistory = await findLoginHistoriesByUserID(
             base.db,
             base.users[0].user?.id,
@@ -102,11 +100,7 @@ describe('login_history', () => {
           );
           const d = findedLoginHistory.map(x => x.json());
           const dJson = JSON.stringify(d);
-          /*res.json()ではapiから受け取ったJsonデータをparseする。
-          JsonはDateの区別をしないので、日付が違う形式(ISO 8601)に変換された上でStringとして処理される。
-          そのため、用意したデータはただDBから持ってくるだけだと、Jsonへの変換とパースがされていない
-          ため、期待するデータに合わせるために、stringify(),parse()を行っている。
-          */
+
           expect(await res.json()).toEqual(JSON.parse(dJson));
         } else {
           throw new Error('レスポンスまたはユーザの取得に失敗');
@@ -114,6 +108,8 @@ describe('login_history', () => {
       },
     });
   });
+
+  //limit < 1の時、ハンドラーではエラーとして処理
   test('異常なlimitでは履歴を取得できない', async () => {
     expect.hasAssertions();
 
