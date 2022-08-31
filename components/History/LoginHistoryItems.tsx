@@ -23,7 +23,7 @@ const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
       <Td>
         <Center>
           <DeviceIcon item={data} />
-          <Box> / {data.os ?? '不明なOS'}</Box>
+          <Box ml=".25rem"> {data.os ?? '不明なOS'}</Box>
         </Center>
       </Td>
       <Td>
