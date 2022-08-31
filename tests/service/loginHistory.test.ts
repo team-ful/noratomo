@@ -164,63 +164,6 @@ describe('findLoginHistoriesByUserID', () => {
       throw new Error('db error');
     }
   });
-
-  test('最新のログインから取得できている', async () => {
-    const userID = createUserID();
-    //50件以上のログインをバラバラに追加して、最新のログインから取得できているか調べる。
-    const d = createLoginHistoryModel({user_id: userID});
-    const values = [];
-    for (let i = 0; 54 > i; i++) {
-      values.push([
-        d.user_id,
-        sql('INET_ATON(?)', d.ip_address),
-        d.device_name,
-        d.os,
-        sql('DATE_ADD(NOW(), INTERVAL ? HOUR)', i % 2 ? i : -i),
-      ]);
-    }
-    const query = sql
-      .insertInto(
-        'login_history',
-        'user_id',
-        'ip_address',
-        'device_name',
-        'os',
-        'login_date'
-      )
-      .values(values)
-      .toParams({placeholder: '?'});
-    await base.db.execute(query);
-    // 指定するとき
-    const over50History = await findLoginHistoriesByUserID(base.db, userID, 2);
-    expect(over50History).not.toBeNull();
-    if (over50History) {
-      expect(
-        over50History[0].login_date > over50History[1].login_date
-      ).toBeTruthy();
-    }
-
-    //指定しない時
-    const over50historyUnspecifiedLimit = await findLoginHistoriesByUserID(
-      base.db,
-      userID
-    );
-    expect(over50historyUnspecifiedLimit).not.toBeNull();
-    if (over50historyUnspecifiedLimit) {
-      expect(
-        over50historyUnspecifiedLimit[0].login_date >
-          over50historyUnspecifiedLimit[1].login_date
-      ).toBeTruthy();
-      expect(
-        over50historyUnspecifiedLimit[1].login_date >
-          over50historyUnspecifiedLimit[2].login_date
-      ).toBeTruthy();
-      expect(
-        over50historyUnspecifiedLimit[0].login_date >
-          over50historyUnspecifiedLimit[49].login_date
-      ).toBeTruthy();
-    }
-  });
 });
 
 describe('deleteLoginHistoryByUserID', () => {
