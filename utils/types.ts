@@ -123,6 +123,28 @@ export interface HomeEntry extends Entry {
   is_owner: boolean;
 }
 
+export enum Device {
+  Console = 'Console',
+  Mobile = 'Mobile',
+  Tablet = 'Tablet',
+  Desktop = 'Desktop',
+  SmartTV = 'SmartTV',
+  Wearable = 'Wearable',
+  Embedded = 'Embedded',
+}
+
+export interface LoginHistoryUserElements {
+  id: number;
+  ip_address: string;
+  device_name: Device | null;
+  os: string | null;
+  is_phone: boolean | null;
+  is_desktop: boolean | null;
+  is_tablet: boolean | null;
+  browser_name: string | null;
+  login_date: Date;
+}
+
 export interface NoraSession {
   token: string;
   question_ids: number[];

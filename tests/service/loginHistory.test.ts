@@ -1,3 +1,4 @@
+import sql from 'mysql-bricks';
 import {RowDataPacket} from 'mysql2/promise';
 import {Device} from '../../src/base/base';
 import {
@@ -103,27 +104,64 @@ describe('findLoginHistoriesByUserID', () => {
   });
 
   test('取得できる', async () => {
-    const d = createLoginHistoryModel();
+    const userID = createUserID();
+    const d = createLoginHistoryModel({user_id: userID});
+    const values = [];
+    for (let i = 0; 50 > i; i++) {
+      values.push([
+        d.user_id,
+        sql('INET_ATON(?)', d.ip_address),
+        d.device_name,
+        d.os,
+        sql('DATE_ADD(NOW(), INTERVAL ? HOUR)', i),
+      ]);
+    }
+    const query = sql
+      .insertInto(
+        'login_history',
+        'user_id',
+        'ip_address',
+        'device_name',
+        'os',
+        'login_date'
+      )
+      .values(values)
+      .toParams({placeholder: '?'});
+    await base.db.execute(query);
 
-    await base.db.test(
-      `INSERT INTO login_history (
-      user_id,
-      ip_address,
-      device_name,
-      os,
-      login_date
-    ) VALUES (?, INET6_ATON(?), ?, ?, NOW())`,
-      [d.user_id, d.ip_address, d.device_name, d.os]
+    //取り出す履歴の個数を指定した時 0以上
+    const limit2History = await findLoginHistoriesByUserID(base.db, userID, 2);
+    expect(limit2History).not.toBeNull();
+    expect(limit2History?.length).toBe(2);
+
+    //0を指定した時
+    const noneHistory = await findLoginHistoriesByUserID(base.db, userID, 0);
+    expect(noneHistory).not.toBeNull();
+    expect(noneHistory?.length).toBe(0);
+
+    //指定しない時
+    const historyUnspecifiedLimit = await findLoginHistoriesByUserID(
+      base.db,
+      userID
     );
-
-    const history = await findLoginHistoriesByUserID(base.db, d.user_id);
-
-    expect(history).not.toBeNull();
-    expect(history?.length).toBe(1);
-
-    if (history) {
-      expect(history[0].os).toBe(d.os);
-      expect(history[0].ip_address).toBe(d.ip_address);
+    expect(historyUnspecifiedLimit).not.toBeNull();
+    expect(historyUnspecifiedLimit?.length).toBe(50);
+    if (historyUnspecifiedLimit) {
+      expect(
+        historyUnspecifiedLimit[0].login_date >
+          historyUnspecifiedLimit[1].login_date
+      ).toBeTruthy();
+      expect(
+        historyUnspecifiedLimit[0].login_date >
+          historyUnspecifiedLimit[49].login_date
+      ).toBeTruthy();
+    }
+    if (historyUnspecifiedLimit && limit2History) {
+      expect(historyUnspecifiedLimit[0].login_date).toEqual(
+        limit2History[0].login_date
+      );
+    } else {
+      throw new Error('db error');
     }
   });
 });

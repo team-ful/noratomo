@@ -8,11 +8,17 @@ import LoginHistory from '../models/loginHistory';
  *
  * @param {DBOperator} db - database
  * @param {number} userID - user id
+ * @param {number} limit - limit
  */
 export async function findLoginHistoriesByUserID(
   db: DBOperator,
-  userID: number
-): Promise<LoginHistory[] | null> {
+  userID: number,
+  limit?: number
+): Promise<LoginHistory[]> {
+  if (limit === 0) {
+    return [];
+  }
+
   const query = sql
     .select([
       'id',
@@ -29,14 +35,11 @@ export async function findLoginHistoriesByUserID(
     ])
     .from('login_history')
     .where('user_id', userID)
+    .orderBy('login_date desc')
+    .limit(limit ?? 50)
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);
-
-  if (rows.length === 0) {
-    return null;
-  }
-
   return rows.map(v => new LoginHistory(v));
 }
 

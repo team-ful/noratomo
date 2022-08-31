@@ -16,11 +16,11 @@ import {
   Divider,
   Link,
   useToast,
-  Tooltip,
 } from '@chakra-ui/react';
 import '@fontsource/permanent-marker';
 import NextLink from 'next/link';
 import React from 'react';
+import {RiFootprintLine} from 'react-icons/ri';
 import {TbSettings, TbUserCircle, TbLogout} from 'react-icons/tb';
 import {useSetRecoilState} from 'recoil';
 import {UserState} from '../../utils/atom';
@@ -272,6 +272,13 @@ const MyPageIcon = React.memo<{user: User}>(({user}) => {
             設定
           </MenuItem>
         </NextLink>
+
+        <NextLink passHref href="/history/login_histories">
+          <MenuItem as="a" icon={<RiFootprintLine size="20px" />}>
+            ログイン履歴
+          </MenuItem>
+        </NextLink>
+
         <MenuDivider />
         <MenuItem onClick={logoutModal.onOpen} icon={<TbLogout size="20px" />}>
           ログアウト

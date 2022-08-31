@@ -16,6 +16,18 @@ export interface LoginHistoryModel {
   'INET6_NTOA(ip_address)'?: string;
 }
 
+interface LoginHistoryUserElements {
+  id: number;
+  ip_address: string;
+  device_name: Device | null;
+  os: string | null;
+  is_phone: boolean | null;
+  is_desktop: boolean | null;
+  is_tablet: boolean | null;
+  browser_name: string | null;
+  login_date: Date;
+}
+
 class LoginHistory implements LoginHistoryModel {
   readonly id: number;
   readonly user_id: number;
@@ -67,6 +79,20 @@ class LoginHistory implements LoginHistoryModel {
       default:
         return Device.Desktop;
     }
+  }
+
+  public json(): LoginHistoryUserElements {
+    return {
+      id: this.id,
+      ip_address: this.ip_address,
+      device_name: this.device_name,
+      os: this.os,
+      is_phone: this.is_phone,
+      is_desktop: this.is_desktop,
+      is_tablet: this.is_tablet,
+      browser_name: this.browser_name,
+      login_date: this.login_date,
+    };
   }
 }
 
