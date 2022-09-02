@@ -135,7 +135,8 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `number_of_people` INT UNSIGNED NOT NULL,
     `date` DATETIME NOT NULL,
     `body` TEXT,
-    `is_closed` BOOLEAN NOT NULL,
+    `is_closed` BOOLEAN NOT NULL DEFAULT 0,
+    `is_matched` BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
