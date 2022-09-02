@@ -4,6 +4,7 @@ import {ApplicationModel} from '../models/application';
 import {CertModel} from '../models/cret';
 import {EntryModel} from '../models/entry';
 import {LoginHistoryModel} from '../models/loginHistory';
+import {MeetModel} from '../models/meet';
 import {NoticeModel} from '../models/notice';
 import {SessionModel} from '../models/session';
 import {ShopModel} from '../models/shop';
@@ -187,5 +188,22 @@ export const createApplicationModel = (
     apply_date: options?.apply_date || now,
     is_met: options?.is_met || false,
     is_closed: options?.is_closed || false,
+  };
+};
+
+export const createMeetModel = (options?: Partial<MeetModel>): MeetModel => {
+  const now = dbDate(new Date(Date.now()));
+
+  return {
+    id: options?.id || randomInt(1000000),
+    shop_id: options?.shop_id || randomInt(1000000),
+    entry_id: options?.entry_id || randomInt(1000000),
+    owner_id: options?.owner_id || randomInt(1000000),
+    apply_user_id: options?.apply_user_id || randomInt(1000000),
+    meet_date: options?.meet_date || now,
+    approve_date: options?.approve_date || null,
+    is_cancel: options?.is_cancel || false,
+    is_slapstick: options?.is_slapstick || false,
+    find_id: options?.find_id || randomText(15),
   };
 };
