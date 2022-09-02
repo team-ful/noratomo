@@ -46,6 +46,18 @@ export interface UserModel {
   avatar_url: string | null;
 }
 
+export interface ExternalUser {
+  display_name: string | null;
+  mail: string;
+  profile: string | null;
+  user_name: string;
+  age: number | null;
+  gender: number;
+  is_admin: boolean | null;
+  avatar_url: string | null;
+  join_date: Date;
+}
+
 /**
  * ユーザ関連の操作をするクラス
  */
@@ -122,6 +134,20 @@ class User implements UserModel {
       return await findNoticeByUserId(db, this.id, limit);
     }
     return await findNoReadNoticeByUserId(db, this.id, limit);
+  }
+
+  public externalUser(): ExternalUser {
+    return {
+      display_name: this.display_name,
+      mail: this.mail,
+      profile: this.profile,
+      user_name: this.user_name,
+      age: this.age,
+      gender: this.gender,
+      is_admin: this.is_admin,
+      avatar_url: this.avatar_url,
+      join_date: this.join_date,
+    };
   }
 }
 

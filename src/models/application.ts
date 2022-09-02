@@ -1,7 +1,9 @@
 import {ApiError} from '../base/apiError';
 import DBOperator, {DefaultObject} from '../db/operator';
 import {findEntryById} from '../services/entry';
+import {findUserByUserID} from '../services/user';
 import Entry from './entry';
+import {ExternalUser} from './user';
 
 export interface ApplicationModel {
   id: number;
@@ -10,6 +12,10 @@ export interface ApplicationModel {
   apply_date: Date;
   is_met: boolean;
   is_closed: boolean;
+}
+
+export interface FillUserApplication extends ApplicationModel {
+  user: ExternalUser;
 }
 
 export class Application implements ApplicationModel {
@@ -35,5 +41,14 @@ export class Application implements ApplicationModel {
       throw new ApiError(500, 'entry not found');
     }
     return entry;
+  }
+
+  public async jsonFillUser(db: DBOperator): Promise<FillUserApplication> {
+    const user = await findUserByUserID(db, this.user_id);
+
+    return {
+      ...this,
+      user: user.externalUser(),
+    };
   }
 }
