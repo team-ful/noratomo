@@ -153,7 +153,12 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
               <Heading fontSize="1.7rem" mt="1rem">
                 募集詳細
               </Heading>
-              <Text fontSize="1.5rem" mt=".5rem">
+              <Text
+                fontSize="1.5rem"
+                mt=".5rem"
+                whiteSpace="pre-wrap"
+                maxW="500px"
+              >
                 {data.body}
               </Text>
             </>
