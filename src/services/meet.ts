@@ -94,7 +94,7 @@ export async function findMeetsByApplyUserId(
   const query = sql
     .select('*')
     .from('meet')
-    .where('apply_user_id', applyUserId)
+    .where(sql.or({apply_user_id: applyUserId}, {owner_id: applyUserId}))
     .toParams({placeholder: '?'});
 
   const rows = await db.multi(query);

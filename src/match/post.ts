@@ -7,6 +7,7 @@ import {findApplicationById} from '../services/application';
 import {findEntryById, matchedEntry} from '../services/entry';
 import {createMeet} from '../services/meet';
 import {createNotice} from '../services/notice';
+import {insertNumberOf} from '../services/numberOf';
 
 /**
  * 自分で投稿した募集で、マッチさせる
@@ -46,6 +47,9 @@ async function matchPostHandler(base: AuthedBase<void>) {
 
   await meet(base, entry, application);
   await notice(base, entry, application);
+
+  await insertNumberOf(await base.db(), base.user.id, 0, 0, 1);
+  await insertNumberOf(await base.db(), application.user_id, 0, 0, 1);
 }
 
 /**

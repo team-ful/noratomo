@@ -267,6 +267,7 @@ export async function findEntriesByIds(
     .leftOuterJoin('application')
     .on('entry.id', 'application.entry_id')
     .groupBy('entry.id')
+    .orderBy('date desc')
     .where(sql.in('entry.id', ...ids))
     .toParams({placeholder: '?'});
 
