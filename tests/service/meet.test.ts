@@ -4,9 +4,10 @@ import {
   createMeet,
   findMeetByEntryId,
   findMeetById,
+  findMeetsByApplyUserId,
 } from '../../src/services/meet';
 import TestBase from '../../src/tests/base';
-import {createMeetModel} from '../../src/tests/models';
+import {createMeetModel, createUserModel} from '../../src/tests/models';
 
 describe('meet', () => {
   const base = new TestBase();
@@ -67,5 +68,18 @@ describe('meet', () => {
     const meet = await findMeetByEntryId(base.db, meetModel.entry_id);
 
     expect(meet?.owner_id).toBe(meetModel.owner_id);
+  });
+
+  test('findMeetsByApplyUserId', async () => {
+    const user = createUserModel();
+
+    for (let i = 0; 5 > i; i++) {
+      const meetModel = createMeetModel({apply_user_id: user.id});
+      await create(meetModel);
+    }
+
+    const meets = await findMeetsByApplyUserId(base.db, user.id);
+
+    expect(meets.length).toBe(5);
   });
 });

@@ -81,3 +81,23 @@ export async function findMeetByEntryId(db: DBOperator, entryId: number) {
 
   return new Meet(row);
 }
+
+/**
+ *
+ * @param {DBOperator} db - database
+ * @param {number} applyUserId - apply user id
+ */
+export async function findMeetsByApplyUserId(
+  db: DBOperator,
+  applyUserId: number
+): Promise<Meet[]> {
+  const query = sql
+    .select('*')
+    .from('meet')
+    .where('apply_user_id', applyUserId)
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new Meet(v));
+}
