@@ -39,7 +39,6 @@ CREATE UNIQUE INDEX `shop_hotpepper_index` ON shop(hotpepper_id);
 CREATE INDEX `meet_entry_id_index` ON meet(entry_id);
 CREATE INDEX `meet_owner_id_index` ON meet(owner_id);
 CREATE INDEX `meet_apply_user_id_index` ON meet(apply_user_id);
-CREATE INDEX `meet_find_id_index` ON meet(find_id);
 
 -- application table
 CREATE INDEX `application_user_id_index` ON application(user_id);
