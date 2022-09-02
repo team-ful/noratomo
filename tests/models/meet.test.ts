@@ -7,7 +7,6 @@ describe('meet', () => {
     const meet = new Meet(meetModel);
 
     expect(meet.id).toBe(meetModel.id);
-    expect(meet.shop_id).toBe(meetModel.shop_id);
     expect(meet.entry_id).toBe(meetModel.entry_id);
     expect(meet.owner_id).toBe(meetModel.owner_id);
   });

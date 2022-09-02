@@ -2,7 +2,6 @@ import {DefaultObject} from '../db/operator';
 
 export interface MeetModel {
   id: number;
-  shop_id: number;
   entry_id: number;
   owner_id: number;
   apply_user_id: number;
@@ -17,7 +16,6 @@ export interface MeetModel {
 
 export class Meet implements MeetModel {
   readonly id: number;
-  readonly shop_id: number;
   readonly entry_id: number;
   readonly owner_id: number;
   readonly apply_user_id: number;
@@ -29,7 +27,6 @@ export class Meet implements MeetModel {
 
   constructor(init: DefaultObject | MeetModel) {
     this.id = init.id as number;
-    this.shop_id = init.shop_id as number;
     this.entry_id = init.entry_id as number;
     this.owner_id = init.owner_id as number;
     this.apply_user_id = init.apply_user_id as number;
