@@ -167,8 +167,8 @@ CREATE TABLE IF NOT EXISTS `meet` (
     `apply_user_id` INT UNSIGNED NOT NULL,
     `meet_date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `approve_date` DATE,
-    `is_cancel` BOOLEAN NOT NULL,
-    `is_slapstick` BOOLEAN NOT NULL,
+    `is_cancel` BOOLEAN NOT NULL DEFAULT 0,
+    `is_slapstick` BOOLEAN NOT NULL DEFAULT 0,
     `find_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`id`)
 );
