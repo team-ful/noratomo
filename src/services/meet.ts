@@ -47,6 +47,30 @@ export async function findMeetById(
     .select('*')
     .from('meet')
     .where('id', id)
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const row = await db.one(query);
+
+  if (row === null) {
+    return null;
+  }
+
+  return new Meet(row);
+}
+
+/**
+ * Entry idでmeetを取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} entryId - entry id
+ */
+export async function findMeetByEntryId(db: DBOperator, entryId: number) {
+  const query = sql
+    .select('*')
+    .from('meet')
+    .where('entry_id', entryId)
+    .limit(1)
     .toParams({placeholder: '?'});
 
   const row = await db.one(query);

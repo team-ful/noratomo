@@ -1,6 +1,10 @@
 import {ResultSetHeader, RowDataPacket} from 'mysql2';
 import {MeetModel} from '../../src/models/meet';
-import {createMeet, findMeetById} from '../../src/services/meet';
+import {
+  createMeet,
+  findMeetByEntryId,
+  findMeetById,
+} from '../../src/services/meet';
 import TestBase from '../../src/tests/base';
 import {createMeetModel} from '../../src/tests/models';
 
@@ -52,6 +56,15 @@ describe('meet', () => {
     const id = await create(meetModel);
 
     const meet = await findMeetById(base.db, id);
+
+    expect(meet?.owner_id).toBe(meetModel.owner_id);
+  });
+
+  test('findMeetByEntryId', async () => {
+    const meetModel = createMeetModel();
+    await create(meetModel);
+
+    const meet = await findMeetByEntryId(base.db, meetModel.entry_id);
 
     expect(meet?.owner_id).toBe(meetModel.owner_id);
   });
