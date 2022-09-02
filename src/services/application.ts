@@ -68,6 +68,50 @@ export async function findApplicationByEntryIdAndUserId(
 }
 
 /**
+ * entryIdを指定してすべてのapplicationを取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} entryId - entry id
+ */
+export async function findApplicationsByEntryId(
+  db: DBOperator,
+  entryId: number
+): Promise<Application[]> {
+  const query = sql
+    .select('*')
+    .from('application')
+    .where('entry_id', entryId)
+    .toParams({placeholder: '?'});
+
+  const rows = await db.multi(query);
+
+  return rows.map(v => new Application(v));
+}
+
+/**
+ * idを指定してapplicationを取得する
+ *
+ * @param {DBOperator} db - database
+ * @param {number} id - application id
+ */
+export async function findApplicationById(db: DBOperator, id: number) {
+  const query = sql
+    .select('*')
+    .from('application')
+    .where('id', id)
+    .limit(1)
+    .toParams({placeholder: '?'});
+
+  const row = await db.one(query);
+
+  if (row === null) {
+    return null;
+  }
+
+  return new Application(row);
+}
+
+/**
  * applicationを作成する
  *
  * @param {DBOperator} db - database
