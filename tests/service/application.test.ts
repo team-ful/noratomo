@@ -8,6 +8,8 @@ import {
   deleteApplicationByUserId,
   findApplicationsByUserId,
   findApplicationByEntryIdAndUserId,
+  findApplicationsByEntryId,
+  findApplicationById,
 } from '../../src/services/application';
 import TestBase from '../../src/tests/base';
 import {
@@ -135,6 +137,34 @@ describe('application', () => {
       randomInt(100000)
     );
     expect(application).toBeNull();
+  });
+
+  test('findApplicationsByEntryId', async () => {
+    const entry = createEntryModel();
+
+    // 2つのapplicationを作成する
+    const model = createApplicationModel({
+      entry_id: entry.id,
+    });
+    await create(model);
+    const model2 = createApplicationModel({
+      entry_id: entry.id,
+    });
+    await create(model2);
+
+    const applications = await findApplicationsByEntryId(base.db, entry.id);
+
+    expect(applications.length).toBe(2);
+  });
+
+  test('findApplicationById', async () => {
+    const model = createApplicationModel();
+    const id = await create(model);
+
+    const application = await findApplicationById(base.db, id);
+
+    expect(application?.id).toBe(id);
+    expect(application?.user_id).toBe(model.user_id);
   });
 
   test('deleteApplicationById', async () => {

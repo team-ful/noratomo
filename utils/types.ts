@@ -101,6 +101,7 @@ export interface Entry {
   date: Date;
   number_of_people: number;
   is_closed: boolean;
+  is_matched: boolean;
   shop_id: number;
   request_people: number;
 
@@ -117,6 +118,27 @@ export interface Entry {
     photo_url: string | null;
     site_url: string;
   };
+}
+
+export interface Application {
+  id: number;
+  entry_id: number;
+  user_id: number;
+  apply_date: Date;
+  is_met: boolean;
+  is_closed: boolean;
+  user: {
+    display_name: string;
+    profile: string;
+    user_name: string;
+    age: number;
+    gender: number;
+    avatar_url: string;
+  };
+}
+
+export interface EntryDetail extends Entry {
+  applications: Application[];
 }
 
 export interface HomeEntry extends Entry {

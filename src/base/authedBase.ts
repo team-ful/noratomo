@@ -124,15 +124,7 @@ class AuthedBase<T> extends Base<T> {
     const notice = await this.user.notice(await this.db(), false, 10);
 
     return {
-      display_name: u.display_name,
-      mail: u.mail,
-      profile: u.profile,
-      user_name: u.user_name,
-      age: u.age,
-      gender: u.gender,
-      is_admin: u.is_admin,
-      avatar_url: u.avatar_url,
-      join_date: u.join_date,
+      ...u.externalUser(),
       notice: notice.map(v => v.external()),
     };
   }

@@ -47,13 +47,16 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
       w="100%"
       mb="1.5rem"
       borderRadius="30px"
+      bgColor={entry.is_matched ? 'gray.300' : 'white'}
     >
       <Flex w="100%" minH="180px" pr=".5rem">
         <Center>
           <Avatar size="lg" src={entry.shop.photo_url || ''} mx="1rem" />
         </Center>
         <Box>
-          <Badge mt="2rem">{entry.shop.genre_name}</Badge>
+          <Badge mt="2rem" bgColor={entry.is_matched ? 'gray.400' : ''}>
+            {entry.shop.genre_name}
+          </Badge>
           <Flex alignItems="center">
             <Heading fontSize="1.2rem" mt=".3rem" mr=".5rem" maxWidth="560px">
               {entry.title}

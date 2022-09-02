@@ -135,7 +135,8 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `number_of_people` INT UNSIGNED NOT NULL,
     `date` DATETIME NOT NULL,
     `body` TEXT,
-    `is_closed` BOOLEAN NOT NULL,
+    `is_closed` BOOLEAN NOT NULL DEFAULT 0,
+    `is_matched` BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
@@ -160,16 +161,14 @@ CREATE TABLE IF NOT EXISTS `shop` (
 
 CREATE TABLE IF NOT EXISTS `meet` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    `shop_id` INT UNSIGNED NOT NULL,
     `entry_id` INT UNSIGNED NOT NULL,
     `owner_id` INT UNSIGNED NOT NULL,
     `apply_user_id` INT UNSIGNED NOT NULL,
-    `meet_date` DATE,
+    `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `approve_date` DATE,
-    `meet_place` VARCHAR(1024),
-    `is_cancel` BOOLEAN NOT NULL,
-    `is_slapstick` BOOLEAN NOT NULL,
-    `find_id` INT UNSIGNED NOT NULL,
+    `is_cancel` BOOLEAN NOT NULL DEFAULT 0,
+    `is_slapstick` BOOLEAN NOT NULL DEFAULT 0,
+    `find_id` TEXT NOT NULL,
     PRIMARY KEY (`id`)
 );
 

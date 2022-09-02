@@ -95,6 +95,21 @@ export async function closeEntry(db: DBOperator, id: number) {
 }
 
 /**
+ * 対象のエントリをマッチ済みにする
+ *
+ * @param {DBOperator} db - database
+ * @param {number} id - entry id
+ */
+export async function matchedEntry(db: DBOperator, id: number) {
+  const query = sql
+    .update('entry', {is_matched: true})
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.execute(query);
+}
+
+/**
  * Entry id からentryを取得する
  *
  * request_peopleは引かない
@@ -190,7 +205,8 @@ export async function findAllEntries(
   // FROM entry
   //     LEFT JOIN application
   //         ON entry.id = application.entry_id
-  // WHERE entry.is_closed = ?
+  // WHERE entry.is_closed = 0
+  //     AND entry.is_matched = 0
   //     AND NOT EXISTS (
   //         SELECT *
   //         FROM application
@@ -209,6 +225,7 @@ export async function findAllEntries(
     .on('entry.id', 'application.entry_id')
     .groupBy('entry.id')
     .where('entry.is_closed', false)
+    .and('entry.is_matched', false)
     .and(
       sql.not(
         sql.exists(
@@ -250,6 +267,7 @@ export async function findEntriesByIds(
     .leftOuterJoin('application')
     .on('entry.id', 'application.entry_id')
     .groupBy('entry.id')
+    .orderBy('date desc')
     .where(sql.in('entry.id', ...ids))
     .toParams({placeholder: '?'});
 

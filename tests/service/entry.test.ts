@@ -14,6 +14,7 @@ import {
   findEntryById,
   findEntryByShopId,
   findEntryByUserId,
+  matchedEntry,
   updateEntry,
 } from '../../src/services/entry';
 import TestBase from '../../src/tests/base';
@@ -39,9 +40,18 @@ async function ce(db: DBOperator, e: EntryModel): Promise<number> {
     number_of_people,
     date,
     body,
-    is_closed
-  ) VALUES (?, ?, ?, ?, NOW(), ?, false)`,
-    [e.owner_user_id, e.title, e.shop_id, e.number_of_people, e.body]
+    is_closed,
+    is_matched
+  ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?)`,
+    [
+      e.owner_user_id,
+      e.title,
+      e.shop_id,
+      e.number_of_people,
+      e.body,
+      e.is_closed,
+      e.is_matched,
+    ]
   );
 
   return row.insertId;
@@ -171,6 +181,21 @@ describe('entry', () => {
     expect(result2[0].is_closed).toBeTruthy();
   });
 
+  test('matchedEntry', async () => {
+    const entry = createEntryModel();
+    const id = await ce(base.db, entry);
+
+    await matchedEntry(base.db, id);
+
+    const result = await base.db.test<RowDataPacket[]>(
+      'SELECT * FROM entry WHERE id = ?',
+      id
+    );
+
+    expect(result.length).toBe(1);
+    expect(result[0].is_matched).toBeTruthy();
+  });
+
   test('findEntryById', async () => {
     const entry = createEntryModel();
     const id = await ce(base.db, entry);
@@ -239,6 +264,7 @@ describe('entry', () => {
       }
     }
 
+    // 自分がapplicationを追加したentryを作成する
     const entry = createEntryModel();
     const id = await ce(base.db, entry);
     const application = createApplicationModel({entry_id: id});
@@ -246,6 +272,14 @@ describe('entry', () => {
       'INSERT INTO application (user_id, entry_id) VALUES (?, ?)',
       [application.user_id, application.entry_id]
     );
+
+    // すでにcloseされている
+    const closedEntry = createEntryModel({is_closed: true});
+    const closedEntryID = await ce(base.db, closedEntry);
+
+    // すでにマッチが成立している
+    const matchedEntry = createEntryModel({is_matched: true});
+    const matchedEntryID = await ce(base.db, matchedEntry);
 
     const entries = await findAllEntries(base.db, application.user_id, 10, 0);
 
@@ -255,6 +289,8 @@ describe('entry', () => {
     expect(entries.find(v => v.request_people === 1)).toBeTruthy();
 
     expect(entries.find(v => v.id === id)).toBeFalsy();
+    expect(entries.find(v => v.id === closedEntryID)).toBeFalsy();
+    expect(entries.find(v => v.id === matchedEntryID)).toBeFalsy();
   });
 
   test('findEntriesByIds', async () => {

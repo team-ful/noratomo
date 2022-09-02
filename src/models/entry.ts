@@ -23,6 +23,8 @@ export interface EntryModel {
 
   is_closed: boolean;
 
+  is_matched: boolean;
+
   request_people?: number;
 }
 
@@ -35,6 +37,7 @@ export interface ResponseEntry {
   number_of_people: number;
   is_closed: boolean;
   shop_id: number;
+  is_matched: boolean;
   request_people: number;
 }
 
@@ -56,6 +59,7 @@ class Entry implements EntryModel {
   readonly date: Date;
   readonly body: string | null;
   readonly is_closed: boolean;
+  readonly is_matched: boolean;
   readonly request_people: number | undefined;
 
   constructor(init: DefaultObject | EntryModel) {
@@ -67,6 +71,7 @@ class Entry implements EntryModel {
     this.date = new Date(init.date as Date | string);
     this.body = init.body as string | null;
     this.is_closed = Boolean(init.is_closed);
+    this.is_matched = Boolean(init.is_matched);
 
     if (typeof init.request_people === 'number') {
       this.request_people = init.request_people;
@@ -81,6 +86,7 @@ class Entry implements EntryModel {
       date: this.date,
       number_of_people: this.number_of_people,
       is_closed: this.is_closed,
+      is_matched: this.is_matched,
       shop_id: this.shop_id,
       request_people: this.request_people ?? 0, // とりあえず0にする
     };
