@@ -3,7 +3,7 @@ import DBOperator, {DefaultObject} from '../db/operator';
 import {findEntryById} from '../services/entry';
 import {findUserByUserID} from '../services/user';
 import Entry from './entry';
-import {ExternalUser} from './user';
+import {ExternalPublicUser} from './user';
 
 export interface ApplicationModel {
   id: number;
@@ -14,8 +14,12 @@ export interface ApplicationModel {
   is_closed: boolean;
 }
 
-export interface FillUserApplication extends ApplicationModel {
-  user: ExternalUser;
+export interface FillUserApplication {
+  id: number;
+  apply_date: Date;
+  is_met: boolean;
+  is_closed: boolean;
+  user: ExternalPublicUser;
 }
 
 export class Application implements ApplicationModel {
@@ -47,8 +51,11 @@ export class Application implements ApplicationModel {
     const user = await findUserByUserID(db, this.user_id);
 
     return {
-      ...this,
-      user: user.externalUser(),
+      id: this.id,
+      apply_date: this.apply_date,
+      is_met: this.is_met,
+      is_closed: this.is_closed,
+      user: user.externalPublicUser(),
     };
   }
 }

@@ -75,7 +75,6 @@ describe('detail', () => {
         expect(detailEntry.id).toBe(entry.id);
         expect(detailEntry.shop.id).toBe(shop.id);
         expect(detailEntry.applications.length).toBe(1);
-        expect(detailEntry.applications[0].entry_id).toBe(entry.id);
         expect(detailEntry.applications[0].user.avatar_url).toBe(
           applicationUser.user?.avatar_url
         );

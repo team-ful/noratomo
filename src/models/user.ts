@@ -58,6 +58,15 @@ export interface ExternalUser {
   join_date: Date;
 }
 
+export interface ExternalPublicUser {
+  display_name: string | null;
+  profile: string | null;
+  user_name: string;
+  age: number | null;
+  gender: number;
+  avatar_url: string | null;
+}
+
 /**
  * ユーザ関連の操作をするクラス
  */
@@ -147,6 +156,17 @@ class User implements UserModel {
       is_admin: this.is_admin,
       avatar_url: this.avatar_url,
       join_date: this.join_date,
+    };
+  }
+
+  public externalPublicUser(): ExternalPublicUser {
+    return {
+      display_name: this.display_name,
+      profile: this.profile,
+      user_name: this.user_name,
+      age: this.age,
+      gender: this.gender,
+      avatar_url: this.avatar_url,
     };
   }
 }

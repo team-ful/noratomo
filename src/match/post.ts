@@ -31,6 +31,9 @@ async function matchPostHandler(base: AuthedBase<void>) {
   if (entry?.owner_user_id !== base.user.id) {
     throw new ApiError(400, 'you are not the owner of entry');
   }
+  if (entry.is_matched) {
+    throw new ApiError(400, 'already matched');
+  }
 
   const application = await findApplicationById(
     await base.db(),
