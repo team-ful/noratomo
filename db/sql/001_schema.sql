@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `meet` (
     `approve_date` DATE,
     `is_cancel` BOOLEAN NOT NULL DEFAULT 0,
     `is_slapstick` BOOLEAN NOT NULL DEFAULT 0,
-    `find_id` INT UNSIGNED NOT NULL,
+    `find_id` TEXT NOT NULL,
     PRIMARY KEY (`id`)
 );
 
