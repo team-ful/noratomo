@@ -190,7 +190,8 @@ export async function findAllEntries(
   // FROM entry
   //     LEFT JOIN application
   //         ON entry.id = application.entry_id
-  // WHERE entry.is_closed = ?
+  // WHERE entry.is_closed = 0
+  //     AND entry.is_matched = 0
   //     AND NOT EXISTS (
   //         SELECT *
   //         FROM application
@@ -209,6 +210,7 @@ export async function findAllEntries(
     .on('entry.id', 'application.entry_id')
     .groupBy('entry.id')
     .where('entry.is_closed', false)
+    .and('entry.is_matched', false)
     .and(
       sql.not(
         sql.exists(
