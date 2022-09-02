@@ -95,6 +95,21 @@ export async function closeEntry(db: DBOperator, id: number) {
 }
 
 /**
+ * 対象のエントリをマッチ済みにする
+ *
+ * @param {DBOperator} db - database
+ * @param {number} id - entry id
+ */
+export async function matchedEntry(db: DBOperator, id: number) {
+  const query = sql
+    .update('entry', {is_matched: true})
+    .where('id', id)
+    .toParams({placeholder: '?'});
+
+  await db.execute(query);
+}
+
+/**
  * Entry id からentryを取得する
  *
  * request_peopleは引かない

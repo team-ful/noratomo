@@ -14,6 +14,7 @@ import {
   findEntryById,
   findEntryByShopId,
   findEntryByUserId,
+  matchedEntry,
   updateEntry,
 } from '../../src/services/entry';
 import TestBase from '../../src/tests/base';
@@ -178,6 +179,21 @@ describe('entry', () => {
 
     expect(result2.length).toBe(1);
     expect(result2[0].is_closed).toBeTruthy();
+  });
+
+  test('matchedEntry', async () => {
+    const entry = createEntryModel();
+    const id = await ce(base.db, entry);
+
+    await matchedEntry(base.db, id);
+
+    const result = await base.db.test<RowDataPacket[]>(
+      'SELECT * FROM entry WHERE id = ?',
+      id
+    );
+
+    expect(result.length).toBe(1);
+    expect(result[0].is_matched).toBeTruthy();
   });
 
   test('findEntryById', async () => {
