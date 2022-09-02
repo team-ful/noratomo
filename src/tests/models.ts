@@ -196,7 +196,6 @@ export const createMeetModel = (options?: Partial<MeetModel>): MeetModel => {
 
   return {
     id: options?.id || randomInt(1000000),
-    shop_id: options?.shop_id || randomInt(1000000),
     entry_id: options?.entry_id || randomInt(1000000),
     owner_id: options?.owner_id || randomInt(1000000),
     apply_user_id: options?.apply_user_id || randomInt(1000000),
