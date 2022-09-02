@@ -6,6 +6,7 @@ import Entry from '../models/entry';
 import {findApplicationById} from '../services/application';
 import {findEntryById, matchedEntry} from '../services/entry';
 import {createMeet} from '../services/meet';
+import {createNotice} from '../services/notice';
 
 /**
  * 自分で投稿した募集で、マッチさせる
@@ -41,6 +42,7 @@ async function matchPostHandler(base: AuthedBase<void>) {
   }
 
   await meet(base, entry, application);
+  await notice(base, entry, application);
 }
 
 /**
@@ -63,6 +65,31 @@ async function meet(
   );
 
   await matchedEntry(await base.db(), entry.id);
+}
+
+/**
+ * 通知を出す
+ *
+ * @param {AuthedBase} base - base
+ * @param {Entry} entry - entry
+ * @param {Application} application - application
+ */
+async function notice(
+  base: AuthedBase<void>,
+  entry: Entry,
+  application: Application
+) {
+  // entryのタイトルを10文字以内に丸める
+  // 丸めたら最後に`...`を追加する
+  let entryTitle = entry.title;
+  if (entryTitle.length > 10) {
+    entryTitle = `${entryTitle.slice(0, 10)}...`;
+  }
+  const title = `「${entryTitle}」の募集がリクエストされました`;
+
+  const body = 'TODO: なにか書きたい';
+
+  await createNotice(await base.db(), application.user_id, title, body);
 }
 
 export default authHandlerWrapper(matchPostHandler);

@@ -5,6 +5,7 @@ import {post} from '../../src/match';
 import {createApplication} from '../../src/services/application';
 import {createEntryRow, findEntryById} from '../../src/services/entry';
 import {findMeetByEntryId} from '../../src/services/meet';
+import {findNoticeByUserId} from '../../src/services/notice';
 import TestBase from '../../src/tests/base';
 import formDataHandler from '../../src/tests/handler';
 import {createEntryModel} from '../../src/tests/models';
@@ -41,6 +42,10 @@ describe('post', () => {
       requestUser.user?.id || 0,
       entryId
     );
+    const notices = await findNoticeByUserId(
+      base.db,
+      requestUser.user?.id || NaN
+    );
 
     const h = formDataHandler(post);
     const form = new FormData();
@@ -68,6 +73,14 @@ describe('post', () => {
         expect(meet).not.toBeNull();
         expect(meet?.owner_id).toBe(base.users[0].user?.id);
         expect(meet?.apply_user_id).toBe(requestUser.user?.id);
+
+        const afterNotices = await findNoticeByUserId(
+          base.db,
+          requestUser.user?.id || NaN
+        );
+
+        // 通知が+1されている
+        expect(notices.length).toBe(afterNotices.length - 1);
       },
     });
   });
