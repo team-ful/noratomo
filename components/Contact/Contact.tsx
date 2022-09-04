@@ -73,8 +73,8 @@ const Contact = () => {
     if (formattedBody.length === 0) {
       return;
     }
-
-    const res = await fetch(process.env.DISCORD_CONTACT_URL || '', {
+    // 環境変数はこの形で使える。因みに,front側で使うにはNEXT_PUBLICが必要。
+    const res = await fetch(process.env.NEXT_PUBLIC_DISCORD_CONTACT_URL || '', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
