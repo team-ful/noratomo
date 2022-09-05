@@ -11,20 +11,16 @@ import {
   Box,
   Heading,
 } from '@chakra-ui/react';
+import {useRouter} from 'next/router';
 import React from 'react';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import {useRecoilState} from 'recoil';
 import {UserState} from '../../utils/atom';
-import {User} from '../../utils/types';
 
 type ContactInputs = {
   category: string;
   text: string;
   mail: string;
-  user_id: number;
-  date: Date;
-  UA: string;
-  ip_address: string;
 };
 
 const Contact = () => {
@@ -37,37 +33,30 @@ const Contact = () => {
 
   const [user, setUser] = useRecoilState(UserState);
   const toast = useToast();
+  const router = useRouter();
 
   React.useEffect(() => {
     if (user) {
       setValue('mail', user.mail);
-      //ログインしているなら、UA,IP,UserIDを予め入れる。
     }
   }, [user]);
 
   const onSubmit: SubmitHandler<ContactInputs> = async data => {
     const form = new FormData();
-    const body: {[key: string]: string | number} = {};
 
     if (data.category) {
-      body.category = data.category;
-      form.append('category', data.category);
+      form.append('category', 'お問合せカテゴリ:' + data.category);
     }
     if (data.text) {
-      body.text = data.text;
-      form.append('text', data.text);
+      form.append('text', 'お問合せ内容\n' + data.text);
     }
     if (data.mail) {
-      body.mail = data.mail;
-      form.append('mail', data.mail);
+      form.append('mail', 'ご利用者メールアドレス:' + data.mail);
     }
 
-    // 環境変数はこの形で使える。因みに,front側で使うにはNEXT_PUBLICが必要。
     const res = await fetch('api/contact/contact', {
       method: 'POST',
       body: form,
-      // # TODO: フロント→バック→Discodeで串刺にすること。(HOTpepper参考)
-      // https://www.youtube.com/watch?v=-4Lid7tBr6Y
     });
 
     if (res.ok) {
@@ -75,6 +64,7 @@ const Contact = () => {
         title: '送信完了 お問合せありがとうございます。',
         status: 'info',
       });
+      router.push('/');
     } else {
       toast({
         title: await res.text(),
@@ -94,7 +84,8 @@ const Contact = () => {
               placeholder="カテゴリを選択"
               id="category"
               {...register('category', {
-                required: '上記にない場合、その他を選択',
+                required:
+                  '上記にない場合、その他を選択し内容へ記述してください。',
               })}
             >
               <option value="1">サンプル1</option>
@@ -113,9 +104,10 @@ const Contact = () => {
               placeholder="お問合せ内容をご入力ください。"
               id="text"
               {...register('text', {
+                required: 'お問合せ内容をご入力ください',
                 maxLength: {
-                  value: 128,
-                  message: '128文字まで表現して下さい',
+                  value: 500,
+                  message: '最大500文字まで表現して下さい',
                 },
               })}
             />
@@ -155,7 +147,7 @@ const Contact = () => {
             colorScheme="orange"
             width="100%"
           >
-            保存
+            送信
           </Button>
         </form>
       </Box>
