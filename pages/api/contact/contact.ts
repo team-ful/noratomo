@@ -3,6 +3,7 @@
 
 import {PageConfig} from 'next';
 import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
+import {handlerWrapper} from '../../../src/base/handlerWrapper';
 import {contactHandler} from '../../../src/services/sendContact';
 
 // multipart/form-dataはbodyParserをfalseにしないと動かない
@@ -12,4 +13,4 @@ export const config: PageConfig = {
   },
 };
 
-export default authHandlerWrapper(contactHandler, 'POST');
+export default handlerWrapper(contactHandler, 'POST');

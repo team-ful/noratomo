@@ -46,43 +46,28 @@ const Contact = () => {
   }, [user]);
 
   const onSubmit: SubmitHandler<ContactInputs> = async data => {
-    if (typeof user === 'undefined' || user === null) {
-      return;
-    }
-    // const date = new Date();
-
+    const form = new FormData();
     const body: {[key: string]: string | number} = {};
-    const formattedBody: string[] = [];
-    const u: User = {...user};
 
     if (data.category) {
       body.category = data.category;
-    }
-    if (data.mail) {
-      body.mail = data.mail;
+      form.append('category', data.category);
     }
     if (data.text) {
       body.text = data.text;
+      form.append('text', data.text);
     }
-    const msg = {content: body.text};
+    if (data.mail) {
+      body.mail = data.mail;
+      form.append('mail', data.mail);
+    }
 
-    for (const b in body) {
-      formattedBody.push(`${b}=${encodeURIComponent(body[b])}`);
-    }
-
-    if (formattedBody.length === 0) {
-      return;
-    }
     // 環境変数はこの形で使える。因みに,front側で使うにはNEXT_PUBLICが必要。
-    const res = await fetch(process.env.NEXT_PUBLIC_DISCORD_CONTACT_URL || '', {
+    const res = await fetch('api/contact/contact', {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(msg),
+      body: form,
       // # TODO: フロント→バック→Discodeで串刺にすること。(HOTpepper参考)
       // https://www.youtube.com/watch?v=-4Lid7tBr6Y
-      //
     });
 
     if (res.ok) {
@@ -90,8 +75,6 @@ const Contact = () => {
         title: '送信完了 お問合せありがとうございます。',
         status: 'info',
       });
-
-      setUser(u);
     } else {
       toast({
         title: await res.text(),
@@ -162,6 +145,7 @@ const Contact = () => {
             UA
             IPアドレス
             の四つは入力させる必要なし。自動で処理
+            sendContactの方で処理しても良いかもしれないね
             */}
           </FormControl>
           <Button
