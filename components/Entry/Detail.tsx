@@ -8,7 +8,6 @@ import {
   Badge,
   Skeleton,
   Button,
-  Link,
   Divider,
   Table,
   Thead,
@@ -28,9 +27,11 @@ import {
   useDisclosure,
   UnorderedList,
   ListItem,
+  Link,
   useToast,
 } from '@chakra-ui/react';
 import {GoogleMap, useJsApiLoader, Marker} from '@react-google-maps/api';
+import NextLink from 'next/link';
 import router, {useRouter} from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
@@ -77,9 +78,19 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
       <Box mt="2rem" w={{base: '97%', md: '100%'}}>
         <Heading textAlign="center">募集の詳細</Heading>
         {data.is_matched && (
-          <Text fontWeight="bold" color="red.500" mt="1rem" textAlign="center">
-            ※ この募集はすでにマッチが成立しています
-          </Text>
+          <>
+            <Text
+              fontWeight="bold"
+              color="red.500"
+              mt="1rem"
+              textAlign="center"
+            >
+              ※ この募集はすでにマッチが成立しています →
+              <NextLink passHref href={`/entry/meeting?entry_id=${entryId}`}>
+                <Link ml=".5rem">詳しくはこちらを参照</Link>
+              </NextLink>
+            </Text>
+          </>
         )}
         <Box>
           <Stack
@@ -94,7 +105,7 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
             </Box>
             <Box textAlign={{base: 'center', md: 'left'}}>
               <Badge>{data.shop.genre_name}</Badge>
-              <Text fontSize="1.5rem" fontWeight="bold">
+              <Text fontSize="1.5rem" fontWeight="bold" maxW="500px">
                 {data.shop.name}
               </Text>
               {data.shop.genre_catch && (
@@ -162,7 +173,15 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
             募集日時、場所
           </Heading>
           <Box>
-            <Text>{parseDate(new Date(data.meet_date), true)}</Text>
+            <Text
+              textAlign="center"
+              fontSize="1.4rem"
+              fontWeight="600"
+              color="orange.500"
+              my=".5rem"
+            >
+              {parseDate(new Date(data.meet_date), true)}
+            </Text>
             {isLoaded &&
             typeof data.meeting_lat === 'number' &&
             typeof data.meeting_lon === 'number' ? (
@@ -225,7 +244,7 @@ const ApplicationUserTable: React.FC<{
           status: 'success',
           title: 'マッチを作成しました',
         });
-        router.replace('/profile');
+        router.replace('/profile/matching');
       } else {
         toast({
           status: 'error',
