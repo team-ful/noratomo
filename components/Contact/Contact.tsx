@@ -45,16 +45,22 @@ const Contact = () => {
     const form = new FormData();
 
     if (data.category) {
-      form.append('category', 'お問合せカテゴリ:' + data.category);
+      form.append('category', 'お問合せカテゴリ: ' + data.category);
     }
     if (data.text) {
       form.append('text', 'お問合せ内容\n' + data.text);
     }
     if (data.mail) {
-      form.append('mail', 'ご利用者メールアドレス:' + data.mail);
+      form.append('mail', 'ご利用者メールアドレス: ' + data.mail);
     }
 
-    const res = await fetch('api/contact/contact', {
+    let url: string;
+    if (user) {
+      url = 'api/contact/contact';
+    } else {
+      url = 'api/contact/no_login';
+    }
+    const res = await fetch(url, {
       method: 'POST',
       body: form,
     });
@@ -129,16 +135,6 @@ const Contact = () => {
             <FormErrorMessage>
               {errors.mail && errors.mail.message}
             </FormErrorMessage>
-          </FormControl>
-          <FormControl>
-            {/*
-            ユーザID（ログインしている場合）
-            日時
-            UA
-            IPアドレス
-            の四つは入力させる必要なし。自動で処理
-            sendContactの方で処理しても良いかもしれないね
-            */}
           </FormControl>
           <Button
             isLoading={isSubmitting}

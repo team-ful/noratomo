@@ -1,30 +1,30 @@
-import AuthedBase from '../base/authedBase';
-import Base from '../base/base';
+import Base from '../../base/base';
 
 /**
  *
- * @param {AuthedBase} abase -authedbase
  * @param {Base} base -base
  */
 export async function contactHandler(base: Base<void>) {
   const body = await base.getPostFormFields('text');
   const category = await base.getPostFormFields('category');
   const mail = await base.getPostFormFields('mail');
-
   const form = category + '\n' + body + '\n' + mail;
-  const ip = base.getIp;
-  const userAgent = base.getDevice;
 
-  // #TODO:userIDをどうするか。 主にログインの判断
+  const ip = base.getIp();
+  const device = base.getDevice();
+  const os = base.getPlatform();
+  const browser = base.getVender();
+  const userAgent = device + '/' + os + '/' + browser;
 
-  base.status;
+  const userInfo =
+    '未ログインユーザー' + '\n' + 'ipアドレス ' + ip + '\n' + userAgent;
 
   await fetch(`${process.env.NEXT_PUBLIC_DISCORD_CONTACT_URL}` || '', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
     },
-    body: JSON.stringify({content: form}),
+    body: JSON.stringify({content: form + userInfo}),
     // # TODO: フロント→バック→Discodeで串刺にすること。(HOTpepper参考)
     // https://www.youtube.com/watch?v=-4Lid7tBr6Y
     //components/Admin/Notice.tsx
