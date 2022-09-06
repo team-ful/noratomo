@@ -99,6 +99,9 @@ describe('post', () => {
     const form = new FormData();
     form.append('title', entry.title);
     form.append('body', entry.body);
+    form.append('meeting_lat', '1000.111');
+    form.append('meeting_lon', '130000.0');
+    form.append('meet_date', new Date().toISOString());
     form.append('hotppepper', id);
 
     await testApiHandler({
@@ -164,6 +167,9 @@ describe('post', () => {
     const form = new FormData();
     form.append('title', entry.title);
     form.append('body', entry.body);
+    form.append('meeting_lat', '1000.111');
+    form.append('meeting_lon', '130000.0');
+    form.append('meet_date', new Date().toISOString());
     form.append('hotppepper', shop.hotpepper_id);
 
     await testApiHandler({
@@ -208,6 +214,9 @@ describe('post', () => {
     const form = new FormData();
     form.append('title', entry.title);
     form.append('body', entry.body);
+    form.append('meeting_lat', '1000.111');
+    form.append('meeting_lon', '130000.0');
+    form.append('meet_date', new Date().toISOString());
 
     // shop情報
     form.append('shop_name', shop.name);
@@ -261,6 +270,9 @@ describe('post', () => {
     const form = new FormData();
     form.append('title', entry.title);
     form.append('body', entry.body);
+    form.append('meeting_lat', '1000.111');
+    form.append('meeting_lon', '130000.0');
+    form.append('meet_date', new Date().toISOString());
 
     // shop情報
     form.append('shop_name', shop.name);
@@ -312,6 +324,9 @@ describe('post', () => {
 
     const form = new FormData();
     form.append('title', entry.title);
+    form.append('meeting_lat', '1000.111');
+    form.append('meeting_lon', '130000.0');
+    form.append('meet_date', new Date().toISOString());
 
     // shop情報
     form.append('shop_name', shop.name);

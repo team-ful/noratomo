@@ -41,8 +41,11 @@ async function ce(db: DBOperator, e: EntryModel): Promise<number> {
     date,
     body,
     is_closed,
-    is_matched
-  ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?)`,
+    is_matched,
+    meeting_lat,
+    meeting_lon,
+    meet_date
+  ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)`,
     [
       e.owner_user_id,
       e.title,
@@ -51,6 +54,9 @@ async function ce(db: DBOperator, e: EntryModel): Promise<number> {
       e.body,
       e.is_closed,
       e.is_matched,
+      e.meeting_lat,
+      e.meeting_lon,
+      e.meet_date,
     ]
   );
 
@@ -76,7 +82,10 @@ describe('entry', () => {
       entry.owner_user_id,
       entry.shop_id,
       entry.title,
-      entry.body || ''
+      entry.body || '',
+      entry.meeting_lat,
+      entry.meeting_lon,
+      entry.meet_date
     );
 
     const result = await base.db.test<RowDataPacket[]>(
@@ -98,7 +107,10 @@ describe('entry', () => {
       new User(user),
       new Shop(shop),
       entry.title,
-      entry.body || ''
+      entry.body || '',
+      entry.meeting_lat,
+      entry.meeting_lon,
+      entry.meet_date
     );
 
     const result = await base.db.test<RowDataPacket[]>(

@@ -50,7 +50,10 @@ describe('detail', () => {
       entry.owner_user_id,
       entry.shop_id,
       entry.title,
-      entry.body || ''
+      entry.body || '',
+      entry.meeting_lat,
+      entry.meeting_lon,
+      entry.meet_date
     );
 
     const applicationUser = await base.newUser();

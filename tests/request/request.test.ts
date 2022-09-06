@@ -127,7 +127,10 @@ describe('request', () => {
       entry.owner_user_id,
       entry.shop_id,
       entry.title,
-      entry.body || ''
+      entry.body || '',
+      entry.meeting_lat,
+      entry.meeting_lon,
+      entry.meet_date
     );
 
     const useID = base.users[0].user?.id || NaN;

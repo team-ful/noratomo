@@ -32,14 +32,20 @@ describe('application', () => {
       number_of_people,
       date,
       body,
-      is_closed
-    ) VALUES (?, ?, ?, ?, NOW(), ?, false)`,
+      is_closed,
+      meeting_lat,
+      meeting_lon,
+      meet_date
+    ) VALUES (?, ?, ?, ?, NOW(), ?, false, ?, ?, ?)`,
       [
         entryModel.owner_user_id,
         entryModel.title,
         entryModel.shop_id,
         entryModel.number_of_people,
         entryModel.body,
+        entryModel.meeting_lat,
+        entryModel.meeting_lon,
+        entryModel.meet_date,
       ]
     );
     entryModel.id = row.insertId;

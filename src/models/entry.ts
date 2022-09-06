@@ -26,6 +26,10 @@ export interface EntryModel {
   is_matched: boolean;
 
   request_people?: number;
+
+  meeting_lat: number;
+  meeting_lon: number;
+  meet_date: Date;
 }
 
 export interface ResponseEntry {
@@ -61,6 +65,9 @@ class Entry implements EntryModel {
   readonly is_closed: boolean;
   readonly is_matched: boolean;
   readonly request_people: number | undefined;
+  readonly meeting_lat: number;
+  readonly meeting_lon: number;
+  readonly meet_date: Date;
 
   constructor(init: DefaultObject | EntryModel) {
     this.id = init.id as number;
@@ -76,6 +83,10 @@ class Entry implements EntryModel {
     if (typeof init.request_people === 'number') {
       this.request_people = init.request_people;
     }
+
+    this.meeting_lat = init.meeting_lat as number;
+    this.meeting_lon = init.meeting_lon as number;
+    this.meet_date = new Date(init.meet_date as string);
   }
 
   public json(): ResponseEntry {

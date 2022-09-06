@@ -33,7 +33,10 @@ describe('post', () => {
       entryModel.owner_user_id,
       entryModel.shop_id,
       entryModel.title,
-      entryModel.body || ''
+      entryModel.body || '',
+      entryModel.meeting_lat,
+      entryModel.meeting_lon,
+      entryModel.meet_date
     );
 
     const requestUser = await base.newUser();
@@ -94,7 +97,10 @@ describe('post', () => {
       entryModel.owner_user_id,
       entryModel.shop_id,
       entryModel.title,
-      entryModel.body || ''
+      entryModel.body || '',
+      entryModel.meeting_lat,
+      entryModel.meeting_lon,
+      entryModel.meet_date
     );
 
     const requestUser = await base.newUser();
@@ -136,7 +142,10 @@ describe('post', () => {
       entryModel.owner_user_id,
       entryModel.shop_id,
       entryModel.title,
-      entryModel.body || ''
+      entryModel.body || '',
+      entryModel.meeting_lat,
+      entryModel.meeting_lon,
+      entryModel.meet_date
     );
 
     const requestUser = await base.newUser();
