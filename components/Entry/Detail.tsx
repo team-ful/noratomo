@@ -131,38 +131,56 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
             <Button w="100%" as={Link} href={data.shop.site_url} isExternal>
               サイトURL
             </Button>
-            <Button
-              w="100%"
-              variant="outline"
-              as={Link}
-              href={`https://www.hotpepper.jp/str${data.shop.hotpepper_id}`}
-              isExternal
-            >
-              ホットペッパー
-            </Button>
+            {data.shop.hotpepper_id && (
+              <Button
+                w="100%"
+                variant="outline"
+                as={Link}
+                href={`https://www.hotpepper.jp/str${data.shop.hotpepper_id}`}
+                isExternal
+              >
+                ホットペッパー
+              </Button>
+            )}
           </Stack>
         </Box>
         <Divider my="1.5rem" />
         <Box>
           <Heading fontSize="1.7rem">募集タイトル</Heading>
-          <Text fontSize="1.5rem" mt=".5rem">
-            {data.title}
-          </Text>
+          <Text mt=".5rem">{data.title}</Text>
           {data.body && (
             <>
               <Heading fontSize="1.7rem" mt="1rem">
                 募集詳細
               </Heading>
-              <Text
-                fontSize="1.5rem"
-                mt=".5rem"
-                whiteSpace="pre-wrap"
-                maxW="500px"
-              >
+              <Text mt=".5rem" whiteSpace="pre-wrap" maxW="500px">
                 {data.body}
               </Text>
             </>
           )}
+          <Heading fontSize="1.7rem" mt="1rem">
+            募集日時、場所
+          </Heading>
+          <Box>
+            <Text>{parseDate(new Date(data.meet_date), true)}</Text>
+            {isLoaded &&
+            typeof data.meeting_lat === 'number' &&
+            typeof data.meeting_lon === 'number' ? (
+              <GoogleMap
+                mapContainerStyle={{width: '100%', height: '500px'}}
+                center={{lat: data.meeting_lat, lng: data.meeting_lon}}
+                zoom={15}
+              >
+                <Marker
+                  position={{lat: data.meeting_lat, lng: data.meeting_lon}}
+                />
+              </GoogleMap>
+            ) : (
+              <Skeleton>
+                <Box w="100%" h="500px"></Box>
+              </Skeleton>
+            )}
+          </Box>
           <Heading fontSize="1.7rem" mt="1rem">
             いいねした人
           </Heading>

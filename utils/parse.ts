@@ -21,9 +21,10 @@ export function parseGender(g: number) {
  * 日時をパースする
  *
  * @param {Date} date - date
+ * @param {boolean} isAmbiguous - 曖昧にするかどうか
  * @returns {string} - パースした日時
  */
-export function parseDate(date: Date): string {
+export function parseDate(date: Date, isAmbiguous = false): string {
   const week = ['日', '月', '火', '水', '木', '金', '土'];
 
   const year = date.getFullYear();
@@ -32,6 +33,10 @@ export function parseDate(date: Date): string {
   const day = date.getDate();
   const hour = date.getHours();
   const minutes = date.getMinutes();
+
+  if (isAmbiguous) {
+    return `${month}月${day}日${weekDay}曜日 ${hour}時ごろ`;
+  }
 
   return `${year}年${month}月${day}日${weekDay}曜日 ${hour}:${(
     '00' + minutes

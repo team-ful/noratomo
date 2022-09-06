@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import {AiFillHeart} from 'react-icons/ai';
 import useSWR from 'swr';
-import {parseElapsedDate} from '../../utils/parse';
+import {parseDate, parseElapsedDate} from '../../utils/parse';
 import {fetcher} from '../../utils/swr';
 import {Entry} from '../../utils/types';
 
@@ -56,6 +56,13 @@ const EntryContent: React.FC<{entry: Entry}> = ({entry}) => {
         <Box>
           <Badge mt="2rem" bgColor={entry.is_matched ? 'gray.400' : ''}>
             {entry.shop.genre_name}
+          </Badge>
+          <Badge
+            ml=".5rem"
+            mt="2rem"
+            bgColor={entry.is_matched ? 'gray.400' : ''}
+          >
+            {parseDate(new Date(entry.meet_date), true)}
           </Badge>
           <Flex alignItems="center">
             <Heading fontSize="1.2rem" mt=".3rem" mr=".5rem" maxWidth="560px">
