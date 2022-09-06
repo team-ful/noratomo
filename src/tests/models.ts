@@ -200,7 +200,6 @@ export const createMeetModel = (options?: Partial<MeetModel>): MeetModel => {
     owner_id: options?.owner_id || randomInt(1000000),
     apply_user_id: options?.apply_user_id || randomInt(1000000),
     meet_date: options?.meet_date || now,
-    approve_date: options?.approve_date || null,
     is_cancel: options?.is_cancel || false,
     is_slapstick: options?.is_slapstick || false,
     find_id: options?.find_id || randomText(15),

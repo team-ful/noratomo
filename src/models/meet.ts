@@ -6,7 +6,6 @@ export interface MeetModel {
   owner_id: number;
   apply_user_id: number;
   meet_date: Date;
-  approve_date: Date | null;
   is_cancel: boolean;
   is_slapstick: boolean;
 
@@ -20,7 +19,6 @@ export class Meet implements MeetModel {
   readonly owner_id: number;
   readonly apply_user_id: number;
   readonly meet_date: Date;
-  readonly approve_date: Date | null;
   readonly is_cancel: boolean;
   readonly is_slapstick: boolean;
   readonly find_id: string;
@@ -32,11 +30,6 @@ export class Meet implements MeetModel {
     this.apply_user_id = init.apply_user_id as number;
 
     this.meet_date = new Date(init.meet_date as string);
-    if (init.approve_date !== null) {
-      this.approve_date = new Date(init.approve_date as string);
-    } else {
-      this.approve_date = null;
-    }
 
     this.is_cancel = Boolean(init.is_cancel);
     this.is_slapstick = Boolean(init.is_slapstick);
