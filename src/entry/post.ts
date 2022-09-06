@@ -19,6 +19,15 @@ import {
 async function entryPostHandler(base: AuthedBase<ResponseEntry>) {
   const title = await base.getPostFormFields('title', true);
   const body = await base.getPostFormFields('body');
+  const meetingLat = await base.getPostFormFields('meeting_lat', true);
+  const meetingLon = await base.getPostFormFields('meeting_lon', true);
+  const meetDate = await base.getPostFormFields('meet_date', true);
+
+  const parsedMeetingLat = parseFloat(meetingLat);
+  const parsedMeetingLon = parseFloat(meetingLon);
+  if (isNaN(parsedMeetingLat) || isNaN(parsedMeetingLon)) {
+    throw new ApiError(400, 'lat or lon is parse failed');
+  }
 
   const hotpepperId = await base.getPostFormFields('hotppepper');
   let shopId: number;
@@ -85,7 +94,10 @@ async function entryPostHandler(base: AuthedBase<ResponseEntry>) {
     base.user.id,
     shopId,
     title,
-    body || ''
+    body || '',
+    parsedMeetingLat,
+    parsedMeetingLon,
+    new Date(meetDate)
   );
 
   // entry++ する

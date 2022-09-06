@@ -147,6 +147,9 @@ export const createShopModel = (options?: Partial<ShopModel>): ShopModel => {
  * @returns {EntryModel} entry model
  */
 export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
+  const nextDay = new Date(Date.now());
+  nextDay.setDate(nextDay.getDate() + 1);
+
   return {
     id: options?.id || randomInt(1000000),
     owner_user_id: options?.owner_user_id || randomInt(1000000),
@@ -158,6 +161,9 @@ export const createEntryModel = (options?: Partial<EntryModel>): EntryModel => {
     is_closed: options?.is_closed || false,
     is_matched: options?.is_matched || false,
     request_people: options?.request_people || 0,
+    meeting_lat: options?.meeting_lat || 35.681278,
+    meeting_lon: options?.meeting_lon || 139.765882,
+    meet_date: options?.meet_date || dbDate(nextDay),
   };
 };
 
@@ -200,7 +206,6 @@ export const createMeetModel = (options?: Partial<MeetModel>): MeetModel => {
     owner_id: options?.owner_id || randomInt(1000000),
     apply_user_id: options?.apply_user_id || randomInt(1000000),
     meet_date: options?.meet_date || now,
-    approve_date: options?.approve_date || null,
     is_cancel: options?.is_cancel || false,
     is_slapstick: options?.is_slapstick || false,
     find_id: options?.find_id || randomText(15),

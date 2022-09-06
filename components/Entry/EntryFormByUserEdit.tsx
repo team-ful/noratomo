@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import {useRouter} from 'next/router';
 import {useForm, SubmitHandler, FormProvider} from 'react-hook-form';
+import {dateString} from '../../utils/parse';
 import ImageURL, {ImageURLForm} from '../Common/Form/ImageURL';
 import Map, {MapForm} from '../Common/Form/Map';
 
@@ -26,12 +27,15 @@ interface EntryForm extends MapForm, ImageURLForm {
   genre_name: string;
   gender: boolean;
   site_url: string;
+  meet_date: string;
 }
 
 const EntryFormByUserEdit = () => {
   const router = useRouter();
   const toast = useToast();
-  const methods = useForm<EntryForm>();
+  const methods = useForm<EntryForm>({
+    defaultValues: {meet_date: dateString(new Date(), true)},
+  });
   const {
     register,
     handleSubmit,
@@ -59,6 +63,10 @@ const EntryFormByUserEdit = () => {
     form.append('genre_name', data.genre_name);
     form.append('gender', data.gender ? 'true' : 'false');
     form.append('site_url', data.site_url);
+    form.append('meet_date', new Date(data.meet_date).toISOString());
+    // お店の場所と同じにしてしまう
+    form.append('meeting_lat', String(data.lat));
+    form.append('meeting_lon', String(data.lon));
     if (typeof data.photo !== 'undefined') {
       form.append('photo', data.photo);
     }
@@ -136,7 +144,7 @@ const EntryFormByUserEdit = () => {
               }}
               zoom={6}
             >
-              お店の場所（ピンを刺す）
+              お店の場所&待ち合わせ場所（ピンを刺す）
             </Map>
             <FormControl isInvalid={Boolean(errors.genre_name)} mt="1rem">
               <FormLabel htmlFor="genre_name">お店の種類</FormLabel>
@@ -209,6 +217,19 @@ const EntryFormByUserEdit = () => {
               />
               <FormErrorMessage>
                 {errors.body && errors.body.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={Boolean(errors.meet_date)} mt="1rem">
+              <FormLabel htmlFor="meet_date">待ち合わせ日時</FormLabel>
+              <Input
+                id="meet_date"
+                type="datetime-local"
+                {...register('meet_date', {
+                  required: 'この項目は必須です',
+                })}
+              />
+              <FormErrorMessage>
+                {errors.meet_date && errors.meet_date.message}
               </FormErrorMessage>
             </FormControl>
             <Button mt="2rem" type="submit" w="100%" isLoading={isSubmitting}>

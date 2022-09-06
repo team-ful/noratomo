@@ -55,7 +55,10 @@ describe('entry', () => {
         entry.owner_user_id,
         entry.shop_id,
         entry.title,
-        entry.body ?? ''
+        entry.body ?? '',
+        entry.meeting_lat,
+        entry.meeting_lon,
+        entry.meet_date
       );
       entry.id = id;
     }
@@ -107,7 +110,10 @@ describe('entry', () => {
         entry.owner_user_id,
         entry.shop_id,
         entry.title,
-        entry.body ?? ''
+        entry.body ?? '',
+        entry.meeting_lat,
+        entry.meeting_lon,
+        entry.meet_date
       );
       entry.id = id;
     }

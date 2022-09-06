@@ -54,7 +54,10 @@ describe('getAll', () => {
         e.owner_user_id,
         e.shop_id,
         e.title,
-        e.body || ''
+        e.body || '',
+        e.meeting_lat,
+        e.meeting_lon,
+        e.meet_date
       );
 
       e.id = id;

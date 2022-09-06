@@ -137,6 +137,9 @@ CREATE TABLE IF NOT EXISTS `entry` (
     `body` TEXT,
     `is_closed` BOOLEAN NOT NULL DEFAULT 0,
     `is_matched` BOOLEAN NOT NULL DEFAULT 0,
+    `meeting_lat` DOUBLE NOT NULL,
+    `meeting_lon` DOUBLE NOT NULL,
+    `meet_date` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
 );
 
@@ -146,8 +149,8 @@ CREATE TABLE IF NOT EXISTS `shop` (
     `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
     `name` TEXT NOT NULL,
     `address` TEXT NOT NULL,
-    `lat` FLOAT NOT NULL,
-    `lon` FLOAT NOT NULL,
+    `lat` DOUBLE NOT NULL,
+    `lon` DOUBLE NOT NULL,
     `genre_name` TEXT NOT NULL,
     `genre_catch` TEXT,
     `gender` INT(1) NOT NULL,
@@ -165,7 +168,6 @@ CREATE TABLE IF NOT EXISTS `meet` (
     `owner_id` INT UNSIGNED NOT NULL,
     `apply_user_id` INT UNSIGNED NOT NULL,
     `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `approve_date` DATE,
     `is_cancel` BOOLEAN NOT NULL DEFAULT 0,
     `is_slapstick` BOOLEAN NOT NULL DEFAULT 0,
     `find_id` TEXT NOT NULL,

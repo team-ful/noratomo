@@ -46,14 +46,20 @@ describe('get', () => {
       shop_id,
       number_of_people,
       date,
-      is_matched
-    ) VALUES (?, ?, ?, ?, NOW(), ?)`,
+      is_matched,
+      meeting_lat,
+      meeting_lon,
+      meet_date
+    ) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)`,
         [
           entryModel.owner_user_id,
           entryModel.title,
           entryModel.shop_id,
           entryModel.number_of_people,
           entryModel.is_matched,
+          entryModel.meeting_lat,
+          entryModel.meeting_lon,
+          entryModel.meet_date,
         ]
       )
     ).insertId;

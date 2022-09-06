@@ -8,7 +8,6 @@ import {
   Badge,
   Skeleton,
   Button,
-  Link,
   Divider,
   Table,
   Thead,
@@ -28,9 +27,11 @@ import {
   useDisclosure,
   UnorderedList,
   ListItem,
+  Link,
   useToast,
 } from '@chakra-ui/react';
 import {GoogleMap, useJsApiLoader, Marker} from '@react-google-maps/api';
+import NextLink from 'next/link';
 import router, {useRouter} from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
@@ -77,9 +78,19 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
       <Box mt="2rem" w={{base: '97%', md: '100%'}}>
         <Heading textAlign="center">募集の詳細</Heading>
         {data.is_matched && (
-          <Text fontWeight="bold" color="red.500" mt="1rem" textAlign="center">
-            ※ この募集はすでにマッチが成立しています
-          </Text>
+          <>
+            <Text
+              fontWeight="bold"
+              color="red.500"
+              mt="1rem"
+              textAlign="center"
+            >
+              ※ この募集はすでにマッチが成立しています →
+              <NextLink passHref href={`/entry/meeting?entry_id=${entryId}`}>
+                <Link ml=".5rem">詳しくはこちらを参照</Link>
+              </NextLink>
+            </Text>
+          </>
         )}
         <Box>
           <Stack
@@ -94,7 +105,7 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
             </Box>
             <Box textAlign={{base: 'center', md: 'left'}}>
               <Badge>{data.shop.genre_name}</Badge>
-              <Text fontSize="1.5rem" fontWeight="bold">
+              <Text fontSize="1.5rem" fontWeight="bold" maxW="500px">
                 {data.shop.name}
               </Text>
               {data.shop.genre_catch && (
@@ -131,38 +142,64 @@ export const DetailEntry: React.FC<{entryId: number}> = ({entryId}) => {
             <Button w="100%" as={Link} href={data.shop.site_url} isExternal>
               サイトURL
             </Button>
-            <Button
-              w="100%"
-              variant="outline"
-              as={Link}
-              href={`https://www.hotpepper.jp/str${data.shop.hotpepper_id}`}
-              isExternal
-            >
-              ホットペッパー
-            </Button>
+            {data.shop.hotpepper_id && (
+              <Button
+                w="100%"
+                variant="outline"
+                as={Link}
+                href={`https://www.hotpepper.jp/str${data.shop.hotpepper_id}`}
+                isExternal
+              >
+                ホットペッパー
+              </Button>
+            )}
           </Stack>
         </Box>
         <Divider my="1.5rem" />
         <Box>
           <Heading fontSize="1.7rem">募集タイトル</Heading>
-          <Text fontSize="1.5rem" mt=".5rem">
-            {data.title}
-          </Text>
+          <Text mt=".5rem">{data.title}</Text>
           {data.body && (
             <>
               <Heading fontSize="1.7rem" mt="1rem">
                 募集詳細
               </Heading>
-              <Text
-                fontSize="1.5rem"
-                mt=".5rem"
-                whiteSpace="pre-wrap"
-                maxW="500px"
-              >
+              <Text mt=".5rem" whiteSpace="pre-wrap" maxW="500px">
                 {data.body}
               </Text>
             </>
           )}
+          <Heading fontSize="1.7rem" mt="1rem">
+            募集日時、場所
+          </Heading>
+          <Box>
+            <Text
+              textAlign="center"
+              fontSize="1.4rem"
+              fontWeight="600"
+              color="orange.500"
+              my=".5rem"
+            >
+              {parseDate(new Date(data.meet_date), true)}
+            </Text>
+            {isLoaded &&
+            typeof data.meeting_lat === 'number' &&
+            typeof data.meeting_lon === 'number' ? (
+              <GoogleMap
+                mapContainerStyle={{width: '100%', height: '500px'}}
+                center={{lat: data.meeting_lat, lng: data.meeting_lon}}
+                zoom={15}
+              >
+                <Marker
+                  position={{lat: data.meeting_lat, lng: data.meeting_lon}}
+                />
+              </GoogleMap>
+            ) : (
+              <Skeleton>
+                <Box w="100%" h="500px"></Box>
+              </Skeleton>
+            )}
+          </Box>
           <Heading fontSize="1.7rem" mt="1rem">
             いいねした人
           </Heading>
@@ -207,7 +244,7 @@ const ApplicationUserTable: React.FC<{
           status: 'success',
           title: 'マッチを作成しました',
         });
-        router.replace('/profile');
+        router.replace('/profile/matching');
       } else {
         toast({
           status: 'error',

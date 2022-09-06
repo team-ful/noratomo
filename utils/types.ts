@@ -104,6 +104,10 @@ export interface Entry {
   is_matched: boolean;
   shop_id: number;
   request_people: number;
+  meet_date: Date;
+
+  meeting_lat?: number;
+  meeting_lon?: number;
 
   shop: {
     address: string;
@@ -120,6 +124,15 @@ export interface Entry {
   };
 }
 
+export interface ExternalPublicUser {
+  display_name: string;
+  profile: string;
+  user_name: string;
+  age: number;
+  gender: number;
+  avatar_url: string;
+}
+
 export interface Application {
   id: number;
   entry_id: number;
@@ -127,18 +140,16 @@ export interface Application {
   apply_date: Date;
   is_met: boolean;
   is_closed: boolean;
-  user: {
-    display_name: string;
-    profile: string;
-    user_name: string;
-    age: number;
-    gender: number;
-    avatar_url: string;
-  };
+  user: ExternalPublicUser;
 }
 
 export interface EntryDetail extends Entry {
   applications: Application[];
+}
+
+export interface MeetEntry extends Entry {
+  partner: ExternalPublicUser;
+  find_id: string;
 }
 
 export interface HomeEntry extends Entry {

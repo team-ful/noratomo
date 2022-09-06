@@ -2,11 +2,11 @@ import {ApiError} from '../base/apiError';
 import AuthedBase from '../base/authedBase';
 import {authHandlerWrapper} from '../base/handlerWrapper';
 import {FillUserApplication} from '../models/application';
-import {ShopIncludedResponseEntry} from '../models/entry';
+import {ShopIdAndRequestDataIncludedResponseEntry} from '../models/entry';
 import {findApplicationsByEntryId} from '../services/application';
 import {findEntryById} from '../services/entry';
 
-interface DetailsEntry extends ShopIncludedResponseEntry {
+interface DetailsEntry extends ShopIdAndRequestDataIncludedResponseEntry {
   applications: FillUserApplication[];
 }
 
@@ -30,7 +30,9 @@ async function detailEntryHandler(base: AuthedBase<DetailsEntry>) {
     throw new ApiError(400, 'you are not the owner of the entry');
   }
 
-  const shopIncludeEntry = await entry.jsonShopIncluded(await base.db());
+  const shopIncludeEntry = await entry.jsonShopAndPositionIncluded(
+    await base.db()
+  );
 
   const applications = await findApplicationsByEntryId(
     await base.db(),

@@ -17,13 +17,19 @@ interface UpdateOption {
  * @param {number} shopId - 店のID
  * @param {string} title - title
  * @param {string} body - 本文
+ * @param {number} meetingLat - 待ち合わせ場所の緯度
+ * @param {number} meetingLon - 待ち合わせ場所の経度
+ * @param {Date} meetDate - 行く日程
  */
 export async function createEntryRow(
   db: DBOperator,
   ownerId: number,
   shopId: number,
   title: string,
-  body: string
+  body: string,
+  meetingLat: number,
+  meetingLon: number,
+  meetDate: Date
 ): Promise<number> {
   const query = sql
     .insert('entry', {
@@ -34,6 +40,9 @@ export async function createEntryRow(
       date: sql('NOW()'),
       body: body,
       is_closed: false,
+      meeting_lat: meetingLat,
+      meeting_lon: meetingLon,
+      meet_date: meetDate,
     })
     .toParams({placeholder: '?'});
 
@@ -48,14 +57,30 @@ export async function createEntryRow(
  * @param {Shop} shop - 対象の店
  * @param {string} title - title
  * @param {string} body - 本文
+ * @param {number} meetingLat - 待ち合わせ場所の緯度
+ * @param {number} meetingLon - 待ち合わせ場所の経度
+ * @param {Date} meetDate - 行く日程
  */
 export const createEntry = async (
   db: DBOperator,
   owner: User,
   shop: Shop,
   title: string,
-  body: string
-): Promise<number> => await createEntryRow(db, owner.id, shop.id, title, body);
+  body: string,
+  meetingLat: number,
+  meetingLon: number,
+  meetDate: Date
+): Promise<number> =>
+  await createEntryRow(
+    db,
+    owner.id,
+    shop.id,
+    title,
+    body,
+    meetingLat,
+    meetingLon,
+    meetDate
+  );
 
 /**
  * 内容を更新する

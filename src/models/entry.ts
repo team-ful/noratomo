@@ -26,6 +26,10 @@ export interface EntryModel {
   is_matched: boolean;
 
   request_people?: number;
+
+  meeting_lat: number;
+  meeting_lon: number;
+  meet_date: Date;
 }
 
 export interface ResponseEntry {
@@ -39,9 +43,17 @@ export interface ResponseEntry {
   shop_id: number;
   is_matched: boolean;
   request_people: number;
+  meet_date: Date;
 }
 
 export interface ShopIncludedResponseEntry extends ResponseEntry {
+  shop: ShopModel;
+}
+
+export interface ShopAndMeetPositionIncludedResponseEntry
+  extends ResponseEntry {
+  meeting_lat: number;
+  meeting_lon: number;
   shop: ShopModel;
 }
 
@@ -61,6 +73,9 @@ class Entry implements EntryModel {
   readonly is_closed: boolean;
   readonly is_matched: boolean;
   readonly request_people: number | undefined;
+  readonly meeting_lat: number;
+  readonly meeting_lon: number;
+  readonly meet_date: Date;
 
   constructor(init: DefaultObject | EntryModel) {
     this.id = init.id as number;
@@ -76,6 +91,10 @@ class Entry implements EntryModel {
     if (typeof init.request_people === 'number') {
       this.request_people = init.request_people;
     }
+
+    this.meeting_lat = init.meeting_lat as number;
+    this.meeting_lon = init.meeting_lon as number;
+    this.meet_date = new Date(init.meet_date as string);
   }
 
   public json(): ResponseEntry {
@@ -89,6 +108,7 @@ class Entry implements EntryModel {
       is_matched: this.is_matched,
       shop_id: this.shop_id,
       request_people: this.request_people ?? 0, // とりあえず0にする
+      meet_date: this.meet_date,
     };
   }
 
@@ -106,6 +126,25 @@ class Entry implements EntryModel {
     return {
       ...entry,
       shop: shop,
+    };
+  }
+
+  public async jsonShopAndPositionIncluded(
+    db: DBOperator
+  ): Promise<ShopAndMeetPositionIncludedResponseEntry> {
+    const entry = this.json();
+
+    const shop = await findShopById(db, this.shop_id);
+
+    if (shop === null) {
+      throw new ApiError(500, 'shop is not found');
+    }
+
+    return {
+      ...entry,
+      shop: shop,
+      meeting_lat: this.meeting_lat,
+      meeting_lon: this.meeting_lon,
     };
   }
 }
