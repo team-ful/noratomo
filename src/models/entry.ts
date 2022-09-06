@@ -43,9 +43,17 @@ export interface ResponseEntry {
   shop_id: number;
   is_matched: boolean;
   request_people: number;
+  meet_date: Date;
 }
 
 export interface ShopIncludedResponseEntry extends ResponseEntry {
+  shop: ShopModel;
+}
+
+export interface ShopAndMeetPositionIncludedResponseEntry
+  extends ResponseEntry {
+  meeting_lat: number;
+  meeting_lon: number;
   shop: ShopModel;
 }
 
@@ -100,6 +108,7 @@ class Entry implements EntryModel {
       is_matched: this.is_matched,
       shop_id: this.shop_id,
       request_people: this.request_people ?? 0, // とりあえず0にする
+      meet_date: this.meet_date,
     };
   }
 
@@ -117,6 +126,25 @@ class Entry implements EntryModel {
     return {
       ...entry,
       shop: shop,
+    };
+  }
+
+  public async jsonShopAndPositionIncluded(
+    db: DBOperator
+  ): Promise<ShopAndMeetPositionIncludedResponseEntry> {
+    const entry = this.json();
+
+    const shop = await findShopById(db, this.shop_id);
+
+    if (shop === null) {
+      throw new ApiError(500, 'shop is not found');
+    }
+
+    return {
+      ...entry,
+      shop: shop,
+      meeting_lat: this.meeting_lat,
+      meeting_lon: this.meeting_lon,
     };
   }
 }

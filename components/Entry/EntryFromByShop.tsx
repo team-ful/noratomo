@@ -17,12 +17,15 @@ import {
 } from '@chakra-ui/react';
 import {useRouter} from 'next/router';
 import React from 'react';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import {useForm, SubmitHandler, FormProvider} from 'react-hook-form';
+import {dateString} from '../../utils/parse';
 import {Shop} from '../../utils/types';
+import Map, {MapForm} from '../Common/Form/Map';
 
-interface EntryForm {
+interface EntryForm extends MapForm {
   title: string;
   body?: string;
+  meet_date: string;
 }
 
 interface Props {
@@ -35,11 +38,16 @@ const EntryFormByShop: React.FC<Props> = ({hotppepper}) => {
 
   const router = useRouter();
   const toast = useToast();
+  const methods = useForm<EntryForm>({
+    defaultValues: {meet_date: dateString(new Date(), true)},
+  });
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: {errors, isSubmitting},
-  } = useForm<EntryForm>();
+  } = methods;
 
   React.useEffect(() => {
     if (typeof shop !== 'undefined') return;
@@ -60,10 +68,22 @@ const EntryFormByShop: React.FC<Props> = ({hotppepper}) => {
   const onSubmit: SubmitHandler<EntryForm> = async data => {
     if (typeof shop === 'undefined') return;
 
+    if (!data.map) {
+      setError('map', {
+        message: 'お店の場所にピンを刺してください',
+      });
+      return;
+    } else {
+      clearErrors('map');
+    }
+
     const form = new FormData();
 
     form.append('hotppepper', shop.id);
     form.append('title', data.title);
+    form.append('meet_date', new Date(data.meet_date).toISOString());
+    form.append('meeting_lat', String(data.lat));
+    form.append('meeting_lon', String(data.lon));
     if (typeof data.body !== 'undefined') {
       form.append('body', data.body);
     }
@@ -146,37 +166,69 @@ const EntryFormByShop: React.FC<Props> = ({hotppepper}) => {
         </Center>
       </Skeleton>
       <Box mx="1rem">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={Boolean(errors.title)}>
-            <FormLabel htmlFor="title">募集タイトル</FormLabel>
-            <Input
-              id="title"
-              type="text"
-              placeholder="募集タイトル"
-              {...register('title', {
-                required: 'この項目は必須です',
-              })}
-            />
-            <FormErrorMessage>
-              {errors.title && errors.title.message}
-            </FormErrorMessage>
-          </FormControl>
-          <FormControl isInvalid={Boolean(errors.body)} mt="1rem">
-            <FormLabel htmlFor="body">募集詳細</FormLabel>
-            <Textarea
-              id="body"
-              placeholder=""
-              h="200px"
-              {...register('body')}
-            />
-            <FormErrorMessage>
-              {errors.body && errors.body.message}
-            </FormErrorMessage>
-          </FormControl>
-          <Button mt="2rem" type="submit" w="100%" isLoading={isSubmitting}>
-            作成する
-          </Button>
-        </form>
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl isInvalid={Boolean(errors.title)}>
+              <FormLabel htmlFor="title">募集タイトル</FormLabel>
+              <Input
+                id="title"
+                type="text"
+                placeholder="募集タイトル"
+                {...register('title', {
+                  required: 'この項目は必須です',
+                })}
+              />
+              <FormErrorMessage>
+                {errors.title && errors.title.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={Boolean(errors.body)} mt="1rem">
+              <FormLabel htmlFor="body">募集詳細</FormLabel>
+              <Textarea
+                id="body"
+                placeholder=""
+                h="200px"
+                {...register('body')}
+              />
+              <FormErrorMessage>
+                {errors.body && errors.body.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={Boolean(errors.meet_date)} mt="1rem">
+              <FormLabel htmlFor="meet_date">待ち合わせ日時</FormLabel>
+              <Input
+                id="meet_date"
+                type="datetime-local"
+                {...register('meet_date', {
+                  required: 'この項目は必須です',
+                })}
+              />
+              <FormErrorMessage>
+                {errors.meet_date && errors.meet_date.message}
+              </FormErrorMessage>
+            </FormControl>
+            <Map
+              style={{
+                width: '100%',
+                height: '400px',
+              }}
+              center={
+                typeof shop !== 'undefined'
+                  ? {
+                      lat: shop.lat,
+                      lng: shop.lng,
+                    }
+                  : undefined
+              }
+              zoom={15}
+            >
+              待ち合わせ場所（ピンを刺す）
+            </Map>
+            <Button mt="2rem" type="submit" w="100%" isLoading={isSubmitting}>
+              作成する
+            </Button>
+          </form>
+        </FormProvider>
       </Box>
     </Box>
   );

@@ -23,7 +23,7 @@ interface Props {
     width: string;
     height: string;
   };
-  center: {
+  center?: {
     lat: number;
     lng: number;
   };
@@ -64,7 +64,7 @@ const Map: React.FC<Props> = props => {
   return (
     <FormControl isInvalid={Boolean(errors.map)} mt="1rem">
       <FormLabel htmlFor="map">{props.children}</FormLabel>
-      {isLoaded ? (
+      {isLoaded && typeof props.center !== 'undefined' ? (
         <GoogleMap
           mapContainerStyle={props.style}
           center={props.center}

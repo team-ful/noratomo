@@ -104,6 +104,10 @@ export interface Entry {
   is_matched: boolean;
   shop_id: number;
   request_people: number;
+  meet_date: Date;
+
+  meeting_lat?: number;
+  meeting_lon?: number;
 
   shop: {
     address: string;
