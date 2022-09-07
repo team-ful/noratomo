@@ -4,7 +4,7 @@ import SettingAccount from '../../components/Setting/SettingAccount';
 
 const Account: NextPage = () => {
   return (
-    <Require loginRequire={true} path="/">
+    <Require loginRequire={true} path="/" title="アカウント設定 | 野良友">
       <SettingAccount />
     </Require>
   );

@@ -4,7 +4,7 @@ import Require from '../../components/Session/Require';
 
 const MyGood: NextPage = () => {
   return (
-    <Require loginRequire={true} path="/">
+    <Require loginRequire={true} path="/" title="プロフィール | 野良友">
       <Good />
     </Require>
   );

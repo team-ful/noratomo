@@ -3,11 +3,13 @@ import {useRouter} from 'next/router';
 import React from 'react';
 import {useRecoilValue} from 'recoil';
 import {UserState} from '../../utils/atom';
+import Title from '../Common/Title';
 
 interface Props {
   children: React.ReactNode;
   loginRequire: boolean;
   path: string;
+  title?: string;
   adminOnly?: boolean;
   load?: React.ReactNode;
 }
@@ -18,6 +20,7 @@ const Require: React.FC<Props> = ({
   path,
   adminOnly,
   load,
+  title,
 }) => {
   const [show, setShow] = React.useState(false);
   const user = useRecoilValue(UserState);
@@ -40,6 +43,7 @@ const Require: React.FC<Props> = ({
 
   return (
     <>
+      <Title>{title}</Title>
       {show ? (
         <Box minH="80vh">{children}</Box>
       ) : load ? (
