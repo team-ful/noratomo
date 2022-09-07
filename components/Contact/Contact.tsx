@@ -43,16 +43,9 @@ const Contact = () => {
 
   const onSubmit: SubmitHandler<ContactInputs> = async data => {
     const form = new FormData();
-
-    if (data.category) {
-      form.append('category', 'お問合せカテゴリ: ' + data.category);
-    }
-    if (data.text) {
-      form.append('text', 'お問合せ内容\n' + data.text);
-    }
-    if (data.mail) {
-      form.append('mail', 'ご利用者メールアドレス: ' + data.mail);
-    }
+    form.append('category', data.category);
+    form.append('text', data.text);
+    form.append('mail', data.mail);
 
     let url: string;
     if (user) {

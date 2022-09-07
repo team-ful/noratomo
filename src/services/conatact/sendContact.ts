@@ -5,9 +5,11 @@ import Base from '../../base/base';
  * @param {Base} base -base
  */
 export async function contactHandler(base: Base<void>) {
-  const body = await base.getPostFormFields('text');
-  const category = await base.getPostFormFields('category');
-  const mail = await base.getPostFormFields('mail');
+  const body = 'お問合せ内容 : ' + (await base.getPostFormFields('text'));
+  const category =
+    'お問合せカテゴリ : ' + (await base.getPostFormFields('category'));
+  const mail =
+    'お客様メールアドレス : ' + (await base.getPostFormFields('mail'));
   const form = category + '\n' + body + '\n' + mail;
 
   const ip = base.getIp();
@@ -25,11 +27,6 @@ export async function contactHandler(base: Base<void>) {
       'content-type': 'application/json',
     },
     body: JSON.stringify({content: form + userInfo}),
-    // # TODO: フロント→バック→Discodeで串刺にすること。(HOTpepper参考)
     // https://www.youtube.com/watch?v=-4Lid7tBr6Y
-    //components/Admin/Notice.tsx
   });
 }
-
-// src/admin/notice.tsと同じ役割。discodeにフォームデータを送信する
-// Contacts.tsx -> Contact.tsx(フォームデータを転送) -> contact.ts(pages/api:handler) -> sendContact.ts(src/service:データを整形してPOSTする) -> discode

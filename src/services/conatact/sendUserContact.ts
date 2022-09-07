@@ -1,20 +1,21 @@
 import AuthedBase from '../../base/authedBase';
 
 /**
- * @param {AuthedBase} abase -authedbase
+ * @param {AuthedBase} base -authedbase
  */
-export async function contactUserHandler(abase: AuthedBase<void>) {
-  const body = await abase.getPostFormFields('text');
-  const category = await abase.getPostFormFields('category');
-  const mail = await abase.getPostFormFields('mail');
+export async function contactUserHandler(base: AuthedBase<void>) {
+  const body = 'お問合せ内容 : ' + (await base.getPostFormFields('text'));
+  const category =
+    'お問合せカテゴリ : ' + (await base.getPostFormFields('category'));
+  const mail =
+    'お客様メールアドレス : ' + (await base.getPostFormFields('mail'));
   const form = category + '\n' + body + '\n' + mail;
-
-  const ip = abase.getIp();
-  const device = abase.getDevice();
-  const os = abase.getPlatform();
-  const browser = abase.getVender();
+  const ip = base.getIp();
+  const device = base.getDevice();
+  const os = base.getPlatform();
+  const browser = base.getVender();
   const userAgent = device + '/' + os + '/' + browser;
-  const id = abase.user.id;
+  const id = base.user.id;
   const userInfo =
     'ユーザーID :' + id + '\n' + 'ipアドレス ' + ip + '\n' + userAgent;
 
@@ -24,11 +25,6 @@ export async function contactUserHandler(abase: AuthedBase<void>) {
       'content-type': 'application/json',
     },
     body: JSON.stringify({content: form + '\n' + userInfo}),
-
     // https://www.youtube.com/watch?v=-4Lid7tBr6Y
-    //components/Admin/Notice.tsx
   });
 }
-
-// src/admin/notice.tsと同じ役割。discodeにフォームデータを送信する
-// Contacts.tsx -> Contact.tsx(フォームデータを転送) -> contact.ts(pages/api:handler) -> sendContact.ts(src/service:データを整形してPOSTする) -> discode
