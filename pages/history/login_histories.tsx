@@ -4,7 +4,7 @@ import Require from '../../components/Session/Require';
 
 const LoginHistory: NextPage = () => {
   return (
-    <Require loginRequire={true} path="/">
+    <Require loginRequire={true} path="/" title="ログイン履歴 | 野良友">
       <LoginHistories />
     </Require>
   );

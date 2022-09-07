@@ -6,7 +6,7 @@ import SettingProfile from '../components/Setting/SettingProfile';
 const Setting: NextPage = () => {
   return (
     <Box>
-      <Require loginRequire={true} path="/">
+      <Require loginRequire={true} path="/" title="設定 | 野良友">
         <SettingProfile />
       </Require>
     </Box>

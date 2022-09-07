@@ -1,8 +1,14 @@
 import type {NextPage} from 'next';
+import Title from '../components/Common/Title';
 import Top from '../components/Top/Top';
 
 const Home: NextPage = () => {
-  return <Top />;
+  return (
+    <>
+      <Title />
+      <Top />
+    </>
+  );
 };
 
 export default Home;

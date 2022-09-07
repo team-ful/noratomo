@@ -4,7 +4,7 @@ import SettingMailAddress from '../../components/Setting/SettingMailAddress';
 
 const Mail: NextPage = () => {
   return (
-    <Require loginRequire={true} path="/">
+    <Require loginRequire={true} path="/" title="メール設定 | 野良友">
       <SettingMailAddress />
     </Require>
   );

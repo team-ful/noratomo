@@ -6,7 +6,7 @@ import Require from '../components/Session/Require';
 const Profile: NextPage = () => {
   return (
     <Box>
-      <Require loginRequire={true} path="/">
+      <Require loginRequire={true} path="/" title="プロフィール | 野良友">
         <MyPost />
       </Require>
     </Box>

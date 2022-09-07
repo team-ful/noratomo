@@ -30,6 +30,12 @@ const Document = () => {
         />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="theme-color" content="#ffffff" />
+
+        {/* SEO */}
+        <meta
+          name="description"
+          content="行きたいお店があるけど一人で行く勇気がない…そんな悩みを解決するWebサービス"
+        />
       </Head>
       <body>
         <Main />

@@ -4,7 +4,7 @@ import SettingPW from '../../components/Setting/SettingPW';
 
 const Password: NextPage = () => {
   return (
-    <Require loginRequire={true} path="/">
+    <Require loginRequire={true} path="/" title="パスワード設定 | 野良友">
       <SettingPW />
     </Require>
   );
