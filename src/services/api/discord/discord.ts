@@ -1,6 +1,8 @@
+import {userInfo} from 'os';
 import {ApiError} from 'next/dist/server/api-utils';
-import {parseDate} from '../../../../utils/parse';
+import user from '../../../../pages/api/user';
 import AuthedBase from '../../../base/authedBase';
+import Base from '../../../base/base';
 
 /**
  * @param {AuthedBase} base -authedbase
@@ -16,7 +18,7 @@ interface DiscordSendData {
 }
 
 interface DiscordEmbed {
-  color: string;
+  color: number;
   title: string;
   description: string;
   fields: [
@@ -32,42 +34,45 @@ interface DiscordEmbed {
 export class Discord {
   private sendData: DiscordSendData;
 
-  constructor(base: AuthedBase<void>) {
+  constructor(category: string, text: string, mail: string) {
     this.sendData = {
-      content: 'category',
       embeds: [
         {
-          color: '16166229',
+          color: 16166229,
           title: 'お問い合わせ',
           description: 'noratomoより以下の問い合わせ。',
           fields: [
             {
-              name: 'name',
-              value: 'text',
+              name: category,
+              value: text,
               inline: false,
             },
           ],
-          timestamp: parseDate(new Date()),
+          timestamp: new Date().toISOString(),
         },
       ],
+      content: 'userInfo{}',
       tts: false,
-      email: 'mail',
+      email: mail,
     };
   }
 
-  public addUserMail(mail: string) {
-    this.sendData.email = mail;
-  }
-  public addCategory(category: string) {
-    this.sendData.content = category;
+  public addUserInfo(base: Base<void>) {
+    //ユーザー、日ユーザー共通 端末の情報を調べる。
+    this.sendData.embeds[0].fields;
+    const ip = base.getIp();
+    const device = base.getDevice();
+    const os = base.getPlatform();
+    const browser = base.getVender();
+    const userAgent = device + '/' + os + '/' + browser;
+    // #TODO: 各値をデータに入れる。
   }
 
-  public addFormData(name: string, text: string) {
-    this.sendData.embeds[0].fields[0] = {
-      name: name,
-      value: text,
-      inline: false,
-    };
+  public addUserID(base: AuthedBase<void>) {
+    const id = base.user.id;
+    const avatarUrl = base.user.avatar_url;
+    const userName = base.user.display_name;
+    // #TODO : 各データを入れる
   }
 
   //ディスコードに送る
@@ -82,26 +87,9 @@ export class Discord {
         },
         body: JSON.stringify(data),
       }
-      // {
-      //   method: 'POST',
-      //   headers: {
-      //     'content-type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     content: 'Hello, World!',
-      //     tts: false,
-      //     embeds: [
-      //       {
-      //         title: 'Hello, Embed!',
-      //         description: 'This is an embedded message.',
-      //       },
-      //     ],
-      //   }),
-      // }
     );
     if (!res.ok) {
       console.error(await res.text());
-      console.log(JSON.stringify({data}));
       throw new ApiError(400, 'failed sed api');
     }
   }

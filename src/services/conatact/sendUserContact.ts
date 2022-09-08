@@ -9,19 +9,9 @@ export async function contactUserHandler(base: AuthedBase<void>) {
   const category = await base.getPostFormFields('category', true);
   const mail = await base.getPostFormFields('mail', true);
 
-  const data = new Discord(base);
-  data.addCategory(category);
-  data.addFormData(category, body);
-
-  // const form = category + '\n' + body + '\n' + mail;
-  // const ip = base.getIp();
-  // const device = base.getDevice();
-  // const os = base.getPlatform();
-  // const browser = base.getVender();
-  // const userAgent = device + '/' + os + '/' + browser;
-  // const id = base.user.id;
-  // const userInfo =
-  //   'ユーザーID :' + id + '\n' + 'ipアドレス ' + ip + '\n' + userAgent;
-
+  //フォームないのデータを入れる
+  const data = new Discord(category, body, mail);
+  //IPなどのユーザー情報を入れる。
+  data.addUserInfo(base);
   data.sendDiscord();
 }
