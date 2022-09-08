@@ -1,30 +1,27 @@
 import AuthedBase from '../../base/authedBase';
+import {Discord} from '../api/discord/discord';
 
 /**
  * @param {AuthedBase} base -authedbase
  */
 export async function contactUserHandler(base: AuthedBase<void>) {
-  const body = 'お問合せ内容 : ' + (await base.getPostFormFields('text'));
-  const category =
-    'お問合せカテゴリ : ' + (await base.getPostFormFields('category'));
-  const mail =
-    'お客様メールアドレス : ' + (await base.getPostFormFields('mail'));
-  const form = category + '\n' + body + '\n' + mail;
-  const ip = base.getIp();
-  const device = base.getDevice();
-  const os = base.getPlatform();
-  const browser = base.getVender();
-  const userAgent = device + '/' + os + '/' + browser;
-  const id = base.user.id;
-  const userInfo =
-    'ユーザーID :' + id + '\n' + 'ipアドレス ' + ip + '\n' + userAgent;
+  const body = await base.getPostFormFields('text', true);
+  const category = await base.getPostFormFields('category', true);
+  const mail = await base.getPostFormFields('mail', true);
 
-  await fetch(`${process.env.NEXT_PUBLIC_DISCORD_CONTACT_URL}` || '', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({content: form + '\n' + userInfo}),
-    // https://www.youtube.com/watch?v=-4Lid7tBr6Y
-  });
+  const data = new Discord(base);
+  data.addCategory(category);
+  data.addFormData(category, body);
+
+  // const form = category + '\n' + body + '\n' + mail;
+  // const ip = base.getIp();
+  // const device = base.getDevice();
+  // const os = base.getPlatform();
+  // const browser = base.getVender();
+  // const userAgent = device + '/' + os + '/' + browser;
+  // const id = base.user.id;
+  // const userInfo =
+  //   'ユーザーID :' + id + '\n' + 'ipアドレス ' + ip + '\n' + userAgent;
+
+  data.sendDiscord();
 }
