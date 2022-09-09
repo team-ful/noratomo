@@ -6,6 +6,7 @@ import {
   Badge,
   Heading,
   Text,
+  Image,
 } from '@chakra-ui/react';
 import React from 'react';
 import {AiFillHeart} from 'react-icons/ai';
@@ -30,9 +31,28 @@ const Good = () => {
         <></>
       ) : (
         <>
-          {data.reverse().map(v => {
-            return <EntryContent entry={v} key={v.id} />;
-          })}
+          {data.length === 0 ? (
+            <Center>
+              <Box>
+                <Heading
+                  textAlign="center"
+                  fontSize="1.5rem"
+                  color="orange.500"
+                >
+                  いいねがありません
+                </Heading>
+                <Image
+                  src="https://storage.googleapis.com/noratomo/contents/empry.png"
+                  width="500px"
+                  alt="empty"
+                />
+              </Box>
+            </Center>
+          ) : (
+            data.reverse().map(v => {
+              return <EntryContent entry={v} key={v.id} />;
+            })
+          )}
         </>
       )}
     </Box>

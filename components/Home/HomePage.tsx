@@ -8,6 +8,7 @@ import {
   Heading,
   Tooltip,
   Spinner,
+  Image,
 } from '@chakra-ui/react';
 import React from 'react';
 import {AiOutlineHeart, AiFillHeart} from 'react-icons/ai';
@@ -53,9 +54,22 @@ const HomePage = () => {
           }
         }`}
       </style>
-      {data.map(v => (
-        <EntryContent entry={v} key={v.id} />
-      ))}
+      {data.length === 0 ? (
+        <Center>
+          <Box>
+            <Heading textAlign="center" fontSize="1.5rem" color="orange.500">
+              募集がありません
+            </Heading>
+            <Image
+              src="https://storage.googleapis.com/noratomo/contents/empry.png"
+              width="500px"
+              alt="empty"
+            />
+          </Box>
+        </Center>
+      ) : (
+        data.map(v => <EntryContent entry={v} key={v.id} />)
+      )}
     </Box>
   );
 };
