@@ -6,6 +6,7 @@ import {
   Heading,
   Avatar,
   Text,
+  Image,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
@@ -28,9 +29,28 @@ const MyPost = () => {
         <></>
       ) : (
         <>
-          {data.reverse().map(v => {
-            return <EntryContent entry={v} key={v.id} />;
-          })}
+          {data.length === 0 ? (
+            <Center>
+              <Box>
+                <Heading
+                  textAlign="center"
+                  fontSize="1.5rem"
+                  color="orange.500"
+                >
+                  募集がありません
+                </Heading>
+                <Image
+                  src="https://storage.googleapis.com/noratomo/contents/empry.png"
+                  width="500px"
+                  alt="empty"
+                />
+              </Box>
+            </Center>
+          ) : (
+            data.reverse().map(v => {
+              return <EntryContent entry={v} key={v.id} />;
+            })
+          )}
         </>
       )}
     </Box>
