@@ -9,9 +9,7 @@ export async function contactUserHandler(base: AuthedBase<void>) {
   const category = await base.getPostFormFields('category', true);
   const mail = await base.getPostFormFields('mail', true);
 
-  //フォームないのデータを入れる
-  const data = new Discord(category, body, mail);
-  //IPなどのユーザー情報を入れる。
-  data.addUserInfo(base);
+  const data = new Discord(category, body);
+  data.addUserInfo(base, mail);
   data.sendDiscord();
 }

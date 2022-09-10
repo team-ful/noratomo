@@ -1,6 +1,4 @@
-import {userInfo} from 'os';
 import {ApiError} from 'next/dist/server/api-utils';
-import user from '../../../../pages/api/user';
 import AuthedBase from '../../../base/authedBase';
 import Base from '../../../base/base';
 
@@ -9,12 +7,10 @@ import Base from '../../../base/base';
  */
 
 interface DiscordSendData {
-  username?: string; //ログインしているなら
+  username?: string;
   avatar_url?: string;
-  content: string; //カテゴリ 必須
-  embeds: DiscordEmbed[]; //こっちに問い合わせ本文 必須あり
-  tts: boolean; //基本的にfalse
-  email: string; //メール 必須
+  embeds: DiscordEmbed[];
+  tts: boolean;
 }
 
 interface DiscordEmbed {
@@ -34,7 +30,7 @@ interface DiscordEmbed {
 export class Discord {
   private sendData: DiscordSendData;
 
-  constructor(category: string, text: string, mail: string) {
+  constructor(category: string, text: string) {
     this.sendData = {
       embeds: [
         {
@@ -43,7 +39,7 @@ export class Discord {
           description: 'noratomoより以下の問い合わせ。',
           fields: [
             {
-              name: category,
+              name: 'カテゴリ：' + this.switchCategories(category),
               value: text,
               inline: false,
             },
@@ -51,31 +47,53 @@ export class Discord {
           timestamp: new Date().toISOString(),
         },
       ],
-      content: 'userInfo{}',
       tts: false,
-      email: mail,
     };
   }
 
-  public addUserInfo(base: Base<void>) {
-    //ユーザー、日ユーザー共通 端末の情報を調べる。
-    this.sendData.embeds[0].fields;
+  private switchCategories(category: string) {
+    switch (category) {
+      case '1':
+        return 'サンプル1';
+        break;
+      case '2':
+        return 'サンプル2';
+        break;
+      case '3':
+        return 'サンプル3';
+      default:
+        return 'その他';
+        break;
+    }
+  }
+
+  public addAuthorInfo(base: Base<void>, mail: string) {
     const ip = base.getIp();
     const device = base.getDevice();
     const os = base.getPlatform();
     const browser = base.getVender();
-    const userAgent = device + '/' + os + '/' + browser;
-    // #TODO: 各値をデータに入れる。
+    const userInfo =
+      device + '/' + os + '/' + browser + '\n IPアドレス  \n' + ip;
+
+    this.sendData.embeds[0].fields.push({
+      name: '投稿者情報',
+      value: userInfo + '\n メールアドレス \n' + mail,
+      inline: false,
+    });
   }
 
-  public addUserID(base: AuthedBase<void>) {
+  public addUserInfo(base: AuthedBase<void>, mail: string) {
+    this.addAuthorInfo(base, mail);
+
     const id = base.user.id;
     const avatarUrl = base.user.avatar_url;
     const userName = base.user.display_name;
-    // #TODO : 各データを入れる
+    const userInfo = 'UserID#' + id + ' ' + userName;
+
+    this.sendData.username = userInfo ?? '不明';
+    this.sendData.avatar_url = avatarUrl ?? '不明';
   }
 
-  //ディスコードに送る
   public async sendDiscord(): Promise<void> {
     const data = this.sendData;
     const res = await fetch(
