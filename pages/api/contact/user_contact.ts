@@ -1,6 +1,6 @@
 import {PageConfig} from 'next';
 import {authHandlerWrapper} from '../../../src/base/handlerWrapper';
-import {contactUserHandler} from '../../../src/services/conatact/sendUserContact';
+import {contactUserHandler} from '../../../src/services/contact/contact';
 
 // multipart/form-dataはbodyParserをfalseにしないと動かない
 export const config: PageConfig = {

@@ -49,9 +49,9 @@ const Contact = () => {
 
     let url: string;
     if (user) {
-      url = 'api/contact/contact';
+      url = 'api/contact/user_contact';
     } else {
-      url = 'api/contact/no_login';
+      url = 'api/contact/non_user_contact';
     }
     const res = await fetch(url, {
       method: 'POST',
@@ -87,10 +87,12 @@ const Contact = () => {
                   '上記にない場合、その他を選択し内容へ記述してください。',
               })}
             >
-              <option value="1">サンプル1</option>
-              <option value="2">サンプル2</option>
-              <option value="3">サンプル3</option>
-              <option value="4">その他</option>
+              <option value="1">機能の追加・要望</option>
+              <option value="2">マッチングについて</option>
+              <option value="3">募集について</option>
+              <option value="4">サービスについて</option>
+              <option value="5">エラー・バグの報告</option>
+              <option value="6">その他</option>
             </Select>
             <FormErrorMessage>
               {errors.category && errors.category.message}

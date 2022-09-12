@@ -54,15 +54,18 @@ export class Discord {
   private switchCategories(category: string) {
     switch (category) {
       case '1':
-        return 'サンプル1';
-        break;
+        return '機能の追加・要望';
       case '2':
-        return 'サンプル2';
-        break;
+        return 'マッチングについて';
       case '3':
-        return 'サンプル3';
-      default:
+        return '募集について';
+      case '4':
+        return 'サービスについて';
+      case '5':
+        return 'エラー・バグの報告';
+      case '6':
         return 'その他';
+      default:
         break;
     }
   }
