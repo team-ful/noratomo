@@ -97,7 +97,7 @@ export class Discord {
     this.sendData.avatar_url = avatarUrl ?? '不明';
   }
 
-  public async sendDiscord(): Promise<void> {
+  public async sendDiscord(): Promise<number> {
     const data = this.sendData;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_DISCORD_CONTACT_URL}` || '',
@@ -111,7 +111,8 @@ export class Discord {
     );
     if (!res.ok) {
       console.error(await res.text());
-      throw new ApiError(400, 'failed sed api');
+      throw new ApiError(400, 'failed send api');
     }
+    return res.status;
   }
 }
