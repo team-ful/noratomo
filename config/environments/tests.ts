@@ -93,6 +93,8 @@ const config: Config = {
 
   noraQuestionLimit: 5,
   noraQuestionAllowScore: 300,
+
+  discordWebhookURL: 'https://example.com',
 };
 
 export default config;
