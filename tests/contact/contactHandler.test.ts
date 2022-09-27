@@ -15,10 +15,6 @@ describe('discord handler', () => {
   const base: TestBase = new TestBase();
   const endpoint = config.discordWebhookURL;
 
-  fetchMock.post(endpoint, {
-    status: 200,
-  });
-
   beforeAll(async () => {
     await base.connection();
 
@@ -32,9 +28,10 @@ describe('discord handler', () => {
 
   test('handler non User can send', async () => {
     expect.hasAssertions();
-
     const u = base.users[0];
-    await u.addSession(base.db);
+    fetchMock.post(endpoint, {
+      status: 200,
+    });
 
     const form = new FormData();
     form.append('text', 'hogehoge');
@@ -62,9 +59,14 @@ describe('discord handler', () => {
   });
   test('handler User can send', async () => {
     expect.hasAssertions();
-
     const u = base.users[0];
-    await u.addSession(base.db);
+    fetchMock.post(
+      endpoint,
+      {
+        status: 200,
+      },
+      {overwriteRoutes: false}
+    );
 
     const form = new FormData();
     form.append('text', 'hogehoge');
