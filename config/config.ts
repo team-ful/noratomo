@@ -51,4 +51,6 @@ export interface Config {
 
   noraQuestionLimit: number;
   noraQuestionAllowScore: number;
+
+  discordWebhookURL: string;
 }
