@@ -75,9 +75,9 @@ const Contact = () => {
   return (
     <Center>
       <Box mt="3rem" w={{base: '95%', sm: '400px', md: '500px'}}>
+        <Heading textAlign="center">お問い合わせ</Heading>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Heading>お問い合わせ</Heading>
-          <FormControl isInvalid={Boolean(errors.category)} ml=".5rem">
+          <FormControl isInvalid={Boolean(errors.category)} mt="1rem">
             <FormLabel htmlFor="category">お問合せ内容のカテゴリ</FormLabel>
             <Select
               placeholder="カテゴリを選択"
@@ -116,7 +116,7 @@ const Contact = () => {
               {errors.text && errors.text.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={Boolean(errors.mail)}>
+          <FormControl isInvalid={Boolean(errors.mail)} mt="1.2rem">
             <FormLabel htmlFor="mail">メールアドレス</FormLabel>
             <Input
               id="mail"
