@@ -53,8 +53,7 @@ const LoginHistories = () => {
           <Thead position="sticky" top="0" bgColor="white">
             <Tr>
               <Th textAlign="center">ログイン日時</Th>
-              <Th textAlign="center">ログイン端末/OS</Th>
-              <Th textAlign="center">ブラウザ</Th>
+              <Th textAlign="center">ログイン端末 OS/ブラウザ</Th>
               <Th textAlign="center">IPアドレス</Th>
             </Tr>
           </Thead>
