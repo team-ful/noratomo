@@ -23,12 +23,13 @@ const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
       <Td>
         <Center>
           <DeviceIcon item={data} />
-          <Box ml=".25rem"> {data.os ?? '不明なOS'}</Box>
+          <Box ml=".25rem"> {data.os ?? '不明なOS'} /</Box>
+          <Box ml=".25rem"> {data.browser_name ?? '不明なブラウザ'}</Box>
         </Center>
       </Td>
-      <Td>
+      {/* <Td>
         <Center>{data.browser_name ?? '不明なブラウザ'}</Center>
-      </Td>
+      </Td> */}
       <Td>{data.ip_address}</Td>
     </Tr>
   );
