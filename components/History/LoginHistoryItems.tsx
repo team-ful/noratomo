@@ -27,9 +27,6 @@ const LoginHistoryItems = ({data}: {data: LoginHistoryUserElements}) => {
           <Box ml=".25rem"> {data.browser_name ?? '不明なブラウザ'}</Box>
         </Center>
       </Td>
-      {/* <Td>
-        <Center>{data.browser_name ?? '不明なブラウザ'}</Center>
-      </Td> */}
       <Td>{data.ip_address}</Td>
     </Tr>
   );
