@@ -6,7 +6,7 @@ const DB_SOCKET_PATH = process.env.DB_SOCKET_PATH || '/cloudsql';
 const config: Config = {
   environment: 'production',
 
-  host: new URL('https://noratomo.tdu.app'),
+  host: new URL('https://noratomo.cateiru.com'),
 
   cateiruSSOEndpoint: new URL('https://sso.cateiru.com/sso/login'),
   cateiruSSOTokenEndpoint: new URL(
@@ -23,7 +23,7 @@ const config: Config = {
   sessionPeriodDay: 1,
   sessionCookieOptions: () => {
     return {
-      domain: 'noratomo.tdu.app',
+      domain: 'noratomo.cateiru.com',
       sameSite: 'strict',
       secure: true,
       httpOnly: true,
@@ -39,7 +39,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'noratomo.tdu.app',
+      domain: 'noratomo.cateiru.com',
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
@@ -55,7 +55,7 @@ const config: Config = {
     date.setDate(date.getDate() + config.refreshPeriodDay);
 
     return {
-      domain: 'noratomo.tdu.app',
+      domain: 'noratomo.cateiru.com',
       expires: date,
       maxAge: config.refreshPeriodDay * 86400,
       sameSite: 'strict',
